@@ -119,6 +119,9 @@ class uhd_interface:
     def set_time_now(self, time_spec):
         return self.u.set_time_now(time_spec)
 
+    def get_clock_rate(self):
+        return self.u.get_clock_rate()
+
     def get_usrp_info(self):
         return self.u.get_usrp_info()
 
@@ -127,7 +130,6 @@ class uhd_interface:
 
     def get_usrp_mboard_serial(self):
         return self.u.get_usrp_info()['mboard_serial']
-
 
 
 #-------------------------------------------------------------------#

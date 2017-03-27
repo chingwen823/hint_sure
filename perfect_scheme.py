@@ -1,38 +1,16 @@
 #!/usr/bin/env python
 
-from gnuradio import digital, gr, blocks, uhd
-from gnuradio.eng_option import eng_option
-from optparse import OptionParser
+import binascii
+import hashlib
+import logging.config
+import math
+import os
+import struct
 from argparse import ArgumentParser
 from datetime import datetime
-import logging
-import logging.config
-import os
-import threading
-import numpy
-import hashlib
-import binascii
-import math
-
-from random import randint
-import time, struct, sys
-
-# from current dir
-from transmit_path import transmit_path
-from receive_path import receive_path
-from uhd_interface import uhd_transmitter
-from uhd_interface import uhd_receiver
-
-
-log_parser = ArgumentParser()
-log_parser.add_argument('--logfile', dest='log_file', help='log to filename', default='ps_multi_nodes.log')
-args, unknown = log_parser.parse_known_args()
-logging.config.fileConfig('logging.ini', defaults={'log_file': args.log_file})
-logger = logging.getLogger()
 
 # static variables
 COMMAND_DELAY = .008    # seconds
-NODE_TIME_SLOT = .5     # seconds
 TIMESTAMP_LEN = 14      # len(now)
 NODE_AMT_LEN = 4
 NODE_ID_LEN = 10
@@ -40,15 +18,22 @@ SEED_LEN = 10
 assert NODE_ID_LEN == SEED_LEN
 PS_DATA_LEN = 50
 
+log_parser = ArgumentParser()
+log_parser.add_argument('--logfile', dest='log_file', help='log to filename', default='ps_multi_nodes.log')
+args, unknown = log_parser.parse_known_args()
+logging.config.fileConfig('logging.ini', defaults={'log_file': args.log_file})
+logger = logging.getLogger()
+
 
 class PerfectScheme:
     alloc_frame = []
     seed = None
     nodes_expect_time = []
 
-    def __init__(self, broadcast_id, send_pkt_id):
+    def __init__(self, broadcast_id, send_pkt_id, node_slot_time):
         self.ps_broadcast_id = broadcast_id
         self.ps_send_pkt_id = send_pkt_id
+        self.node_slot_time = node_slot_time
 
     def compute_alloc_index(self, node_amount, node_id, salt):
         """
@@ -67,7 +52,7 @@ class PerfectScheme:
 
     def get_random_seed(self):
         """
-        Random seeds at fixed length 8. Prefix with leading zeros if chosen number has less length.
+        Random seeds at size of NODE_ID_LEN. Prefix with leading zeros if chosen number has less length.
         Note: Seed length must be same as Node ID length.
 
         Returns: seed number
@@ -76,6 +61,7 @@ class PerfectScheme:
         # # replace prefix spaces with 0, if any
         # return seed.replace(' ', '0')
         # return os.urandom(NODE_ID_LEN)
+
         # Hex seed will double its size, so half the size first
         return binascii.b2a_hex(os.urandom(NODE_ID_LEN/2))
 
@@ -85,7 +71,9 @@ class PerfectScheme:
 
         salt = None
         has_collision = True
+        calc_count = 0
         while has_collision:
+            calc_count += 1
             self.alloc_frame = ['0'] * len(node_id_list)
             salt = self.get_random_seed()
             for node_id in node_id_list:
@@ -96,7 +84,8 @@ class PerfectScheme:
             has_collision = any(n == '0' for n in self.alloc_frame)
             # logger.debug("salt {}, alloc {}".format(salt, self.alloc_frame))
 
-        logger.info("Calculated Perfect Seed: {}, Alloc Frame: {}".format(salt, self.alloc_frame))
+        logger.info("Calculated perfect seed: {}, calculation count: {}, \nAlloc Frame: {}".format(
+                    salt, calc_count, self.alloc_frame))
         self.seed = salt
 
     def broadcast_ps_pkt(self, my_tb, pkt_size, node_amount, pktno=1):     # BS only
@@ -113,22 +102,21 @@ class PerfectScheme:
         dummy = (pkt_size - data_size) * chr(pktno & 0xff)
         now_timestamp = my_tb.sink.get_time_now().get_real_secs()
         now_timestamp_str = '{:.3f}'.format(now_timestamp)
-        begin_timestamp = math.ceil(now_timestamp + 1)
+        begin_timestamp = math.ceil(now_timestamp + 1)      # begin time buffer 1 second, let all nodes to be ready
         begin_timestamp_str = '{:.3f}'.format(begin_timestamp)
         # For BS recv PS_PKT session timer use
         self.nodes_expect_time = []
         for i in range(node_amount):
             # Each node time slot: 0.5 seconds
-            begin_at = begin_timestamp + (NODE_TIME_SLOT * i)
+            begin_at = begin_timestamp + (self.node_slot_time * i)
             end_at = begin_at + 0.5 - 0.0001
             self.nodes_expect_time.append((self.alloc_frame[i], begin_at, end_at))
         payload = payload_prefix + now_timestamp_str + broadcast + node_amount_str + self.seed + begin_timestamp_str\
             + dummy
         my_tb.txpath.send_pkt(payload)
-        logger.info("{} send PS_BROADCAST {}, Total nodes: {}, Seed: {}, Node begin: {}".format(
-            str(datetime.fromtimestamp(now_timestamp)), pktno, node_amount, self.seed,
-            str(datetime.fromtimestamp(begin_timestamp))))
-        logger.info("Expect time: {}".format(self.nodes_expect_time))
+        logger.info("{} send PS_BROADCAST {}, Total nodes: {}, Seed: {}, Node begin: {}, \nSession: {}".format(
+                    str(datetime.fromtimestamp(now_timestamp)), pktno, node_amount, self.seed,
+                    str(datetime.fromtimestamp(begin_timestamp)), self.nodes_expect_time))
 
     def send_ps_pkt(self, node_id, my_tb, pkt_size, ps_data, pktno=1):               # Node only
         # payload = prefix + now + ps_pkt + data + dummy
@@ -160,6 +148,6 @@ class PerfectScheme:
                                       2+TIMESTAMP_LEN+2+NODE_AMT_LEN+SEED_LEN+TIMESTAMP_LEN]
         return begin_timestamp_str
 
-    def get_ps_data(self, payload):
+    def get_node_data(self, payload):
         ps_data = payload[2+TIMESTAMP_LEN+2:2+TIMESTAMP_LEN+2+PS_DATA_LEN]
         return ps_data.lstrip()
