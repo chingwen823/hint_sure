@@ -1,0 +1,162 @@
+----------------------------------------------------------
+Input options: 
+{'verbose': True, 'discontinuous': False, 'bandwidth': 1000000.0, 'megabytes': 1.0, 'size': 400, 'log': False, 'antenna': 'TX/RX', 'lo_offset': 0, 'scheme': 'PS', 'spec': None, 'tx_gain': 20.0, 'tx_amplitude': 0.1, 'modulation': 'bpsk', 'args': 'serial=30757AF', 'snr': 30.0, 'occupied_tones': 200, 'freq': None, 'logfile': '30757AF_ps.log', 'rx_freq': 2490000000.0, 'rx_gain': 30.0, 'from_file': None, 'to_file': None, 'tx_freq': 2490000000.0, 'clock_source': None, 'cp_length': 128, 'fft_length': 512}
+----------------------------------------------------------
+
+
+NODE ID: 00030757AF
+
+Clock Rate: 100.0 MHz
+
+####### Test Protocol: PS #######
+
+2017-03-28 02:23:29.194872 Adjust to PC time: 2017-03-28 02:23:29.194721
+
+
+
+=============================================================================================
+========================================== ROUND 1 ==========================================
+=============================================================================================
+
+
+------ Listening ------
+Wrong pktno 65467. Drop pkt!
+Adjust time... New time: 2017-03-28 02:23:36.140097
+2017-03-28 02:23:36.140097 Node recv BEACON 10. BS time: 2017-03-28 02:23:36.140000, Avg delay: 0.542067050934
+Adjust time... New time: 2017-03-28 02:23:36.145066
+2017-03-28 02:23:36.145066 Node recv BEACON 11. BS time: 2017-03-28 02:23:36.145000, Avg delay: 0.26956474781
+Adjust time... New time: 2017-03-28 02:23:36.151060
+2017-03-28 02:23:36.151060 Node recv BEACON 12. BS time: 2017-03-28 02:23:36.151000, Avg delay: 0.177969932556
+Adjust time... New time: 2017-03-28 02:23:36.162056
+2017-03-28 02:23:36.162056 Node recv BEACON 14. BS time: 2017-03-28 02:23:36.162000, Avg delay: 0.130879223347
+Adjust time... New time: 2017-03-28 02:23:36.168058
+2017-03-28 02:23:36.168058 Node recv BEACON 15. BS time: 2017-03-28 02:23:36.168000, Avg delay: 0.103617715836
+Adjust time... New time: 2017-03-28 02:23:36.173050
+2017-03-28 02:23:36.173050 Node recv BEACON 16. BS time: 2017-03-28 02:23:36.173000, Avg delay: 0.0856156349182
+Adjust time... New time: 2017-03-28 02:23:36.179054
+2017-03-28 02:23:36.179054 Node recv BEACON 17. BS time: 2017-03-28 02:23:36.179000, Avg delay: 0.0726064954485
+Adjust time... New time: 2017-03-28 02:23:36.185056
+2017-03-28 02:23:36.185056 Node recv BEACON 18. BS time: 2017-03-28 02:23:36.185000, Avg delay: 0.0628874599934
+Adjust time... New time: 2017-03-28 02:23:36.191055
+2017-03-28 02:23:36.191055 Node recv BEACON 19. BS time: 2017-03-28 02:23:36.191000, Avg delay: 0.0553699069553
+2017-03-28 02:23:36.191677 Node recv BEACON 20. BS time: 2017-03-28 02:23:36.197000, Avg delay: 0.0493005752563
+2017-03-28 02:23:36.194481 Node recv BEACON 21. BS time: 2017-03-28 02:23:36.202000, Avg delay: -0.00565803050995
+2017-03-28 02:23:36.195115 Node recv BEACON 23. BS time: 2017-03-28 02:23:36.213000, Avg delay: -0.00715274810791
+2017-03-28 02:23:36.196358 Node recv BEACON 24. BS time: 2017-03-28 02:23:36.218000, Avg delay: -0.00879497528076
+2017-03-28 02:23:36.197140 Node recv BEACON 25. BS time: 2017-03-28 02:23:36.224000, Avg delay: -0.0104416847229
+2017-03-28 02:23:36.197649 Node recv BEACON 26. BS time: 2017-03-28 02:23:36.230000, Avg delay: -0.0131339550018
+2017-03-28 02:23:36.198118 Node recv BEACON 27. BS time: 2017-03-28 02:23:36.236000, Avg delay: -0.0164826869965
+2017-03-28 02:23:36.198632 Node recv BEACON 28. BS time: 2017-03-28 02:23:36.241000, Avg delay: -0.0201746940613
+2017-03-28 02:23:36.199105 Node recv BEACON 29. BS time: 2017-03-28 02:23:36.246000, Avg delay: -0.0243496656418
+2017-03-28 02:23:36.199571 Node recv BEACON 30. BS time: 2017-03-28 02:23:36.252000, Avg delay: -0.0291155099869
+Invalid pkt_type 4097. Drop pkt!
+Adjust time... New time: 2017-03-28 02:23:36.462056
+2017-03-28 02:23:36.462056 Node recv BEACON 2. BS time: 2017-03-28 02:23:36.462000, Avg delay: -0.0547370672226
+Adjust time... New time: 2017-03-28 02:23:36.467072
+2017-03-28 02:23:36.467072 Node recv BEACON 3. BS time: 2017-03-28 02:23:36.467000, Avg delay: -0.0544224262238
+Adjust time... New time: 2017-03-28 02:23:36.473156
+2017-03-28 02:23:36.473156 Node recv BEACON 4. BS time: 2017-03-28 02:23:36.473000, Avg delay: -0.0531588077545
+Adjust time... New time: 2017-03-28 02:23:36.478055
+2017-03-28 02:23:36.478055 Node recv BEACON 5. BS time: 2017-03-28 02:23:36.478000, Avg delay: -0.0514157295227
+2017-03-28 02:23:36.478709 Node recv BEACON 6. BS time: 2017-03-28 02:23:36.484000, Avg delay: -0.0492588043213
+------ Stop listen at 2017-03-28 02:23:37.289855 ------
+------ Listening PS broadcast ------
+2017-03-28 02:23:36.680397 Node recv BEACON 7. BS time: 2017-03-28 02:23:36.490000, Avg delay: -0.0269839763641
+Interest only in pkt_type ['PS_BROADCAST'], not BEACON. Drop pkt!
+Interest only in pkt_type ['PS_BROADCAST'], not BEACON. Drop pkt!
+Interest only in pkt_type ['PS_BROADCAST'], not BEACON. Drop pkt!
+Interest only in pkt_type ['PS_BROADCAST'], not BEACON. Drop pkt!
+Interest only in pkt_type ['PS_BROADCAST'], not BEACON. Drop pkt!
+Interest only in pkt_type ['PS_BROADCAST'], not BEACON. Drop pkt!
+Interest only in pkt_type ['PS_BROADCAST'], not BEACON. Drop pkt!
+Interest only in pkt_type ['PS_BROADCAST'], not BEACON. Drop pkt!
+Interest only in pkt_type ['PS_BROADCAST'], not BEACON. Drop pkt!
+Interest only in pkt_type ['PS_BROADCAST'], not BEACON. Drop pkt!
+Interest only in pkt_type ['PS_BROADCAST'], not BEACON. Drop pkt!
+Interest only in pkt_type ['PS_BROADCAST'], not BEACON. Drop pkt!
+Interest only in pkt_type ['PS_BROADCAST'], not BEACON. Drop pkt!
+Interest only in pkt_type ['PS_BROADCAST'], not BEACON. Drop pkt!
+Interest only in pkt_type ['PS_BROADCAST'], not BEACON. Drop pkt!
+Interest only in pkt_type ['PS_BROADCAST'], not BEACON. Drop pkt!
+Interest only in pkt_type ['PS_BROADCAST'], not BEACON. Drop pkt!
+Interest only in pkt_type ['PS_BROADCAST'], not BEACON. Drop pkt!
+Interest only in pkt_type ['PS_BROADCAST'], not BEACON. Drop pkt!
+Interest only in pkt_type ['PS_BROADCAST'], not BEACON. Drop pkt!
+Interest only in pkt_type ['PS_BROADCAST'], not BEACON. Drop pkt!
+Interest only in pkt_type ['PS_BROADCAST'], not BEACON. Drop pkt!
+Interest only in pkt_type ['PS_BROADCAST'], not BEACON. Drop pkt!
+2017-03-28 02:23:38.185150 Node recv PS_BROADCAST 2, BS time 2017-03-28 02:23:38.007000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.178150415421
+2017-03-28 02:23:38.455636 Node recv PS_BROADCAST 3, BS time 2017-03-28 02:23:38.013000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.442635536194
+2017-03-28 02:23:38.456640 Node recv PS_BROADCAST 4, BS time 2017-03-28 02:23:38.019000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.437640190125
+2017-03-28 02:23:38.457164 Node recv PS_BROADCAST 5, BS time 2017-03-28 02:23:38.025000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.4321641922
+2017-03-28 02:23:38.458037 Node recv PS_BROADCAST 6, BS time 2017-03-28 02:23:38.030000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.428037166595
+2017-03-28 02:23:38.458472 Node recv PS_BROADCAST 7, BS time 2017-03-28 02:23:38.036000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.422472476959
+2017-03-28 02:23:38.459376 Node recv PS_BROADCAST 8, BS time 2017-03-28 02:23:38.042000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.417376279831
+2017-03-28 02:23:38.462282 Node recv PS_BROADCAST 9, BS time 2017-03-28 02:23:38.048000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.41428232193
+2017-03-28 02:23:38.462675 Node recv PS_BROADCAST 10, BS time 2017-03-28 02:23:38.053000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.409675121307
+2017-03-28 02:23:38.463115 Node recv PS_BROADCAST 11, BS time 2017-03-28 02:23:38.058000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.405115127563
+2017-03-28 02:23:38.463508 Node recv PS_BROADCAST 12, BS time 2017-03-28 02:23:38.064000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.399508237839
+2017-03-28 02:23:38.463905 Node recv PS_BROADCAST 13, BS time 2017-03-28 02:23:38.069000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.394905328751
+2017-03-28 02:23:38.464345 Node recv PS_BROADCAST 14, BS time 2017-03-28 02:23:38.074000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.390345573425
+2017-03-28 02:23:38.464731 Node recv PS_BROADCAST 15, BS time 2017-03-28 02:23:38.080000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.384731531143
+2017-03-28 02:23:38.465153 Node recv PS_BROADCAST 16, BS time 2017-03-28 02:23:38.085000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.38015294075
+2017-03-28 02:23:38.465570 Node recv PS_BROADCAST 17, BS time 2017-03-28 02:23:38.091000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.374569654465
+2017-03-28 02:23:38.465994 Node recv PS_BROADCAST 18, BS time 2017-03-28 02:23:38.098000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.367994070053
+2017-03-28 02:23:38.466425 Node recv PS_BROADCAST 19, BS time 2017-03-28 02:23:38.103000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.363425254822
+2017-03-28 02:23:38.466835 Node recv PS_BROADCAST 20, BS time 2017-03-28 02:23:38.110000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.356835603714
+2017-03-28 02:23:38.467318 Node recv PS_BROADCAST 21, BS time 2017-03-28 02:23:38.115000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.352318286896
+2017-03-28 02:23:38.467744 Node recv PS_BROADCAST 22, BS time 2017-03-28 02:23:38.121000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.346743583679
+2017-03-28 02:23:38.468170 Node recv PS_BROADCAST 23, BS time 2017-03-28 02:23:38.126000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.342170000076
+2017-03-28 02:23:38.468583 Node recv PS_BROADCAST 24, BS time 2017-03-28 02:23:38.132000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.336582899094
+2017-03-28 02:23:38.468984 Node recv PS_BROADCAST 25, BS time 2017-03-28 02:23:38.138000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.330983638763
+2017-03-28 02:23:38.469424 Node recv PS_BROADCAST 26, BS time 2017-03-28 02:23:38.145000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.324424505234
+2017-03-28 02:23:38.469827 Node recv PS_BROADCAST 27, BS time 2017-03-28 02:23:38.151000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.318826913834
+2017-03-28 02:23:38.470222 Node recv PS_BROADCAST 28, BS time 2017-03-28 02:23:38.157000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.313221931458
+2017-03-28 02:23:38.474671 Node recv PS_BROADCAST 29, BS time 2017-03-28 02:23:38.162000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.312671422958
+2017-03-28 02:23:38.475106 Node recv PS_BROADCAST 30, BS time 2017-03-28 02:23:38.168000, Total 10, Seed 001baf7f7e, Index 2, Delay 0.307106018066
+------ Stop listen PS broadcast at 2017-03-28 02:23:38.877018 ------
+------ Ready to send PS packets ------
+Fire at 2017-03-28 02:23:40.908031
+2017-03-28 02:23:40.911084 PS: Node 00030757AF send data 1
+2017-03-28 02:23:40.916654 PS: Node 00030757AF send data 2
+2017-03-28 02:23:40.921846 PS: Node 00030757AF send data 3
+2017-03-28 02:23:40.927324 PS: Node 00030757AF send data 4
+2017-03-28 02:23:40.932573 PS: Node 00030757AF send data 5
+2017-03-28 02:23:40.938061 PS: Node 00030757AF send data 6
+2017-03-28 02:23:40.943282 PS: Node 00030757AF send data 7
+2017-03-28 02:23:40.949077 PS: Node 00030757AF send data 8
+2017-03-28 02:23:40.954238 PS: Node 00030757AF send data 9
+2017-03-28 02:23:40.959690 PS: Node 00030757AF send data 10
+2017-03-28 02:23:40.965251 PS: Node 00030757AF send data 11
+2017-03-28 02:23:40.970540 PS: Node 00030757AF send data 12
+2017-03-28 02:23:40.975710 PS: Node 00030757AF send data 13
+2017-03-28 02:23:40.981519 PS: Node 00030757AF send data 14
+2017-03-28 02:23:40.986747 PS: Node 00030757AF send data 15
+2017-03-28 02:23:40.992285 PS: Node 00030757AF send data 16
+2017-03-28 02:23:40.998071 PS: Node 00030757AF send data 17
+2017-03-28 02:23:41.003624 PS: Node 00030757AF send data 18
+2017-03-28 02:23:41.008838 PS: Node 00030757AF send data 19
+2017-03-28 02:23:41.014605 PS: Node 00030757AF send data 20
+2017-03-28 02:23:41.020130 PS: Node 00030757AF send data 21
+2017-03-28 02:23:41.025336 PS: Node 00030757AF send data 22
+2017-03-28 02:23:41.030538 PS: Node 00030757AF send data 23
+2017-03-28 02:23:41.036298 PS: Node 00030757AF send data 24
+2017-03-28 02:23:41.041545 PS: Node 00030757AF send data 25
+2017-03-28 02:23:41.046766 PS: Node 00030757AF send data 26
+2017-03-28 02:23:41.052017 PS: Node 00030757AF send data 27
+2017-03-28 02:23:41.057710 PS: Node 00030757AF send data 28
+2017-03-28 02:23:41.062911 PS: Node 00030757AF send data 29
+2017-03-28 02:23:41.067915 PS: Node 00030757AF send data 30
+2017-03-28 02:23:41.068780 - thread done - 
+ - duration 0.160360336304 -
+------ Send PS packets end ------
+
+------ PS cycle ends at 2017-03-28 02:23:45.008860 ------
+
+
+
+=============================================================================================
+========================================= TEST END ==========================================
+=============================================================================================
+
+

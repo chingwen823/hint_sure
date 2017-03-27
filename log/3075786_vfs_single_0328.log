@@ -1,0 +1,1163 @@
+----------------------------------------------------------
+Input options: 
+{'verbose': True, 'discontinuous': False, 'bandwidth': 1000000.0, 'megabytes': 1.0, 'size': 400, 'log': False, 'antenna': 'TX/RX', 'lo_offset': 0, 'scheme': 'VFS', 'spec': None, 'tx_gain': 20.0, 'tx_amplitude': 0.1, 'modulation': 'bpsk', 'args': 'serial=3075786', 'snr': 30.0, 'occupied_tones': 200, 'freq': None, 'logfile': '3075786_vfs.log', 'rx_freq': 2490000000.0, 'rx_gain': 30.0, 'from_file': None, 'to_file': None, 'tx_freq': 2490000000.0, 'clock_source': None, 'cp_length': 128, 'fft_length': 512}
+----------------------------------------------------------
+
+
+NODE ID: 0003075786
+
+Clock Rate: 100.0 MHz
+
+####### Test Protocol: VFS #######
+
+2017-03-28 01:14:07.566522 Adjust to PC time: 2017-03-28 01:14:07.566314
+
+
+
+=============================================================================================
+========================================== ROUND 1 ==========================================
+=============================================================================================
+
+
+------ Listening ------
+Adjust time... New time: 2017-03-28 01:14:09.398286
+2017-03-28 01:14:09.398286 Node recv BEACON 1. BS time: 2017-03-28 01:14:09.398000, Avg delay: 0.137975692749
+Adjust time... New time: 2017-03-28 01:14:09.405143
+2017-03-28 01:14:09.405143 Node recv BEACON 2. BS time: 2017-03-28 01:14:09.405000, Avg delay: 0.0709965229034
+2017-03-28 01:14:09.416624 Node recv BEACON 3. BS time: 2017-03-28 01:14:09.411000, Avg delay: 0.0492057800293
+2017-03-28 01:14:09.426759 Node recv BEACON 4. BS time: 2017-03-28 01:14:09.417000, Avg delay: 0.0393440127373
+2017-03-28 01:14:09.440384 Node recv BEACON 5. BS time: 2017-03-28 01:14:09.422000, Avg delay: 0.0351521015167
+2017-03-28 01:14:09.450682 Node recv BEACON 6. BS time: 2017-03-28 01:14:09.427000, Avg delay: 0.0332404772441
+2017-03-28 01:14:09.460995 Node recv BEACON 7. BS time: 2017-03-28 01:14:09.432000, Avg delay: 0.0326339517321
+2017-03-28 01:14:09.472710 Node recv BEACON 8. BS time: 2017-03-28 01:14:09.438000, Avg delay: 0.0328934490681
+2017-03-28 01:14:09.486227 Node recv BEACON 9. BS time: 2017-03-28 01:14:09.444000, Avg delay: 0.0339305135939
+2017-03-28 01:14:09.503113 Node recv BEACON 10. BS time: 2017-03-28 01:14:09.450000, Avg delay: 0.035848736763
+2017-03-28 01:14:09.507866 Node recv BEACON 11. BS time: 2017-03-28 01:14:09.455000, Avg delay: 0.0273377418518
+2017-03-28 01:14:09.518738 Node recv BEACON 12. BS time: 2017-03-28 01:14:09.461000, Avg delay: 0.032709813118
+2017-03-28 01:14:09.530360 Node recv BEACON 13. BS time: 2017-03-28 01:14:09.466000, Avg delay: 0.0385834217072
+2017-03-28 01:14:09.545438 Node recv BEACON 14. BS time: 2017-03-28 01:14:09.472000, Avg delay: 0.0449513673782
+Adjust time... New time: 2017-03-28 01:14:09.477175
+2017-03-28 01:14:09.477175 Node recv BEACON 15. BS time: 2017-03-28 01:14:09.477000, Avg delay: 0.0509237289429
+2017-03-28 01:14:09.485734 Node recv BEACON 16. BS time: 2017-03-28 01:14:09.482000, Avg delay: 0.0489288806915
+2017-03-28 01:14:09.496955 Node recv BEACON 17. BS time: 2017-03-28 01:14:09.488000, Avg delay: 0.0469249248505
+2017-03-28 01:14:09.509062 Node recv BEACON 18. BS time: 2017-03-28 01:14:09.493000, Avg delay: 0.0450600862503
+2017-03-28 01:14:09.520034 Node recv BEACON 19. BS time: 2017-03-28 01:14:09.498000, Avg delay: 0.0430407762527
+2017-03-28 01:14:09.542722 Node recv BEACON 21. BS time: 2017-03-28 01:14:09.510000, Avg delay: 0.0410017251968
+2017-03-28 01:14:09.558452 Node recv BEACON 22. BS time: 2017-03-28 01:14:09.515000, Avg delay: 0.0400603055954
+2017-03-28 01:14:09.565783 Node recv BEACON 23. BS time: 2017-03-28 01:14:09.521000, Avg delay: 0.0387647628784
+2017-03-28 01:14:09.579191 Node recv BEACON 24. BS time: 2017-03-28 01:14:09.526000, Avg delay: 0.037647819519
+2017-03-28 01:14:09.591501 Node recv BEACON 25. BS time: 2017-03-28 01:14:09.531000, Avg delay: 0.0363541126251
+2017-03-28 01:14:09.600466 Node recv BEACON 26. BS time: 2017-03-28 01:14:09.537000, Avg delay: 0.0348898887634
+2017-03-28 01:14:09.611732 Node recv BEACON 27. BS time: 2017-03-28 01:14:09.542000, Avg delay: 0.0414897203445
+2017-03-28 01:14:09.624042 Node recv BEACON 28. BS time: 2017-03-28 01:14:09.549000, Avg delay: 0.0480983734131
+Adjust time... New time: 2017-03-28 01:14:09.559108
+2017-03-28 01:14:09.559108 Node recv BEACON 30. BS time: 2017-03-28 01:14:09.559000, Avg delay: 0.0554731369019
+2017-03-28 01:14:09.606447 Node recv BEACON 2. BS time: 2017-03-28 01:14:09.768000, Avg delay: 0.0371145009995
+2017-03-28 01:14:09.618206 Node recv BEACON 3. BS time: 2017-03-28 01:14:09.774000, Avg delay: 0.018262887001
+2017-03-28 01:14:09.629385 Node recv BEACON 4. BS time: 2017-03-28 01:14:09.780000, Avg delay: -0.00114378929138
+2017-03-28 01:14:09.640881 Node recv BEACON 5. BS time: 2017-03-28 01:14:09.785000, Avg delay: -0.020033955574
+2017-03-28 01:14:09.653696 Node recv BEACON 6. BS time: 2017-03-28 01:14:09.790000, Avg delay: -0.0389834165573
+Adjust time... New time: 2017-03-28 01:14:09.796445
+2017-03-28 01:14:09.796445 Node recv BEACON 7. BS time: 2017-03-28 01:14:09.796000, Avg delay: -0.0578993558884
+Adjust time... New time: 2017-03-28 01:14:09.802218
+2017-03-28 01:14:09.802218 Node recv BEACON 8. BS time: 2017-03-28 01:14:09.802000, Avg delay: -0.0642567157745
+Adjust time... New time: 2017-03-28 01:14:09.806056
+2017-03-28 01:14:09.806056 Node recv BEACON 9. BS time: 2017-03-28 01:14:09.806000, Avg delay: -0.0705283164978
+Adjust time... New time: 2017-03-28 01:14:09.812313
+2017-03-28 01:14:09.812313 Node recv BEACON 10. BS time: 2017-03-28 01:14:09.812000, Avg delay: -0.0774774312973
+Adjust time... New time: 2017-03-28 01:14:09.817267
+2017-03-28 01:14:09.817267 Node recv BEACON 11. BS time: 2017-03-28 01:14:09.817000, Avg delay: -0.0859451293945
+Adjust time... New time: 2017-03-28 01:14:09.822359
+2017-03-28 01:14:09.822359 Node recv BEACON 12. BS time: 2017-03-28 01:14:09.822000, Avg delay: -0.0688362598419
+Adjust time... New time: 2017-03-28 01:14:09.827358
+2017-03-28 01:14:09.827358 Node recv BEACON 13. BS time: 2017-03-28 01:14:09.827000, Avg delay: -0.0531481027603
+2017-03-28 01:14:09.837898 Node recv BEACON 14. BS time: 2017-03-28 01:14:09.832000, Avg delay: -0.0374967575073
+2017-03-28 01:14:09.849615 Node recv BEACON 15. BS time: 2017-03-28 01:14:09.839000, Avg delay: -0.0220233917236
+2017-03-28 01:14:09.860874 Node recv BEACON 16. BS time: 2017-03-28 01:14:09.845000, Avg delay: -0.00680561065674
+2017-03-28 01:14:09.876975 Node recv BEACON 17. BS time: 2017-03-28 01:14:09.850000, Avg delay: 0.00875773429871
+2017-03-28 01:14:09.884010 Node recv BEACON 18. BS time: 2017-03-28 01:14:09.856000, Avg delay: 0.0115695476532
+2017-03-28 01:14:09.895863 Node recv BEACON 19. BS time: 2017-03-28 01:14:09.861000, Avg delay: 0.0143542289734
+2017-03-28 01:14:09.909830 Node recv BEACON 20. BS time: 2017-03-28 01:14:09.867000, Avg delay: 0.0180821180344
+2017-03-28 01:14:09.918485 Node recv BEACON 21. BS time: 2017-03-28 01:14:09.873000, Avg delay: 0.0221174001694
+2017-03-28 01:14:09.932336 Node recv BEACON 22. BS time: 2017-03-28 01:14:09.878000, Avg delay: 0.02659740448
+2017-03-28 01:14:09.942035 Node recv BEACON 23. BS time: 2017-03-28 01:14:09.883000, Avg delay: 0.0323921918869
+2017-03-28 01:14:09.953303 Node recv BEACON 24. BS time: 2017-03-28 01:14:09.889000, Avg delay: 0.0382327079773
+2017-03-28 01:14:09.966365 Node recv BEACON 25. BS time: 2017-03-28 01:14:09.895000, Avg delay: 0.0443077325821
+Adjust time... New time: 2017-03-28 01:14:09.900218
+2017-03-28 01:14:09.900218 Node recv BEACON 26. BS time: 2017-03-28 01:14:09.900000, Avg delay: 0.0503739595413
+2017-03-28 01:14:09.912910 Node recv BEACON 27. BS time: 2017-03-28 01:14:09.906000, Avg delay: 0.0483675003052
+2017-03-28 01:14:09.921935 Node recv BEACON 28. BS time: 2017-03-28 01:14:09.911000, Avg delay: 0.0466599464417
+2017-03-28 01:14:09.933446 Node recv BEACON 29. BS time: 2017-03-28 01:14:09.918000, Avg delay: 0.0447182416916
+2017-03-28 01:14:09.946161 Node recv BEACON 30. BS time: 2017-03-28 01:14:09.924000, Avg delay: 0.0426513433456
+------ Stop listen at 2017-03-28 01:14:10.140547 ------
+------ Listening VFS broadcast ------
+rand-index: 9
+2017-03-28 01:14:10.850928 Node recv VFS_BROADCAST 2, BS time 2017-03-28 01:14:11.006000, Total 10, Seed 397892a569, Delay -0.155071735382, 
+v-frame index: 16, alloc-index: 9, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+rand-index: 8
+2017-03-28 01:14:10.862206 Node recv VFS_BROADCAST 3, BS time 2017-03-28 01:14:11.012000, Total 10, Seed 397892a569, Delay -0.149793863297, 
+v-frame index: 16, alloc-index: 8, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+rand-index: 8
+2017-03-28 01:14:10.875101 Node recv VFS_BROADCAST 4, BS time 2017-03-28 01:14:11.018000, Total 10, Seed 397892a569, Delay -0.14289855957, 
+v-frame index: 16, alloc-index: 8, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+rand-index: 8
+2017-03-28 01:14:10.884918 Node recv VFS_BROADCAST 5, BS time 2017-03-28 01:14:11.023000, Total 10, Seed 397892a569, Delay -0.138081550598, 
+v-frame index: 16, alloc-index: 8, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+rand-index: 9
+2017-03-28 01:14:10.896698 Node recv VFS_BROADCAST 6, BS time 2017-03-28 01:14:11.029000, Total 10, Seed 397892a569, Delay -0.132301807404, 
+v-frame index: 16, alloc-index: 9, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+rand-index: 8
+2017-03-28 01:14:10.908835 Node recv VFS_BROADCAST 7, BS time 2017-03-28 01:14:11.035000, Total 10, Seed 397892a569, Delay -0.126165390015, 
+v-frame index: 16, alloc-index: 8, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+rand-index: 8
+2017-03-28 01:14:10.919681 Node recv VFS_BROADCAST 8, BS time 2017-03-28 01:14:11.040000, Total 10, Seed 397892a569, Delay -0.120318889618, 
+v-frame index: 16, alloc-index: 8, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+rand-index: 9
+2017-03-28 01:14:10.931027 Node recv VFS_BROADCAST 9, BS time 2017-03-28 01:14:11.045000, Total 10, Seed 397892a569, Delay -0.113972902298, 
+v-frame index: 16, alloc-index: 9, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+rand-index: 8
+2017-03-28 01:14:10.943158 Node recv VFS_BROADCAST 10, BS time 2017-03-28 01:14:11.051000, Total 10, Seed 397892a569, Delay -0.107842445374, 
+v-frame index: 16, alloc-index: 8, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+rand-index: 9
+2017-03-28 01:14:10.954242 Node recv VFS_BROADCAST 11, BS time 2017-03-28 01:14:11.056000, Total 10, Seed 397892a569, Delay -0.101757526398, 
+v-frame index: 16, alloc-index: 9, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+rand-index: 8
+2017-03-28 01:14:10.967331 Node recv VFS_BROADCAST 12, BS time 2017-03-28 01:14:11.062000, Total 10, Seed 397892a569, Delay -0.0946691036224, 
+v-frame index: 16, alloc-index: 8, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+rand-index: 9
+2017-03-28 01:14:10.977073 Node recv VFS_BROADCAST 13, BS time 2017-03-28 01:14:11.068000, Total 10, Seed 397892a569, Delay -0.0909266471863, 
+v-frame index: 16, alloc-index: 9, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+rand-index: 8
+2017-03-28 01:14:10.995056 Node recv VFS_BROADCAST 14, BS time 2017-03-28 01:14:11.073000, Total 10, Seed 397892a569, Delay -0.0779438018799, 
+v-frame index: 16, alloc-index: 8, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+rand-index: 9
+2017-03-28 01:14:11.001065 Node recv VFS_BROADCAST 15, BS time 2017-03-28 01:14:11.081000, Total 10, Seed 397892a569, Delay -0.0799353122711, 
+v-frame index: 16, alloc-index: 9, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+rand-index: 9
+2017-03-28 01:14:11.012220 Node recv VFS_BROADCAST 16, BS time 2017-03-28 01:14:11.087000, Total 10, Seed 397892a569, Delay -0.0747802257538, 
+v-frame index: 16, alloc-index: 9, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+rand-index: 9
+2017-03-28 01:14:11.022856 Node recv VFS_BROADCAST 17, BS time 2017-03-28 01:14:11.092000, Total 10, Seed 397892a569, Delay -0.0691435337067, 
+v-frame index: 16, alloc-index: 9, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+rand-index: 8
+2017-03-28 01:14:11.034636 Node recv VFS_BROADCAST 18, BS time 2017-03-28 01:14:11.097000, Total 10, Seed 397892a569, Delay -0.0623643398285, 
+v-frame index: 16, alloc-index: 8, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+rand-index: 8
+2017-03-28 01:14:11.049663 Node recv VFS_BROADCAST 19, BS time 2017-03-28 01:14:11.103000, Total 10, Seed 397892a569, Delay -0.0533366203308, 
+v-frame index: 16, alloc-index: 8, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+rand-index: 8
+2017-03-28 01:14:11.057967 Node recv VFS_BROADCAST 20, BS time 2017-03-28 01:14:11.108000, Total 10, Seed 397892a569, Delay -0.0500333309174, 
+v-frame index: 16, alloc-index: 8, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+rand-index: 8
+2017-03-28 01:14:11.070296 Node recv VFS_BROADCAST 21, BS time 2017-03-28 01:14:11.114000, Total 10, Seed 397892a569, Delay -0.0437045097351, 
+v-frame index: 16, alloc-index: 8, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+rand-index: 8
+2017-03-28 01:14:11.081221 Node recv VFS_BROADCAST 22, BS time 2017-03-28 01:14:11.120000, Total 10, Seed 397892a569, Delay -0.038779258728, 
+v-frame index: 16, alloc-index: 8, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+rand-index: 9
+2017-03-28 01:14:11.093304 Node recv VFS_BROADCAST 23, BS time 2017-03-28 01:14:11.126000, Total 10, Seed 397892a569, Delay -0.0326962471008, 
+v-frame index: 16, alloc-index: 9, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+rand-index: 8
+2017-03-28 01:14:11.103564 Node recv VFS_BROADCAST 24, BS time 2017-03-28 01:14:11.131000, Total 10, Seed 397892a569, Delay -0.0274364948273, 
+v-frame index: 16, alloc-index: 8, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+rand-index: 9
+2017-03-28 01:14:11.116174 Node recv VFS_BROADCAST 25, BS time 2017-03-28 01:14:11.137000, Total 10, Seed 397892a569, Delay -0.0208265781403, 
+v-frame index: 16, alloc-index: 9, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+rand-index: 9
+2017-03-28 01:14:11.128627 Node recv VFS_BROADCAST 26, BS time 2017-03-28 01:14:11.143000, Total 10, Seed 397892a569, Delay -0.0143733024597, 
+v-frame index: 16, alloc-index: 9, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', 'q', '8', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+rand-index: 8
+2017-03-28 01:14:11.139001 Node recv VFS_BROADCAST 27, BS time 2017-03-28 01:14:11.149000, Total 10, Seed 397892a569, Delay -0.00999903678894, 
+v-frame index: 16, alloc-index: 8, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+rand-index: 9
+2017-03-28 01:14:11.149935 Node recv VFS_BROADCAST 28, BS time 2017-03-28 01:14:11.156000, Total 10, Seed 397892a569, Delay -0.00606465339661, 
+v-frame index: 16, alloc-index: 9, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+rand-index: 8
+2017-03-28 01:14:11.161721 Node recv VFS_BROADCAST 29, BS time 2017-03-28 01:14:11.162000, Total 10, Seed 397892a569, Delay -0.000279426574707, 
+v-frame index: 16, alloc-index: 8, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+rand-index: 9
+2017-03-28 01:14:11.176469 Node recv VFS_BROADCAST 30, BS time 2017-03-28 01:14:11.167000, Total 10, Seed 397892a569, Delay 0.0094690322876, 
+v-frame index: 16, alloc-index: 9, fall to rand-frame: True,
+v-frame: ['0', '0', '0', '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '1']
+------ Stop listen VFS broadcast at 2017-03-28 01:14:11.584832 ------
+------ Ready to send VFS packets ------
+Fire at 2017-03-28 01:14:17.408044
+2017-03-28 01:14:17.409380 VFS: Node 0003075786 send data 1
+2017-03-28 01:14:17.414775 VFS: Node 0003075786 send data 2
+2017-03-28 01:14:17.420861 VFS: Node 0003075786 send data 3
+2017-03-28 01:14:17.426320 VFS: Node 0003075786 send data 4
+2017-03-28 01:14:17.431630 VFS: Node 0003075786 send data 5
+2017-03-28 01:14:17.436903 VFS: Node 0003075786 send data 6
+2017-03-28 01:14:17.443111 VFS: Node 0003075786 send data 7
+2017-03-28 01:14:17.449354 VFS: Node 0003075786 send data 8
+2017-03-28 01:14:17.455964 VFS: Node 0003075786 send data 9
+2017-03-28 01:14:17.461139 VFS: Node 0003075786 send data 10
+2017-03-28 01:14:17.466434 VFS: Node 0003075786 send data 11
+2017-03-28 01:14:17.471930 VFS: Node 0003075786 send data 12
+2017-03-28 01:14:17.477159 VFS: Node 0003075786 send data 13
+2017-03-28 01:14:17.482754 VFS: Node 0003075786 send data 14
+2017-03-28 01:14:17.488882 VFS: Node 0003075786 send data 15
+2017-03-28 01:14:17.494864 VFS: Node 0003075786 send data 16
+2017-03-28 01:14:17.500802 VFS: Node 0003075786 send data 17
+2017-03-28 01:14:17.505693 VFS: Node 0003075786 send data 18
+2017-03-28 01:14:17.510965 VFS: Node 0003075786 send data 19
+2017-03-28 01:14:17.516845 VFS: Node 0003075786 send data 20
+2017-03-28 01:14:17.523113 VFS: Node 0003075786 send data 21
+2017-03-28 01:14:17.528132 VFS: Node 0003075786 send data 22
+2017-03-28 01:14:17.533316 VFS: Node 0003075786 send data 23
+2017-03-28 01:14:17.539073 VFS: Node 0003075786 send data 24
+2017-03-28 01:14:17.545592 VFS: Node 0003075786 send data 25
+2017-03-28 01:14:17.550606 VFS: Node 0003075786 send data 26
+2017-03-28 01:14:17.556376 VFS: Node 0003075786 send data 27
+2017-03-28 01:14:17.561451 VFS: Node 0003075786 send data 28
+2017-03-28 01:14:17.567362 VFS: Node 0003075786 send data 29
+2017-03-28 01:14:17.573312 VFS: Node 0003075786 send data 30
+2017-03-28 01:14:17.575583 - thread done - 
+ - duration 0.167791128159 -
+------ Send VFS packets end ------
+
+ - VFS duration 7.99908828735 -
+------ VFS cycle ends at 2017-03-28 01:14:18.140385 ------
+
+
+
+=============================================================================================
+========================================== ROUND 2 ==========================================
+=============================================================================================
+
+
+------ Listening ------
+Timestamp ùßçãìñﬂã•å˜î`Õ is not a float. Drop pkt!
+2017-03-28 01:14:18.449062 Node recv BEACON 9. BS time: 2017-03-28 01:14:18.554000, Avg delay: 0.027609038353
+2017-03-28 01:14:18.460469 Node recv BEACON 10. BS time: 2017-03-28 01:14:18.560000, Avg delay: 0.0122223377228
+2017-03-28 01:14:18.472507 Node recv BEACON 11. BS time: 2017-03-28 01:14:18.566000, Avg delay: -0.00303053855896
+2017-03-28 01:14:18.487379 Node recv BEACON 12. BS time: 2017-03-28 01:14:18.571000, Avg delay: -0.0178230285645
+2017-03-28 01:14:18.495768 Node recv BEACON 13. BS time: 2017-03-28 01:14:18.577000, Avg delay: -0.0330827474594
+2017-03-28 01:14:18.506381 Node recv BEACON 14. BS time: 2017-03-28 01:14:18.583000, Avg delay: -0.0483982801437
+Adjust time... New time: 2017-03-28 01:14:18.588252
+2017-03-28 01:14:18.588252 Node recv BEACON 15. BS time: 2017-03-28 01:14:18.588000, Avg delay: -0.0559066057205
+Adjust time... New time: 2017-03-28 01:14:18.597507
+2017-03-28 01:14:18.597507 Node recv BEACON 16. BS time: 2017-03-28 01:14:18.594000, Avg delay: -0.0563334703445
+Adjust time... New time: 2017-03-28 01:14:18.599194
+2017-03-28 01:14:18.599194 Node recv BEACON 17. BS time: 2017-03-28 01:14:18.599000, Avg delay: -0.0573561906815
+Adjust time... New time: 2017-03-28 01:14:18.604587
+2017-03-28 01:14:18.604587 Node recv BEACON 18. BS time: 2017-03-28 01:14:18.604000, Avg delay: -0.0589448451996
+2017-03-28 01:14:18.610373 Node recv BEACON 19. BS time: 2017-03-28 01:14:18.610000, Avg delay: -0.0484137773514
+2017-03-28 01:14:18.624646 Node recv BEACON 20. BS time: 2017-03-28 01:14:18.615000, Avg delay: -0.037496137619
+2017-03-28 01:14:18.634925 Node recv BEACON 21. BS time: 2017-03-28 01:14:18.621000, Avg delay: -0.0267543077469
+2017-03-28 01:14:18.644357 Node recv BEACON 22. BS time: 2017-03-28 01:14:18.626000, Avg delay: -0.0165564060211
+2017-03-28 01:14:18.656521 Node recv BEACON 23. BS time: 2017-03-28 01:14:18.632000, Avg delay: -0.00598111152649
+2017-03-28 01:14:18.668131 Node recv BEACON 24. BS time: 2017-03-28 01:14:18.637000, Avg delay: 0.00479388237
+2017-03-28 01:14:18.679655 Node recv BEACON 25. BS time: 2017-03-28 01:14:18.643000, Avg delay: 0.0152766704559
+2017-03-28 01:14:18.690778 Node recv BEACON 26. BS time: 2017-03-28 01:14:18.649000, Avg delay: 0.0187878370285
+2017-03-28 01:14:18.702596 Node recv BEACON 27. BS time: 2017-03-28 01:14:18.654000, Avg delay: 0.0231255531311
+2017-03-28 01:14:18.714899 Node recv BEACON 28. BS time: 2017-03-28 01:14:18.660000, Avg delay: 0.0279880285263
+2017-03-28 01:14:18.731652 Node recv BEACON 29. BS time: 2017-03-28 01:14:18.665000, Avg delay: 0.0346160173416
+2017-03-28 01:14:18.737386 Node recv BEACON 30. BS time: 2017-03-28 01:14:18.670000, Avg delay: 0.040390086174
+2017-03-28 01:14:18.784700 Node recv BEACON 2. BS time: 2017-03-28 01:14:18.881000, Avg delay: 0.0293676137924
+2017-03-28 01:14:18.795487 Node recv BEACON 3. BS time: 2017-03-28 01:14:18.886000, Avg delay: 0.0184805870056
+2017-03-28 01:14:18.804764 Node recv BEACON 4. BS time: 2017-03-28 01:14:18.893000, Avg delay: 0.00720493793488
+2017-03-28 01:14:18.814441 Node recv BEACON 5. BS time: 2017-03-28 01:14:18.898000, Avg delay: -0.00426409244537
+2017-03-28 01:14:18.830587 Node recv BEACON 6. BS time: 2017-03-28 01:14:18.904000, Avg delay: -0.0152709007263
+2017-03-28 01:14:18.837960 Node recv BEACON 7. BS time: 2017-03-28 01:14:18.910000, Avg delay: -0.0266526699066
+2017-03-28 01:14:18.855626 Node recv BEACON 8. BS time: 2017-03-28 01:14:18.915000, Avg delay: -0.0374496936798
+2017-03-28 01:14:18.865382 Node recv BEACON 9. BS time: 2017-03-28 01:14:18.922000, Avg delay: -0.0486013889313
+Adjust time... New time: 2017-03-28 01:14:18.928110
+2017-03-28 01:14:18.928110 Node recv BEACON 10. BS time: 2017-03-28 01:14:18.928000, Avg delay: -0.0608015775681
+Adjust time... New time: 2017-03-28 01:14:18.933265
+2017-03-28 01:14:18.933265 Node recv BEACON 11. BS time: 2017-03-28 01:14:18.933000, Avg delay: -0.0670119047165
+Adjust time... New time: 2017-03-28 01:14:18.938189
+2017-03-28 01:14:18.938189 Node recv BEACON 12. BS time: 2017-03-28 01:14:18.938000, Avg delay: -0.0569053649902
+2017-03-28 01:14:18.943892 Node recv BEACON 13. BS time: 2017-03-28 01:14:18.945000, Avg delay: -0.0479648828506
+2017-03-28 01:14:18.957531 Node recv BEACON 14. BS time: 2017-03-28 01:14:18.950000, Avg delay: -0.0383882284164
+2017-03-28 01:14:18.971782 Node recv BEACON 15. BS time: 2017-03-28 01:14:18.957000, Avg delay: -0.0285541057587
+2017-03-28 01:14:18.981508 Node recv BEACON 16. BS time: 2017-03-28 01:14:18.963000, Avg delay: -0.0193620681763
+2017-03-28 01:14:18.989927 Node recv BEACON 17. BS time: 2017-03-28 01:14:18.968000, Avg delay: -0.00996539592743
+2017-03-28 01:14:19.001520 Node recv BEACON 18. BS time: 2017-03-28 01:14:18.974000, Avg delay: -0.00127596855164
+2017-03-28 01:14:19.019135 Node recv BEACON 19. BS time: 2017-03-28 01:14:18.981000, Avg delay: 0.00819931030273
+2017-03-28 01:14:19.024421 Node recv BEACON 20. BS time: 2017-03-28 01:14:18.987000, Avg delay: 0.0174763679504
+2017-03-28 01:14:19.035830 Node recv BEACON 21. BS time: 2017-03-28 01:14:18.993000, Avg delay: 0.021231007576
+2017-03-28 01:14:19.047545 Node recv BEACON 22. BS time: 2017-03-28 01:14:18.998000, Avg delay: 0.025708937645
+2017-03-28 01:14:19.059850 Node recv BEACON 23. BS time: 2017-03-28 01:14:19.004000, Avg delay: 0.0314047813416
+2017-03-28 01:14:19.070706 Node recv BEACON 24. BS time: 2017-03-28 01:14:19.010000, Avg delay: 0.0367223262787
+2017-03-28 01:14:19.083657 Node recv BEACON 25. BS time: 2017-03-28 01:14:19.016000, Avg delay: 0.0420097827911
+2017-03-28 01:14:19.093671 Node recv BEACON 26. BS time: 2017-03-28 01:14:19.021000, Avg delay: 0.0474261522293
+Adjust time... New time: 2017-03-28 01:14:19.027123
+2017-03-28 01:14:19.027123 Node recv BEACON 27. BS time: 2017-03-28 01:14:19.027000, Avg delay: 0.0531227111816
+Adjust time... New time: 2017-03-28 01:14:19.033249
+2017-03-28 01:14:19.033249 Node recv BEACON 28. BS time: 2017-03-28 01:14:19.033000, Avg delay: 0.0507641553879
+2017-03-28 01:14:19.043610 Node recv BEACON 29. BS time: 2017-03-28 01:14:19.039000, Avg delay: 0.0474116563797
+2017-03-28 01:14:19.056181 Node recv BEACON 30. BS time: 2017-03-28 01:14:19.044000, Avg delay: 0.0448876857758
+------ Stop listen at 2017-03-28 01:14:19.250454 ------
+------ Listening VFS broadcast ------
+alloc-index: 3
+2017-03-28 01:14:19.846240 Node recv VFS_BROADCAST 2, BS time 2017-03-28 01:14:20.007000, Total 10, Seed dd643867a9, Delay -0.160760402679, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+alloc-index: 3
+2017-03-28 01:14:19.859076 Node recv VFS_BROADCAST 3, BS time 2017-03-28 01:14:20.012000, Total 10, Seed dd643867a9, Delay -0.152924537659, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+alloc-index: 3
+2017-03-28 01:14:19.871838 Node recv VFS_BROADCAST 4, BS time 2017-03-28 01:14:20.018000, Total 10, Seed dd643867a9, Delay -0.146161794662, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+alloc-index: 3
+2017-03-28 01:14:19.881962 Node recv VFS_BROADCAST 5, BS time 2017-03-28 01:14:20.023000, Total 10, Seed dd643867a9, Delay -0.141038417816, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+alloc-index: 3
+2017-03-28 01:14:19.892710 Node recv VFS_BROADCAST 6, BS time 2017-03-28 01:14:20.028000, Total 10, Seed dd643867a9, Delay -0.135289907455, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+alloc-index: 3
+2017-03-28 01:14:19.905569 Node recv VFS_BROADCAST 7, BS time 2017-03-28 01:14:20.034000, Total 10, Seed dd643867a9, Delay -0.128431081772, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+alloc-index: 3
+2017-03-28 01:14:19.915971 Node recv VFS_BROADCAST 8, BS time 2017-03-28 01:14:20.040000, Total 10, Seed dd643867a9, Delay -0.124028682709, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+alloc-index: 3
+2017-03-28 01:14:19.927248 Node recv VFS_BROADCAST 9, BS time 2017-03-28 01:14:20.045000, Total 10, Seed dd643867a9, Delay -0.117751836777, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+alloc-index: 3
+2017-03-28 01:14:19.938923 Node recv VFS_BROADCAST 10, BS time 2017-03-28 01:14:20.050000, Total 10, Seed dd643867a9, Delay -0.111077070236, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+alloc-index: 3
+2017-03-28 01:14:19.953271 Node recv VFS_BROADCAST 11, BS time 2017-03-28 01:14:20.056000, Total 10, Seed dd643867a9, Delay -0.102728843689, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+alloc-index: 3
+2017-03-28 01:14:19.964155 Node recv VFS_BROADCAST 12, BS time 2017-03-28 01:14:20.062000, Total 10, Seed dd643867a9, Delay -0.0978446006775, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+alloc-index: 3
+2017-03-28 01:14:19.975783 Node recv VFS_BROADCAST 13, BS time 2017-03-28 01:14:20.067000, Total 10, Seed dd643867a9, Delay -0.0912170410156, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+alloc-index: 3
+2017-03-28 01:14:19.988409 Node recv VFS_BROADCAST 14, BS time 2017-03-28 01:14:20.073000, Total 10, Seed dd643867a9, Delay -0.0845911502838, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+alloc-index: 3
+2017-03-28 01:14:19.997887 Node recv VFS_BROADCAST 15, BS time 2017-03-28 01:14:20.079000, Total 10, Seed dd643867a9, Delay -0.0811133384705, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+alloc-index: 3
+2017-03-28 01:14:20.008210 Node recv VFS_BROADCAST 16, BS time 2017-03-28 01:14:20.085000, Total 10, Seed dd643867a9, Delay -0.0767903327942, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+alloc-index: 3
+2017-03-28 01:14:20.023598 Node recv VFS_BROADCAST 17, BS time 2017-03-28 01:14:20.091000, Total 10, Seed dd643867a9, Delay -0.0674023628235, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+alloc-index: 3
+2017-03-28 01:14:20.032110 Node recv VFS_BROADCAST 18, BS time 2017-03-28 01:14:20.096000, Total 10, Seed dd643867a9, Delay -0.0638899803162, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+alloc-index: 3
+2017-03-28 01:14:20.044231 Node recv VFS_BROADCAST 19, BS time 2017-03-28 01:14:20.102000, Total 10, Seed dd643867a9, Delay -0.0577690601349, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+alloc-index: 3
+2017-03-28 01:14:20.056495 Node recv VFS_BROADCAST 20, BS time 2017-03-28 01:14:20.108000, Total 10, Seed dd643867a9, Delay -0.0515048503876, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+alloc-index: 3
+2017-03-28 01:14:20.065703 Node recv VFS_BROADCAST 21, BS time 2017-03-28 01:14:20.113000, Total 10, Seed dd643867a9, Delay -0.047297000885, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+alloc-index: 3
+2017-03-28 01:14:20.077638 Node recv VFS_BROADCAST 22, BS time 2017-03-28 01:14:20.120000, Total 10, Seed dd643867a9, Delay -0.0423619747162, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+alloc-index: 3
+2017-03-28 01:14:20.088418 Node recv VFS_BROADCAST 23, BS time 2017-03-28 01:14:20.125000, Total 10, Seed dd643867a9, Delay -0.0365817546844, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+alloc-index: 3
+2017-03-28 01:14:20.101119 Node recv VFS_BROADCAST 24, BS time 2017-03-28 01:14:20.130000, Total 10, Seed dd643867a9, Delay -0.028881072998, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+alloc-index: 3
+2017-03-28 01:14:20.116889 Node recv VFS_BROADCAST 25, BS time 2017-03-28 01:14:20.136000, Total 10, Seed dd643867a9, Delay -0.019110918045, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+alloc-index: 3
+2017-03-28 01:14:20.123604 Node recv VFS_BROADCAST 26, BS time 2017-03-28 01:14:20.141000, Total 10, Seed dd643867a9, Delay -0.017395734787, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+alloc-index: 3
+2017-03-28 01:14:20.137249 Node recv VFS_BROADCAST 27, BS time 2017-03-28 01:14:20.147000, Total 10, Seed dd643867a9, Delay -0.00975131988525, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+alloc-index: 3
+2017-03-28 01:14:20.148846 Node recv VFS_BROADCAST 28, BS time 2017-03-28 01:14:20.152000, Total 10, Seed dd643867a9, Delay -0.00315427780151, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+alloc-index: 3
+2017-03-28 01:14:20.157976 Node recv VFS_BROADCAST 29, BS time 2017-03-28 01:14:20.158000, Total 10, Seed dd643867a9, Delay -2.43186950684e-05, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+alloc-index: 3
+2017-03-28 01:14:20.171197 Node recv VFS_BROADCAST 30, BS time 2017-03-28 01:14:20.164000, Total 10, Seed dd643867a9, Delay 0.00719714164734, 
+v-frame index: 5, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '1', '0', '0003075786', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '1', '0']
+------ Stop listen VFS broadcast at 2017-03-28 01:14:20.579091 ------
+------ Ready to send VFS packets ------
+Fire at 2017-03-28 01:14:23.408126
+2017-03-28 01:14:23.409964 VFS: Node 0003075786 send data 1
+2017-03-28 01:14:23.415347 VFS: Node 0003075786 send data 2
+2017-03-28 01:14:23.421109 VFS: Node 0003075786 send data 3
+2017-03-28 01:14:23.426366 VFS: Node 0003075786 send data 4
+2017-03-28 01:14:23.431553 VFS: Node 0003075786 send data 5
+2017-03-28 01:14:23.436781 VFS: Node 0003075786 send data 6
+2017-03-28 01:14:23.442699 VFS: Node 0003075786 send data 7
+2017-03-28 01:14:23.447957 VFS: Node 0003075786 send data 8
+2017-03-28 01:14:23.455036 VFS: Node 0003075786 send data 9
+2017-03-28 01:14:23.460112 VFS: Node 0003075786 send data 10
+2017-03-28 01:14:23.466269 VFS: Node 0003075786 send data 11
+2017-03-28 01:14:23.471247 VFS: Node 0003075786 send data 12
+2017-03-28 01:14:23.476442 VFS: Node 0003075786 send data 13
+2017-03-28 01:14:23.483208 VFS: Node 0003075786 send data 14
+2017-03-28 01:14:23.489239 VFS: Node 0003075786 send data 15
+2017-03-28 01:14:23.494977 VFS: Node 0003075786 send data 16
+2017-03-28 01:14:23.500568 VFS: Node 0003075786 send data 17
+2017-03-28 01:14:23.506317 VFS: Node 0003075786 send data 18
+2017-03-28 01:14:23.511887 VFS: Node 0003075786 send data 19
+2017-03-28 01:14:23.517570 VFS: Node 0003075786 send data 20
+2017-03-28 01:14:23.522709 VFS: Node 0003075786 send data 21
+2017-03-28 01:14:23.528777 VFS: Node 0003075786 send data 22
+2017-03-28 01:14:23.534647 VFS: Node 0003075786 send data 23
+2017-03-28 01:14:23.540179 VFS: Node 0003075786 send data 24
+2017-03-28 01:14:23.546212 VFS: Node 0003075786 send data 25
+2017-03-28 01:14:23.551463 VFS: Node 0003075786 send data 26
+2017-03-28 01:14:23.558057 VFS: Node 0003075786 send data 27
+2017-03-28 01:14:23.564677 VFS: Node 0003075786 send data 28
+2017-03-28 01:14:23.570507 VFS: Node 0003075786 send data 29
+2017-03-28 01:14:23.576362 VFS: Node 0003075786 send data 30
+2017-03-28 01:14:23.578366 - thread done - 
+ - duration 0.170133829117 -
+------ Send VFS packets end ------
+
+ - VFS duration 7.99908804893 -
+------ VFS cycle ends at 2017-03-28 01:14:27.250452 ------
+
+
+
+=============================================================================================
+========================================== ROUND 3 ==========================================
+=============================================================================================
+
+
+------ Listening ------
+2017-03-28 01:14:27.388114 Node recv BEACON 1. BS time: 2017-03-28 01:14:27.544000, Avg delay: 0.0250161886215
+2017-03-28 01:14:27.399288 Node recv BEACON 2. BS time: 2017-03-28 01:14:27.549000, Avg delay: 0.00509052276611
+2017-03-28 01:14:27.411350 Node recv BEACON 3. BS time: 2017-03-28 01:14:27.555000, Avg delay: -0.0148595809937
+2017-03-28 01:14:27.422616 Node recv BEACON 4. BS time: 2017-03-28 01:14:27.560000, Avg delay: -0.0346685886383
+Adjust time... New time: 2017-03-28 01:14:27.566105
+2017-03-28 01:14:27.566105 Node recv BEACON 5. BS time: 2017-03-28 01:14:27.566000, Avg delay: -0.0545951128006
+Adjust time... New time: 2017-03-28 01:14:27.571124
+2017-03-28 01:14:27.571124 Node recv BEACON 6. BS time: 2017-03-28 01:14:27.571000, Avg delay: -0.060564661026
+Adjust time... New time: 2017-03-28 01:14:27.578173
+2017-03-28 01:14:27.578173 Node recv BEACON 7. BS time: 2017-03-28 01:14:27.578000, Avg delay: -0.0688253879547
+Adjust time... New time: 2017-03-28 01:14:27.583351
+2017-03-28 01:14:27.583351 Node recv BEACON 8. BS time: 2017-03-28 01:14:27.583000, Avg delay: -0.0686047792435
+Adjust time... New time: 2017-03-28 01:14:27.589084
+2017-03-28 01:14:27.589084 Node recv BEACON 9. BS time: 2017-03-28 01:14:27.589000, Avg delay: -0.068319606781
+Adjust time... New time: 2017-03-28 01:14:27.594196
+2017-03-28 01:14:27.594196 Node recv BEACON 10. BS time: 2017-03-28 01:14:27.594000, Avg delay: -0.0691768407822
+Adjust time... New time: 2017-03-28 01:14:27.599126
+2017-03-28 01:14:27.599126 Node recv BEACON 11. BS time: 2017-03-28 01:14:27.599000, Avg delay: -0.0530061483383
+2017-03-28 01:14:27.606803 Node recv BEACON 12. BS time: 2017-03-28 01:14:27.604000, Avg delay: -0.0377546787262
+2017-03-28 01:14:27.618196 Node recv BEACON 13. BS time: 2017-03-28 01:14:27.610000, Avg delay: -0.0225699901581
+2017-03-28 01:14:27.629345 Node recv BEACON 14. BS time: 2017-03-28 01:14:27.616000, Avg delay: -0.00749707221985
+2017-03-28 01:14:27.641190 Node recv BEACON 15. BS time: 2017-03-28 01:14:27.621000, Avg delay: 0.00768280029297
+2017-03-28 01:14:27.652820 Node recv BEACON 16. BS time: 2017-03-28 01:14:27.627000, Avg delay: 0.00896723270416
+2017-03-28 01:14:27.664392 Node recv BEACON 17. BS time: 2017-03-28 01:14:27.632000, Avg delay: 0.0125778913498
+2017-03-28 01:14:27.676345 Node recv BEACON 18. BS time: 2017-03-28 01:14:27.638000, Avg delay: 0.015798330307
+2017-03-28 01:14:27.687076 Node recv BEACON 19. BS time: 2017-03-28 01:14:27.643000, Avg delay: 0.0194598436356
+2017-03-28 01:14:27.700798 Node recv BEACON 20. BS time: 2017-03-28 01:14:27.649000, Avg delay: 0.0242787122726
+2017-03-28 01:14:27.710291 Node recv BEACON 21. BS time: 2017-03-28 01:14:27.656000, Avg delay: 0.0291256666183
+2017-03-28 01:14:27.724275 Node recv BEACON 22. BS time: 2017-03-28 01:14:27.662000, Avg delay: 0.0350728750229
+2017-03-28 01:14:27.733292 Node recv BEACON 23. BS time: 2017-03-28 01:14:27.667000, Avg delay: 0.0408824205399
+2017-03-28 01:14:27.744966 Node recv BEACON 24. BS time: 2017-03-28 01:14:27.674000, Avg delay: 0.0466445207596
+Adjust time... New time: 2017-03-28 01:14:27.679330
+2017-03-28 01:14:27.679330 Node recv BEACON 25. BS time: 2017-03-28 01:14:27.679000, Avg delay: 0.052536034584
+Adjust time... New time: 2017-03-28 01:14:27.684392
+2017-03-28 01:14:27.684392 Node recv BEACON 26. BS time: 2017-03-28 01:14:27.684000, Avg delay: 0.0504443645477
+2017-03-28 01:14:27.693203 Node recv BEACON 27. BS time: 2017-03-28 01:14:27.690000, Avg delay: 0.0475255012512
+2017-03-28 01:14:27.707605 Node recv BEACON 28. BS time: 2017-03-28 01:14:27.695000, Avg delay: 0.0449514865875
+2017-03-28 01:14:27.716433 Node recv BEACON 29. BS time: 2017-03-28 01:14:27.701000, Avg delay: 0.0420871496201
+2017-03-28 01:14:27.730758 Node recv BEACON 30. BS time: 2017-03-28 01:14:27.706000, Avg delay: 0.039383149147
+2017-03-28 01:14:27.773046 Node recv BEACON 2. BS time: 2017-03-28 01:14:27.916000, Avg delay: 0.019658613205
+2017-03-28 01:14:27.788305 Node recv BEACON 3. BS time: 2017-03-28 01:14:27.922000, Avg delay: 6.16312026978e-05
+2017-03-28 01:14:27.795099 Node recv BEACON 4. BS time: 2017-03-28 01:14:27.927000, Avg delay: -0.0197576284409
+2017-03-28 01:14:27.808446 Node recv BEACON 5. BS time: 2017-03-28 01:14:27.932000, Avg delay: -0.0392096042633
+Adjust time... New time: 2017-03-28 01:14:27.938262
+2017-03-28 01:14:27.938262 Node recv BEACON 6. BS time: 2017-03-28 01:14:27.938000, Avg delay: -0.0590381622314
+Adjust time... New time: 2017-03-28 01:14:27.944402
+2017-03-28 01:14:27.944402 Node recv BEACON 7. BS time: 2017-03-28 01:14:27.944000, Avg delay: -0.0591693162918
+Adjust time... New time: 2017-03-28 01:14:27.950176
+2017-03-28 01:14:27.950176 Node recv BEACON 8. BS time: 2017-03-28 01:14:27.950000, Avg delay: -0.0589000463486
+Adjust time... New time: 2017-03-28 01:14:27.955048
+2017-03-28 01:14:27.955048 Node recv BEACON 9. BS time: 2017-03-28 01:14:27.955000, Avg delay: -0.0595647573471
+Adjust time... New time: 2017-03-28 01:14:27.960135
+2017-03-28 01:14:27.960135 Node recv BEACON 10. BS time: 2017-03-28 01:14:27.960000, Avg delay: -0.0606429100037
+Adjust time... New time: 2017-03-28 01:14:27.966135
+2017-03-28 01:14:27.966135 Node recv BEACON 11. BS time: 2017-03-28 01:14:27.966000, Avg delay: -0.0627196788788
+2017-03-28 01:14:27.977071 Node recv BEACON 12. BS time: 2017-03-28 01:14:27.971000, Avg delay: -0.0478171348572
+2017-03-28 01:14:27.986736 Node recv BEACON 13. BS time: 2017-03-28 01:14:27.977000, Avg delay: -0.0334740400314
+2017-03-28 01:14:28.000098 Node recv BEACON 14. BS time: 2017-03-28 01:14:27.982000, Avg delay: -0.0184741973877
+2017-03-28 01:14:28.010661 Node recv BEACON 15. BS time: 2017-03-28 01:14:27.989000, Avg delay: -0.00395271778107
+2017-03-28 01:14:28.023530 Node recv BEACON 16. BS time: 2017-03-28 01:14:27.994000, Avg delay: 0.01091837883
+2017-03-28 01:14:28.033725 Node recv BEACON 17. BS time: 2017-03-28 01:14:28, Avg delay: 0.0139316558838
+2017-03-28 01:14:28.044087 Node recv BEACON 18. BS time: 2017-03-28 01:14:28.006000, Avg delay: 0.0171507358551
+2017-03-28 01:14:28.057820 Node recv BEACON 19. BS time: 2017-03-28 01:14:28.011000, Avg delay: 0.0212369918823
+2017-03-28 01:14:28.066745 Node recv BEACON 20. BS time: 2017-03-28 01:14:28.017000, Avg delay: 0.0257463693619
+2017-03-28 01:14:28.079006 Node recv BEACON 21. BS time: 2017-03-28 01:14:28.023000, Avg delay: 0.0309479236603
+2017-03-28 01:14:28.093266 Node recv BEACON 22. BS time: 2017-03-28 01:14:28.028000, Avg delay: 0.0368673563004
+2017-03-28 01:14:28.101420 Node recv BEACON 23. BS time: 2017-03-28 01:14:28.033000, Avg delay: 0.0427357435226
+2017-03-28 01:14:28.113948 Node recv BEACON 24. BS time: 2017-03-28 01:14:28.039000, Avg delay: 0.0484207868576
+Adjust time... New time: 2017-03-28 01:14:28.045259
+2017-03-28 01:14:28.045259 Node recv BEACON 25. BS time: 2017-03-28 01:14:28.045000, Avg delay: 0.0544911623001
+Adjust time... New time: 2017-03-28 01:14:28.051157
+2017-03-28 01:14:28.051157 Node recv BEACON 26. BS time: 2017-03-28 01:14:28.051000, Avg delay: 0.0524571895599
+2017-03-28 01:14:28.056527 Node recv BEACON 27. BS time: 2017-03-28 01:14:28.056000, Avg delay: 0.0491374015808
+2017-03-28 01:14:28.070443 Node recv BEACON 28. BS time: 2017-03-28 01:14:28.062000, Avg delay: 0.0461730241776
+2017-03-28 01:14:28.076609 Node recv BEACON 29. BS time: 2017-03-28 01:14:28.067000, Avg delay: 0.0424519538879
+2017-03-28 01:14:28.091207 Node recv BEACON 30. BS time: 2017-03-28 01:14:28.073000, Avg delay: 0.0392981529236
+------ Stop listen at 2017-03-28 01:14:28.288803 ------
+------ Listening VFS broadcast ------
+alloc-index: 3
+2017-03-28 01:14:28.846431 Node recv VFS_BROADCAST 2, BS time 2017-03-28 01:14:29.007000, Total 10, Seed a0b0ad633b, Delay -0.160568475723, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0']
+alloc-index: 3
+2017-03-28 01:14:28.857719 Node recv VFS_BROADCAST 3, BS time 2017-03-28 01:14:29.013000, Total 10, Seed a0b0ad633b, Delay -0.155281305313, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0']
+alloc-index: 3
+2017-03-28 01:14:28.869344 Node recv VFS_BROADCAST 4, BS time 2017-03-28 01:14:29.018000, Total 10, Seed a0b0ad633b, Delay -0.148656368256, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0']
+alloc-index: 3
+2017-03-28 01:14:28.881769 Node recv VFS_BROADCAST 5, BS time 2017-03-28 01:14:29.023000, Total 10, Seed a0b0ad633b, Delay -0.141230821609, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0']
+alloc-index: 3
+2017-03-28 01:14:28.894280 Node recv VFS_BROADCAST 6, BS time 2017-03-28 01:14:29.030000, Total 10, Seed a0b0ad633b, Delay -0.135720252991, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0']
+alloc-index: 3
+2017-03-28 01:14:28.911372 Node recv VFS_BROADCAST 7, BS time 2017-03-28 01:14:29.037000, Total 10, Seed a0b0ad633b, Delay -0.1256275177, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0']
+alloc-index: 3
+2017-03-28 01:14:28.915977 Node recv VFS_BROADCAST 8, BS time 2017-03-28 01:14:29.042000, Total 10, Seed a0b0ad633b, Delay -0.126022577286, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0']
+alloc-index: 3
+2017-03-28 01:14:28.926983 Node recv VFS_BROADCAST 9, BS time 2017-03-28 01:14:29.048000, Total 10, Seed a0b0ad633b, Delay -0.121017456055, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '\xf1', '1', '0', '0', '0', '1', '0', '0', '0']
+alloc-index: 3
+2017-03-28 01:14:28.942176 Node recv VFS_BROADCAST 10, BS time 2017-03-28 01:14:29.054000, Total 10, Seed a0b0ad633b, Delay -0.111823558807, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0']
+alloc-index: 3
+2017-03-28 01:14:28.949917 Node recv VFS_BROADCAST 11, BS time 2017-03-28 01:14:29.060000, Total 10, Seed a0b0ad633b, Delay -0.110082864761, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0']
+alloc-index: 3
+2017-03-28 01:14:28.961086 Node recv VFS_BROADCAST 12, BS time 2017-03-28 01:14:29.065000, Total 10, Seed a0b0ad633b, Delay -0.103914260864, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0']
+alloc-index: 3
+2017-03-28 01:14:28.973434 Node recv VFS_BROADCAST 13, BS time 2017-03-28 01:14:29.071000, Total 10, Seed a0b0ad633b, Delay -0.0975658893585, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0']
+alloc-index: 3
+2017-03-28 01:14:28.988225 Node recv VFS_BROADCAST 14, BS time 2017-03-28 01:14:29.076000, Total 10, Seed a0b0ad633b, Delay -0.0877754688263, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0']
+alloc-index: 3
+2017-03-28 01:14:28.996015 Node recv VFS_BROADCAST 15, BS time 2017-03-28 01:14:29.082000, Total 10, Seed a0b0ad633b, Delay -0.0859847068787, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0']
+alloc-index: 3
+2017-03-28 01:14:29.007882 Node recv VFS_BROADCAST 16, BS time 2017-03-28 01:14:29.088000, Total 10, Seed a0b0ad633b, Delay -0.0801179409027, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0']
+alloc-index: 3
+2017-03-28 01:14:29.019281 Node recv VFS_BROADCAST 17, BS time 2017-03-28 01:14:29.094000, Total 10, Seed a0b0ad633b, Delay -0.074718952179, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0']
+alloc-index: 3
+2017-03-28 01:14:29.032403 Node recv VFS_BROADCAST 18, BS time 2017-03-28 01:14:29.101000, Total 10, Seed a0b0ad633b, Delay -0.0685966014862, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0']
+alloc-index: 3
+2017-03-28 01:14:29.042753 Node recv VFS_BROADCAST 19, BS time 2017-03-28 01:14:29.106000, Total 10, Seed a0b0ad633b, Delay -0.0632469654083, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0']
+alloc-index: 3
+2017-03-28 01:14:29.053987 Node recv VFS_BROADCAST 20, BS time 2017-03-28 01:14:29.112000, Total 10, Seed a0b0ad633b, Delay -0.0580134391785, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0']
+alloc-index: 3
+2017-03-28 01:14:29.065598 Node recv VFS_BROADCAST 21, BS time 2017-03-28 01:14:29.118000, Total 10, Seed a0b0ad633b, Delay -0.0524022579193, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0']
+alloc-index: 3
+2017-03-28 01:14:29.077852 Node recv VFS_BROADCAST 22, BS time 2017-03-28 01:14:29.124000, Total 10, Seed a0b0ad633b, Delay -0.0461485385895, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0']
+alloc-index: 3
+2017-03-28 01:14:29.089033 Node recv VFS_BROADCAST 23, BS time 2017-03-28 01:14:29.129000, Total 10, Seed a0b0ad633b, Delay -0.0399670600891, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0']
+alloc-index: 3
+2017-03-28 01:14:29.101064 Node recv VFS_BROADCAST 24, BS time 2017-03-28 01:14:29.134000, Total 10, Seed a0b0ad633b, Delay -0.03293633461, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0']
+alloc-index: 3
+2017-03-28 01:14:29.111708 Node recv VFS_BROADCAST 25, BS time 2017-03-28 01:14:29.140000, Total 10, Seed a0b0ad633b, Delay -0.0282921791077, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0']
+alloc-index: 3
+2017-03-28 01:14:29.123017 Node recv VFS_BROADCAST 26, BS time 2017-03-28 01:14:29.145000, Total 10, Seed a0b0ad633b, Delay -0.0219831466675, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0']
+alloc-index: 3
+2017-03-28 01:14:29.134845 Node recv VFS_BROADCAST 27, BS time 2017-03-28 01:14:29.152000, Total 10, Seed a0b0ad633b, Delay -0.0171546936035, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0']
+alloc-index: 3
+2017-03-28 01:14:29.150340 Node recv VFS_BROADCAST 28, BS time 2017-03-28 01:14:29.157000, Total 10, Seed a0b0ad633b, Delay -0.00665974617004, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0']
+alloc-index: 3
+2017-03-28 01:14:29.157440 Node recv VFS_BROADCAST 29, BS time 2017-03-28 01:14:29.163000, Total 10, Seed a0b0ad633b, Delay -0.00555968284607, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0']
+alloc-index: 3
+2017-03-28 01:14:29.169454 Node recv VFS_BROADCAST 30, BS time 2017-03-28 01:14:29.169000, Total 10, Seed a0b0ad633b, Delay 0.000453948974609, 
+v-frame index: 9, alloc-index: 3, fall to rand-frame: False,
+v-frame: ['1', '0', '1', '1', '0', '0', '0', '0', '0', '0003075786', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0']
+------ Stop listen VFS broadcast at 2017-03-28 01:14:29.573778 ------
+------ Ready to send VFS packets ------
+Fire at 2017-03-28 01:14:32.408076
+2017-03-28 01:14:32.409810 VFS: Node 0003075786 send data 1
+2017-03-28 01:14:32.415566 VFS: Node 0003075786 send data 2
+2017-03-28 01:14:32.420939 VFS: Node 0003075786 send data 3
+2017-03-28 01:14:32.427299 VFS: Node 0003075786 send data 4
+2017-03-28 01:14:32.432865 VFS: Node 0003075786 send data 5
+2017-03-28 01:14:32.439163 VFS: Node 0003075786 send data 6
+2017-03-28 01:14:32.445081 VFS: Node 0003075786 send data 7
+2017-03-28 01:14:32.450515 VFS: Node 0003075786 send data 8
+2017-03-28 01:14:32.455510 VFS: Node 0003075786 send data 9
+2017-03-28 01:14:32.461017 VFS: Node 0003075786 send data 10
+2017-03-28 01:14:32.466566 VFS: Node 0003075786 send data 11
+2017-03-28 01:14:32.471883 VFS: Node 0003075786 send data 12
+2017-03-28 01:14:32.477225 VFS: Node 0003075786 send data 13
+2017-03-28 01:14:32.483534 VFS: Node 0003075786 send data 14
+2017-03-28 01:14:32.489182 VFS: Node 0003075786 send data 15
+2017-03-28 01:14:32.495077 VFS: Node 0003075786 send data 16
+2017-03-28 01:14:32.500076 VFS: Node 0003075786 send data 17
+2017-03-28 01:14:32.505640 VFS: Node 0003075786 send data 18
+2017-03-28 01:14:32.512139 VFS: Node 0003075786 send data 19
+2017-03-28 01:14:32.519003 VFS: Node 0003075786 send data 20
+2017-03-28 01:14:32.525383 VFS: Node 0003075786 send data 21
+2017-03-28 01:14:32.530211 VFS: Node 0003075786 send data 22
+2017-03-28 01:14:32.536016 VFS: Node 0003075786 send data 23
+2017-03-28 01:14:32.542411 VFS: Node 0003075786 send data 24
+2017-03-28 01:14:32.548215 VFS: Node 0003075786 send data 25
+2017-03-28 01:14:32.553741 VFS: Node 0003075786 send data 26
+2017-03-28 01:14:32.558828 VFS: Node 0003075786 send data 27
+2017-03-28 01:14:32.564353 VFS: Node 0003075786 send data 28
+2017-03-28 01:14:32.569567 VFS: Node 0003075786 send data 29
+2017-03-28 01:14:32.575331 VFS: Node 0003075786 send data 30
+2017-03-28 01:14:32.576815 - thread done - 
+ - duration 0.169045209885 -
+------ Send VFS packets end ------
+
+ - VFS duration 7.99883460999 -
+------ VFS cycle ends at 2017-03-28 01:14:36.288566 ------
+
+
+
+=============================================================================================
+========================================== ROUND 4 ==========================================
+=============================================================================================
+
+
+------ Listening ------
+2017-03-28 01:14:36.436360 Node recv BEACON 2. BS time: 2017-03-28 01:14:36.587000, Avg delay: 0.0186336040497
+2017-03-28 01:14:36.448574 Node recv BEACON 3. BS time: 2017-03-28 01:14:36.592000, Avg delay: -0.0022355556488
+2017-03-28 01:14:36.460093 Node recv BEACON 4. BS time: 2017-03-28 01:14:36.598000, Avg delay: -0.0228682518005
+2017-03-28 01:14:36.471359 Node recv BEACON 5. BS time: 2017-03-28 01:14:36.604000, Avg delay: -0.0436271190643
+Adjust time... New time: 2017-03-28 01:14:36.610351
+2017-03-28 01:14:36.610351 Node recv BEACON 6. BS time: 2017-03-28 01:14:36.610000, Avg delay: -0.0645451307297
+Adjust time... New time: 2017-03-28 01:14:36.615280
+2017-03-28 01:14:36.615280 Node recv BEACON 7. BS time: 2017-03-28 01:14:36.615000, Avg delay: -0.0651112556458
+Adjust time... New time: 2017-03-28 01:14:36.621300
+2017-03-28 01:14:36.621300 Node recv BEACON 8. BS time: 2017-03-28 01:14:36.621000, Avg delay: -0.0645069360733
+Adjust time... New time: 2017-03-28 01:14:36.628335
+2017-03-28 01:14:36.628335 Node recv BEACON 9. BS time: 2017-03-28 01:14:36.628000, Avg delay: -0.0655947685242
+Adjust time... New time: 2017-03-28 01:14:36.634253
+2017-03-28 01:14:36.634253 Node recv BEACON 10. BS time: 2017-03-28 01:14:36.634000, Avg delay: -0.066100358963
+Adjust time... New time: 2017-03-28 01:14:36.639589
+2017-03-28 01:14:36.639589 Node recv BEACON 11. BS time: 2017-03-28 01:14:36.639000, Avg delay: -0.0673545837402
+Adjust time... New time: 2017-03-28 01:14:36.645164
+2017-03-28 01:14:36.645164 Node recv BEACON 12. BS time: 2017-03-28 01:14:36.645000, Avg delay: -0.0518344163895
+2017-03-28 01:14:36.656135 Node recv BEACON 13. BS time: 2017-03-28 01:14:36.650000, Avg delay: -0.0368782758713
+2017-03-28 01:14:36.671901 Node recv BEACON 14. BS time: 2017-03-28 01:14:36.656000, Avg delay: -0.0214975118637
+2017-03-28 01:14:36.691944 Node recv BEACON 16. BS time: 2017-03-28 01:14:36.668000, Avg delay: -0.0058390378952
+2017-03-28 01:14:36.701776 Node recv BEACON 17. BS time: 2017-03-28 01:14:36.674000, Avg delay: 0.0096200466156
+2017-03-28 01:14:36.713804 Node recv BEACON 18. BS time: 2017-03-28 01:14:36.679000, Avg delay: 0.0127474784851
+2017-03-28 01:14:36.725195 Node recv BEACON 19. BS time: 2017-03-28 01:14:36.685000, Avg delay: 0.0161100149155
+2017-03-28 01:14:36.736918 Node recv BEACON 20. BS time: 2017-03-28 01:14:36.690000, Avg delay: 0.0210453271866
+2017-03-28 01:14:36.753466 Node recv BEACON 21. BS time: 2017-03-28 01:14:36.696000, Avg delay: 0.0263365745544
+2017-03-28 01:14:36.760479 Node recv BEACON 22. BS time: 2017-03-28 01:14:36.702000, Avg delay: 0.0316179990768
+2017-03-28 01:14:36.771151 Node recv BEACON 23. BS time: 2017-03-28 01:14:36.707000, Avg delay: 0.0375769376755
+2017-03-28 01:14:36.785236 Node recv BEACON 24. BS time: 2017-03-28 01:14:36.713000, Avg delay: 0.0441869735718
+Adjust time... New time: 2017-03-28 01:14:36.718422
+2017-03-28 01:14:36.718422 Node recv BEACON 25. BS time: 2017-03-28 01:14:36.718000, Avg delay: 0.0504345178604
+2017-03-28 01:14:36.730395 Node recv BEACON 26. BS time: 2017-03-28 01:14:36.724000, Avg delay: 0.0486795663834
+2017-03-28 01:14:36.737496 Node recv BEACON 27. BS time: 2017-03-28 01:14:36.730000, Avg delay: 0.0466516017914
+2017-03-28 01:14:36.748995 Node recv BEACON 28. BS time: 2017-03-28 01:14:36.736000, Avg delay: 0.0444706678391
+2017-03-28 01:14:36.763906 Node recv BEACON 29. BS time: 2017-03-28 01:14:36.741000, Avg delay: 0.0427417516708
+2017-03-28 01:14:36.771619 Node recv BEACON 30. BS time: 2017-03-28 01:14:36.747000, Avg delay: 0.0405118465424
+2017-03-28 01:14:36.832051 Node recv BEACON 3. BS time: 2017-03-28 01:14:36.964000, Avg delay: 0.0215703248978
+2017-03-28 01:14:36.843392 Node recv BEACON 4. BS time: 2017-03-28 01:14:36.969000, Avg delay: 0.00316162109375
+2017-03-28 01:14:36.854704 Node recv BEACON 5. BS time: 2017-03-28 01:14:36.975000, Avg delay: -0.0152831077576
+2017-03-28 01:14:36.867190 Node recv BEACON 6. BS time: 2017-03-28 01:14:36.980000, Avg delay: -0.0337877035141
+Adjust time... New time: 2017-03-28 01:14:36.986512
+2017-03-28 01:14:36.986512 Node recv BEACON 7. BS time: 2017-03-28 01:14:36.986000, Avg delay: -0.0523302793503
+Adjust time... New time: 2017-03-28 01:14:36.992412
+2017-03-28 01:14:36.992412 Node recv BEACON 8. BS time: 2017-03-28 01:14:36.992000, Avg delay: -0.0524245262146
+Adjust time... New time: 2017-03-28 01:14:36.997278
+2017-03-28 01:14:36.997278 Node recv BEACON 9. BS time: 2017-03-28 01:14:36.997000, Avg delay: -0.0532304286957
+Adjust time... New time: 2017-03-28 01:14:37.002210
+2017-03-28 01:14:37.002210 Node recv BEACON 10. BS time: 2017-03-28 01:14:37.002000, Avg delay: -0.0539417505264
+Adjust time... New time: 2017-03-28 01:14:37.008267
+2017-03-28 01:14:37.008267 Node recv BEACON 11. BS time: 2017-03-28 01:14:37.008000, Avg delay: -0.0555618524551
+Adjust time... New time: 2017-03-28 01:14:37.013225
+2017-03-28 01:14:37.013225 Node recv BEACON 12. BS time: 2017-03-28 01:14:37.013000, Avg delay: -0.0575332641602
+2017-03-28 01:14:37.025277 Node recv BEACON 13. BS time: 2017-03-28 01:14:37.019000, Avg delay: -0.0437106847763
+2017-03-28 01:14:37.035171 Node recv BEACON 14. BS time: 2017-03-28 01:14:37.025000, Avg delay: -0.0301328420639
+2017-03-28 01:14:37.046665 Node recv BEACON 15. BS time: 2017-03-28 01:14:37.032000, Avg delay: -0.0166367053986
+2017-03-28 01:14:37.060035 Node recv BEACON 16. BS time: 2017-03-28 01:14:37.037000, Avg delay: -0.0030522108078
+2017-03-28 01:14:37.068380 Node recv BEACON 17. BS time: 2017-03-28 01:14:37.042000, Avg delay: 0.0102907180786
+2017-03-28 01:14:37.080382 Node recv BEACON 18. BS time: 2017-03-28 01:14:37.048000, Avg delay: 0.0129837274551
+2017-03-28 01:14:37.091929 Node recv BEACON 19. BS time: 2017-03-28 01:14:37.055000, Avg delay: 0.0167329072952
+2017-03-28 01:14:37.103136 Node recv BEACON 20. BS time: 2017-03-28 01:14:37.060000, Avg delay: 0.0204583406448
+2017-03-28 01:14:37.114842 Node recv BEACON 21. BS time: 2017-03-28 01:14:37.066000, Avg delay: 0.0246720790863
+2017-03-28 01:14:37.132151 Node recv BEACON 22. BS time: 2017-03-28 01:14:37.072000, Avg delay: 0.030196762085
+2017-03-28 01:14:37.141051 Node recv BEACON 23. BS time: 2017-03-28 01:14:37.077000, Avg delay: 0.0359742164612
+2017-03-28 01:14:37.148870 Node recv BEACON 24. BS time: 2017-03-28 01:14:37.083000, Avg delay: 0.041544175148
+2017-03-28 01:14:37.163467 Node recv BEACON 25. BS time: 2017-03-28 01:14:37.089000, Avg delay: 0.0475243806839
+Adjust time... New time: 2017-03-28 01:14:37.095143
+2017-03-28 01:14:37.095143 Node recv BEACON 26. BS time: 2017-03-28 01:14:37.095000, Avg delay: 0.0528943538666
+Adjust time... New time: 2017-03-28 01:14:37.100108
+2017-03-28 01:14:37.100108 Node recv BEACON 27. BS time: 2017-03-28 01:14:37.100000, Avg delay: 0.0508804321289
+2017-03-28 01:14:37.110601 Node recv BEACON 28. BS time: 2017-03-28 01:14:37.105000, Avg delay: 0.0482023477554
+2017-03-28 01:14:37.121927 Node recv BEACON 29. BS time: 2017-03-28 01:14:37.110000, Avg delay: 0.0457021474838
+2017-03-28 01:14:37.134078 Node recv BEACON 30. BS time: 2017-03-28 01:14:37.116000, Avg delay: 0.0431964159012
+------ Stop listen at 2017-03-28 01:14:37.328194 ------
+------ Listening VFS broadcast ------
+Timestamp Áq„Î ·Ÿ°¬Bg« is not a float. Drop pkt!
+rand-index: 8
+2017-03-28 01:14:37.941234 Node recv VFS_BROADCAST 10, BS time 2017-03-28 01:14:38.053000, Total 10, Seed 0082d3a29e, Delay -0.111766338348, 
+v-frame index: 4, alloc-index: 8, fall to rand-frame: True,
+v-frame: ['1', '0', '0', '1', '0', '1', '0', '0', '0', '1', '0', '1', '1', '1', '0', '0', '0', '1', '0', '0']
+rand-index: 8
+2017-03-28 01:14:37.955474 Node recv VFS_BROADCAST 11, BS time 2017-03-28 01:14:38.058000, Total 10, Seed 0082d3a29e, Delay -0.102526426315, 
+v-frame index: 4, alloc-index: 8, fall to rand-frame: True,
+v-frame: ['1', '0', '0', '1', '0', '1', '0', '0', '0', '1', '0', '1', '1', '1', '0', '0', '0', '1', '0', '0']
+rand-index: 8
+2017-03-28 01:14:37.966579 Node recv VFS_BROADCAST 12, BS time 2017-03-28 01:14:38.064000, Total 10, Seed 0082d3a29e, Delay -0.0974204540253, 
+v-frame index: 4, alloc-index: 8, fall to rand-frame: True,
+v-frame: ['1', '0', '0', '1', '0', '1', '0', '0', '0', '1', '0', '1', '1', '1', '0', '0', '0', '1', '0', '0']
+rand-index: 9
+2017-03-28 01:14:37.976767 Node recv VFS_BROADCAST 13, BS time 2017-03-28 01:14:38.069000, Total 10, Seed 0082d3a29e, Delay -0.0922334194183, 
+v-frame index: 4, alloc-index: 9, fall to rand-frame: True,
+v-frame: ['1', '0', '0', '1', '0', '1', '0', '0', '0', '1', '0', '1', '1', '1', '0', '0', '0', '1', '0', '0']
+rand-index: 9
+2017-03-28 01:14:37.990408 Node recv VFS_BROADCAST 14, BS time 2017-03-28 01:14:38.075000, Total 10, Seed 0082d3a29e, Delay -0.0845918655396, 
+v-frame index: 4, alloc-index: 9, fall to rand-frame: True,
+v-frame: ['1', '0', '0', '1', '0', '1', '0', '0', '0', '1', '0', '1', '1', '1', '0', '0', '0', '1', '0', '0']
+rand-index: 9
+2017-03-28 01:14:37.999178 Node recv VFS_BROADCAST 15, BS time 2017-03-28 01:14:38.081000, Total 10, Seed 0082d3a29e, Delay -0.0818219184875, 
+v-frame index: 4, alloc-index: 9, fall to rand-frame: True,
+v-frame: ['1', '0', '0', '1', '0', '1', '0', '0', '0', '1', '0', '1', '1', '1', '0', '0', '0', '1', '0', '0']
+rand-index: 8
+2017-03-28 01:14:38.010732 Node recv VFS_BROADCAST 16, BS time 2017-03-28 01:14:38.086000, Total 10, Seed 0082d3a29e, Delay -0.0752680301666, 
+v-frame index: 4, alloc-index: 8, fall to rand-frame: True,
+v-frame: ['1', '0', '0', '1', '0', '1', '0', '0', '0', '1', '0', '1', '1', '1', '0', '0', '0', '1', '0', '0']
+rand-index: 9
+2017-03-28 01:14:38.022886 Node recv VFS_BROADCAST 17, BS time 2017-03-28 01:14:38.092000, Total 10, Seed 0082d3a29e, Delay -0.06911444664, 
+v-frame index: 4, alloc-index: 9, fall to rand-frame: True,
+v-frame: ['1', '0', '0', '1', '0', '1', '0', '0', '0', '1', '0', '1', '1', '1', '0', '0', '0', '1', '0', '0']
+rand-index: 8
+2017-03-28 01:14:38.033946 Node recv VFS_BROADCAST 18, BS time 2017-03-28 01:14:38.098000, Total 10, Seed 0082d3a29e, Delay -0.0640540122986, 
+v-frame index: 4, alloc-index: 8, fall to rand-frame: True,
+v-frame: ['1', '0', '0', '1', '0', '1', '0', '0', '0', '1', '0', '1', '1', '1', '0', '0', '0', '1', '0', '0']
+rand-index: 9
+2017-03-28 01:14:38.049928 Node recv VFS_BROADCAST 19, BS time 2017-03-28 01:14:38.104000, Total 10, Seed 0082d3a29e, Delay -0.0540716648102, 
+v-frame index: 4, alloc-index: 9, fall to rand-frame: True,
+v-frame: ['1', '0', '0', '1', '0', '1', '0', '0', '0', '1', '0', '1', '1', '1', '0', '0', '0', '1', '0', '0']
+rand-index: 9
+2017-03-28 01:14:38.058801 Node recv VFS_BROADCAST 20, BS time 2017-03-28 01:14:38.109000, Total 10, Seed 0082d3a29e, Delay -0.0501990318298, 
+v-frame index: 4, alloc-index: 9, fall to rand-frame: True,
+v-frame: ['1', '0', '0', '1', '0', '1', '0', '0', '0', '1', '0', '1', '1', '1', '0', '0', '0', '1', '0', '0']
+rand-index: 8
+2017-03-28 01:14:38.068651 Node recv VFS_BROADCAST 21, BS time 2017-03-28 01:14:38.115000, Total 10, Seed 0082d3a29e, Delay -0.0463490486145, 
+v-frame index: 4, alloc-index: 8, fall to rand-frame: True,
+v-frame: ['1', '0', '0', '1', '0', '1', '0', '0', '0', '1', '0', '1', '1', '1', '0', '0', '0', '1', '0', '0']
+rand-index: 8
+2017-03-28 01:14:38.083426 Node recv VFS_BROADCAST 22, BS time 2017-03-28 01:14:38.121000, Total 10, Seed 0082d3a29e, Delay -0.0375742912292, 
+v-frame index: 4, alloc-index: 8, fall to rand-frame: True,
+v-frame: ['1', '0', '0', '1', '0', '1', '0', '0', '0', '1', '0', '1', '1', '1', '0', '0', '0', '1', '0', '0']
+rand-index: 8
+2017-03-28 01:14:38.091015 Node recv VFS_BROADCAST 23, BS time 2017-03-28 01:14:38.126000, Total 10, Seed 0082d3a29e, Delay -0.0349850654602, 
+v-frame index: 4, alloc-index: 8, fall to rand-frame: True,
+v-frame: ['1', '0', '0', '1', '0', '1', '0', '0', '0', '1', '0', '1', '1', '1', '0', '0', '0', '1', '0', '0']
+rand-index: 9
+2017-03-28 01:14:38.104096 Node recv VFS_BROADCAST 24, BS time 2017-03-28 01:14:38.132000, Total 10, Seed 0082d3a29e, Delay -0.0279040336609, 
+v-frame index: 4, alloc-index: 9, fall to rand-frame: True,
+v-frame: ['1', '0', '0', '1', '0', '1', '0', '0', '0', '1', '0', '1', '1', '1', '0', '0', '0', '1', '0', '0']
+rand-index: 8
+2017-03-28 01:14:38.114532 Node recv VFS_BROADCAST 25, BS time 2017-03-28 01:14:38.138000, Total 10, Seed 0082d3a29e, Delay -0.0234684944153, 
+v-frame index: 4, alloc-index: 8, fall to rand-frame: True,
+v-frame: ['1', '0', '0', '1', '0', '1', '0', '0', '0', '1', '0', '1', '1', '1', '0', '0', '0', '1', '0', '0']
+rand-index: 8
+2017-03-28 01:14:38.128436 Node recv VFS_BROADCAST 26, BS time 2017-03-28 01:14:38.145000, Total 10, Seed 0082d3a29e, Delay -0.0165643692017, 
+v-frame index: 4, alloc-index: 8, fall to rand-frame: True,
+v-frame: ['1', '0', '0', '1', '0', '1', '0', '0', '0', '1', '0', '1', '1', '1', '0', '0', '0', '1', '0', '0']
+rand-index: 9
+2017-03-28 01:14:38.144261 Node recv VFS_BROADCAST 27, BS time 2017-03-28 01:14:38.152000, Total 10, Seed 0082d3a29e, Delay -0.00773882865906, 
+v-frame index: 4, alloc-index: 9, fall to rand-frame: True,
+v-frame: ['1', '0', '0', '1', '0', '1', '0', '0', '0', '1', '0', '1', '1', '1', '0', '0', '0', '1', '0', '0']
+rand-index: 8
+2017-03-28 01:14:38.149117 Node recv VFS_BROADCAST 28, BS time 2017-03-28 01:14:38.157000, Total 10, Seed 0082d3a29e, Delay -0.00788307189941, 
+v-frame index: 4, alloc-index: 8, fall to rand-frame: True,
+v-frame: ['1', '0', '0', '1', '0', '1', '0', '0', '0', '1', '0', '1', '1', '1', '0', '0', '0', '1', '0', '0']
+rand-index: 8
+2017-03-28 01:14:38.160850 Node recv VFS_BROADCAST 29, BS time 2017-03-28 01:14:38.163000, Total 10, Seed 0082d3a29e, Delay -0.0021505355835, 
+v-frame index: 4, alloc-index: 8, fall to rand-frame: True,
+v-frame: ['1', '0', '0', '1', '0', '1', '0', '0', '0', '1', '0', '1', '1', '1', '0', '0', '0', '1', '0', '0']
+rand-index: 9
+2017-03-28 01:14:38.176307 Node recv VFS_BROADCAST 30, BS time 2017-03-28 01:14:38.168000, Total 10, Seed 0082d3a29e, Delay 0.00830698013306, 
+v-frame index: 4, alloc-index: 9, fall to rand-frame: True,
+v-frame: ['1', '0', '0', '1', '0', '1', '0', '0', '0', '1', '0', '1', '1', '1', '0', '0', '0', '1', '0', '0']
+------ Stop listen VFS broadcast at 2017-03-28 01:14:38.576490 ------
+------ Ready to send VFS packets ------
+Fire at 2017-03-28 01:14:44.408006
+2017-03-28 01:14:44.409592 VFS: Node 0003075786 send data 1
+2017-03-28 01:14:44.414823 VFS: Node 0003075786 send data 2
+2017-03-28 01:14:44.420638 VFS: Node 0003075786 send data 3
+2017-03-28 01:14:44.427023 VFS: Node 0003075786 send data 4
+2017-03-28 01:14:44.431919 VFS: Node 0003075786 send data 5
+2017-03-28 01:14:44.437118 VFS: Node 0003075786 send data 6
+2017-03-28 01:14:44.443643 VFS: Node 0003075786 send data 7
+2017-03-28 01:14:44.449609 VFS: Node 0003075786 send data 8
+2017-03-28 01:14:44.454689 VFS: Node 0003075786 send data 9
+2017-03-28 01:14:44.460543 VFS: Node 0003075786 send data 10
+2017-03-28 01:14:44.465694 VFS: Node 0003075786 send data 11
+2017-03-28 01:14:44.471484 VFS: Node 0003075786 send data 12
+2017-03-28 01:14:44.477132 VFS: Node 0003075786 send data 13
+2017-03-28 01:14:44.483258 VFS: Node 0003075786 send data 14
+2017-03-28 01:14:44.488781 VFS: Node 0003075786 send data 15
+2017-03-28 01:14:44.495752 VFS: Node 0003075786 send data 16
+2017-03-28 01:14:44.500569 VFS: Node 0003075786 send data 17
+2017-03-28 01:14:44.506797 VFS: Node 0003075786 send data 18
+2017-03-28 01:14:44.511768 VFS: Node 0003075786 send data 19
+2017-03-28 01:14:44.519103 VFS: Node 0003075786 send data 20
+2017-03-28 01:14:44.525085 VFS: Node 0003075786 send data 21
+2017-03-28 01:14:44.531128 VFS: Node 0003075786 send data 22
+2017-03-28 01:14:44.536315 VFS: Node 0003075786 send data 23
+2017-03-28 01:14:44.541681 VFS: Node 0003075786 send data 24
+2017-03-28 01:14:44.547662 VFS: Node 0003075786 send data 25
+2017-03-28 01:14:44.553746 VFS: Node 0003075786 send data 26
+2017-03-28 01:14:44.560666 VFS: Node 0003075786 send data 27
+2017-03-28 01:14:44.565863 VFS: Node 0003075786 send data 28
+2017-03-28 01:14:44.571174 VFS: Node 0003075786 send data 29
+2017-03-28 01:14:44.576410 VFS: Node 0003075786 send data 30
+2017-03-28 01:14:44.578167 - thread done - 
+ - duration 0.170291423798 -
+------ Send VFS packets end ------
+
+ - VFS duration 7.99875211716 -
+------ VFS cycle ends at 2017-03-28 01:14:45.327658 ------
+
+
+
+=============================================================================================
+========================================== ROUND 5 ==========================================
+=============================================================================================
+
+
+------ Listening ------
+2017-03-28 01:14:45.486084 Node recv BEACON 2. BS time: 2017-03-28 01:14:45.634000, Avg delay: 0.0235205173492
+2017-03-28 01:14:45.496964 Node recv BEACON 3. BS time: 2017-03-28 01:14:45.639000, Avg delay: 0.00330183506012
+2017-03-28 01:14:45.508735 Node recv BEACON 4. BS time: 2017-03-28 01:14:45.644000, Avg delay: -0.016629743576
+2017-03-28 01:14:45.520071 Node recv BEACON 5. BS time: 2017-03-28 01:14:45.650000, Avg delay: -0.0362097263336
+Adjust time... New time: 2017-03-28 01:14:45.655212
+2017-03-28 01:14:45.655212 Node recv BEACON 6. BS time: 2017-03-28 01:14:45.655000, Avg delay: -0.0559991836548
+Adjust time... New time: 2017-03-28 01:14:45.661059
+2017-03-28 01:14:45.661059 Node recv BEACON 7. BS time: 2017-03-28 01:14:45.661000, Avg delay: -0.0630651950836
+Adjust time... New time: 2017-03-28 01:14:45.667164
+2017-03-28 01:14:45.667164 Node recv BEACON 8. BS time: 2017-03-28 01:14:45.667000, Avg delay: -0.0625285148621
+Adjust time... New time: 2017-03-28 01:14:45.672225
+2017-03-28 01:14:45.672225 Node recv BEACON 9. BS time: 2017-03-28 01:14:45.672000, Avg delay: -0.063295507431
+Adjust time... New time: 2017-03-28 01:14:45.679516
+2017-03-28 01:14:45.679516 Node recv BEACON 10. BS time: 2017-03-28 01:14:45.679000, Avg delay: -0.0640815496445
+Adjust time... New time: 2017-03-28 01:14:45.684210
+2017-03-28 01:14:45.684210 Node recv BEACON 11. BS time: 2017-03-28 01:14:45.684000, Avg delay: -0.0642688512802
+2017-03-28 01:14:45.686408 Node recv BEACON 12. BS time: 2017-03-28 01:14:45.690000, Avg delay: -0.0498363733292
+2017-03-28 01:14:45.697248 Node recv BEACON 13. BS time: 2017-03-28 01:14:45.695000, Avg delay: -0.0354079723358
+2017-03-28 01:14:45.707968 Node recv BEACON 14. BS time: 2017-03-28 01:14:45.701000, Avg delay: -0.0211847543716
+2017-03-28 01:14:45.721535 Node recv BEACON 15. BS time: 2017-03-28 01:14:45.708000, Avg delay: -0.00683825016022
+2017-03-28 01:14:45.732859 Node recv BEACON 16. BS time: 2017-03-28 01:14:45.713000, Avg delay: 0.00749037265778
+2017-03-28 01:14:45.742228 Node recv BEACON 17. BS time: 2017-03-28 01:14:45.719000, Avg delay: 0.00920572280884
+2017-03-28 01:14:45.755548 Node recv BEACON 18. BS time: 2017-03-28 01:14:45.725000, Avg delay: 0.0110998153687
+2017-03-28 01:14:45.765889 Node recv BEACON 19. BS time: 2017-03-28 01:14:45.731000, Avg delay: 0.0147955656052
+2017-03-28 01:14:45.776928 Node recv BEACON 20. BS time: 2017-03-28 01:14:45.736000, Avg delay: 0.0184817314148
+2017-03-28 01:14:45.799823 Node recv BEACON 22. BS time: 2017-03-28 01:14:45.747000, Avg delay: 0.0221434593201
+2017-03-28 01:14:45.811809 Node recv BEACON 23. BS time: 2017-03-28 01:14:45.752000, Avg delay: 0.0284835577011
+2017-03-28 01:14:45.823766 Node recv BEACON 24. BS time: 2017-03-28 01:14:45.759000, Avg delay: 0.0347353458405
+2017-03-28 01:14:45.835326 Node recv BEACON 25. BS time: 2017-03-28 01:14:45.765000, Avg delay: 0.0410712003708
+2017-03-28 01:14:45.846102 Node recv BEACON 26. BS time: 2017-03-28 01:14:45.770000, Avg delay: 0.0473278284073
+Adjust time... New time: 2017-03-28 01:14:45.776330
+2017-03-28 01:14:45.776330 Node recv BEACON 27. BS time: 2017-03-28 01:14:45.776000, Avg delay: 0.0535336017609
+Adjust time... New time: 2017-03-28 01:14:45.782198
+2017-03-28 01:14:45.782198 Node recv BEACON 28. BS time: 2017-03-28 01:14:45.782000, Avg delay: 0.0516732215881
+2017-03-28 01:14:45.792335 Node recv BEACON 29. BS time: 2017-03-28 01:14:45.787000, Avg delay: 0.0491519212723
+2017-03-28 01:14:45.850480 Node recv BEACON 2. BS time: 2017-03-28 01:14:46.003000, Avg delay: 0.0304110527039
+2017-03-28 01:14:45.862128 Node recv BEACON 3. BS time: 2017-03-28 01:14:46.008000, Avg delay: 0.011731004715
+2017-03-28 01:14:45.874169 Node recv BEACON 4. BS time: 2017-03-28 01:14:46.014000, Avg delay: -0.00753433704376
+2017-03-28 01:14:45.885784 Node recv BEACON 5. BS time: 2017-03-28 01:14:46.019000, Avg delay: -0.0268368959427
+2017-03-28 01:14:45.897998 Node recv BEACON 6. BS time: 2017-03-28 01:14:46.024000, Avg delay: -0.0459137201309
+Adjust time... New time: 2017-03-28 01:14:46.031038
+2017-03-28 01:14:46.031038 Node recv BEACON 7. BS time: 2017-03-28 01:14:46.031000, Avg delay: -0.0650573253632
+Adjust time... New time: 2017-03-28 01:14:46.036123
+2017-03-28 01:14:46.036123 Node recv BEACON 8. BS time: 2017-03-28 01:14:46.036000, Avg delay: -0.0721201896667
+Adjust time... New time: 2017-03-28 01:14:46.041289
+2017-03-28 01:14:46.041289 Node recv BEACON 9. BS time: 2017-03-28 01:14:46.041000, Avg delay: -0.0798112154007
+Adjust time... New time: 2017-03-28 01:14:46.047377
+2017-03-28 01:14:46.047377 Node recv BEACON 10. BS time: 2017-03-28 01:14:46.047000, Avg delay: -0.0798001766205
+Adjust time... New time: 2017-03-28 01:14:46.052301
+2017-03-28 01:14:46.052301 Node recv BEACON 11. BS time: 2017-03-28 01:14:46.052000, Avg delay: -0.0797335863113
+Adjust time... New time: 2017-03-28 01:14:46.058060
+2017-03-28 01:14:46.058060 Node recv BEACON 12. BS time: 2017-03-28 01:14:46.058000, Avg delay: -0.0640681743622
+2017-03-28 01:14:46.069109 Node recv BEACON 13. BS time: 2017-03-28 01:14:46.063000, Avg delay: -0.0488700151443
+2017-03-28 01:14:46.082354 Node recv BEACON 14. BS time: 2017-03-28 01:14:46.069000, Avg delay: -0.0335515260696
+2017-03-28 01:14:46.093068 Node recv BEACON 15. BS time: 2017-03-28 01:14:46.076000, Avg delay: -0.0185230493546
+2017-03-28 01:14:46.103845 Node recv BEACON 16. BS time: 2017-03-28 01:14:46.081000, Avg delay: -0.00363836288452
+2017-03-28 01:14:46.116017 Node recv BEACON 17. BS time: 2017-03-28 01:14:46.086000, Avg delay: 0.0114743232727
+2017-03-28 01:14:46.126721 Node recv BEACON 18. BS time: 2017-03-28 01:14:46.091000, Avg delay: 0.0144991159439
+2017-03-28 01:14:46.138176 Node recv BEACON 19. BS time: 2017-03-28 01:14:46.097000, Avg delay: 0.01811606884
+2017-03-28 01:14:46.153765 Node recv BEACON 20. BS time: 2017-03-28 01:14:46.103000, Avg delay: 0.022719168663
+2017-03-28 01:14:46.162077 Node recv BEACON 21. BS time: 2017-03-28 01:14:46.109000, Avg delay: 0.0274267196655
+2017-03-28 01:14:46.172375 Node recv BEACON 22. BS time: 2017-03-28 01:14:46.115000, Avg delay: 0.0327508211136
+2017-03-28 01:14:46.184284 Node recv BEACON 23. BS time: 2017-03-28 01:14:46.121000, Avg delay: 0.0384682655334
+2017-03-28 01:14:46.195988 Node recv BEACON 24. BS time: 2017-03-28 01:14:46.127000, Avg delay: 0.0440316677094
+2017-03-28 01:14:46.209899 Node recv BEACON 25. BS time: 2017-03-28 01:14:46.135000, Avg delay: 0.049814748764
+Adjust time... New time: 2017-03-28 01:14:46.140506
+2017-03-28 01:14:46.140506 Node recv BEACON 26. BS time: 2017-03-28 01:14:46.140000, Avg delay: 0.0555349826813
+Adjust time... New time: 2017-03-28 01:14:46.145174
+2017-03-28 01:14:46.145174 Node recv BEACON 27. BS time: 2017-03-28 01:14:46.145000, Avg delay: 0.0531255483627
+2017-03-28 01:14:46.153446 Node recv BEACON 28. BS time: 2017-03-28 01:14:46.150000, Avg delay: 0.0498980045319
+2017-03-28 01:14:46.164236 Node recv BEACON 29. BS time: 2017-03-28 01:14:46.156000, Avg delay: 0.046604013443
+2017-03-28 01:14:46.176219 Node recv BEACON 30. BS time: 2017-03-28 01:14:46.161000, Avg delay: 0.0430493831635
+------ Stop listen at 2017-03-28 01:14:46.377059 ------
+------ Listening VFS broadcast ------
+alloc-index: 7
+2017-03-28 01:14:46.858969 Node recv VFS_BROADCAST 3, BS time 2017-03-28 01:14:47.012000, Total 10, Seed a538267cf2, Delay -0.153031110764, 
+v-frame index: 19, alloc-index: 7, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '0', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0003075786']
+alloc-index: 7
+2017-03-28 01:14:46.870167 Node recv VFS_BROADCAST 4, BS time 2017-03-28 01:14:47.018000, Total 10, Seed a538267cf2, Delay -0.147833347321, 
+v-frame index: 19, alloc-index: 7, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '0', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0003075786']
+alloc-index: 7
+2017-03-28 01:14:46.882122 Node recv VFS_BROADCAST 5, BS time 2017-03-28 01:14:47.024000, Total 10, Seed a538267cf2, Delay -0.14187836647, 
+v-frame index: 19, alloc-index: 7, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '0', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0003075786']
+alloc-index: 7
+2017-03-28 01:14:46.893913 Node recv VFS_BROADCAST 6, BS time 2017-03-28 01:14:47.029000, Total 10, Seed a538267cf2, Delay -0.135087251663, 
+v-frame index: 19, alloc-index: 7, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '0', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0003075786']
+alloc-index: 7
+2017-03-28 01:14:46.905258 Node recv VFS_BROADCAST 7, BS time 2017-03-28 01:14:47.036000, Total 10, Seed a538267cf2, Delay -0.130742311478, 
+v-frame index: 19, alloc-index: 7, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '0', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0003075786']
+alloc-index: 7
+2017-03-28 01:14:46.917730 Node recv VFS_BROADCAST 8, BS time 2017-03-28 01:14:47.043000, Total 10, Seed a538267cf2, Delay -0.125269651413, 
+v-frame index: 19, alloc-index: 7, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '0', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0003075786']
+alloc-index: 7
+2017-03-28 01:14:46.928411 Node recv VFS_BROADCAST 9, BS time 2017-03-28 01:14:47.048000, Total 10, Seed a538267cf2, Delay -0.11958861351, 
+v-frame index: 19, alloc-index: 7, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '0', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0003075786']
+alloc-index: 7
+2017-03-28 01:14:46.939741 Node recv VFS_BROADCAST 10, BS time 2017-03-28 01:14:47.053000, Total 10, Seed a538267cf2, Delay -0.113259077072, 
+v-frame index: 19, alloc-index: 7, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '0', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0003075786']
+alloc-index: 7
+2017-03-28 01:14:46.951507 Node recv VFS_BROADCAST 11, BS time 2017-03-28 01:14:47.058000, Total 10, Seed a538267cf2, Delay -0.106492996216, 
+v-frame index: 19, alloc-index: 7, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '0', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0003075786']
+alloc-index: 7
+2017-03-28 01:14:46.963263 Node recv VFS_BROADCAST 12, BS time 2017-03-28 01:14:47.064000, Total 10, Seed a538267cf2, Delay -0.100737333298, 
+v-frame index: 19, alloc-index: 7, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '0', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0003075786']
+alloc-index: 7
+2017-03-28 01:14:46.975066 Node recv VFS_BROADCAST 13, BS time 2017-03-28 01:14:47.069000, Total 10, Seed a538267cf2, Delay -0.0939342975616, 
+v-frame index: 19, alloc-index: 7, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '0', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0003075786']
+alloc-index: 7
+2017-03-28 01:14:46.988776 Node recv VFS_BROADCAST 14, BS time 2017-03-28 01:14:47.076000, Total 10, Seed a538267cf2, Delay -0.0872235298157, 
+v-frame index: 19, alloc-index: 7, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '0', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0003075786']
+alloc-index: 7
+2017-03-28 01:14:46.997772 Node recv VFS_BROADCAST 15, BS time 2017-03-28 01:14:47.082000, Total 10, Seed a538267cf2, Delay -0.0842275619507, 
+v-frame index: 19, alloc-index: 7, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '0', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0003075786']
+alloc-index: 7
+2017-03-28 01:14:47.009178 Node recv VFS_BROADCAST 16, BS time 2017-03-28 01:14:47.088000, Total 10, Seed a538267cf2, Delay -0.0788221359253, 
+v-frame index: 19, alloc-index: 7, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '0', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0003075786']
+alloc-index: 7
+2017-03-28 01:14:47.026288 Node recv VFS_BROADCAST 17, BS time 2017-03-28 01:14:47.094000, Total 10, Seed a538267cf2, Delay -0.0677125453949, 
+v-frame index: 19, alloc-index: 7, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '0', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0003075786']
+alloc-index: 7
+2017-03-28 01:14:47.031919 Node recv VFS_BROADCAST 18, BS time 2017-03-28 01:14:47.100000, Total 10, Seed a538267cf2, Delay -0.0680809020996, 
+v-frame index: 19, alloc-index: 7, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '0', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0003075786']
+alloc-index: 7
+2017-03-28 01:14:47.045137 Node recv VFS_BROADCAST 19, BS time 2017-03-28 01:14:47.105000, Total 10, Seed a538267cf2, Delay -0.0598630905151, 
+v-frame index: 19, alloc-index: 7, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '0', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0003075786']
+alloc-index: 7
+2017-03-28 01:14:47.057052 Node recv VFS_BROADCAST 20, BS time 2017-03-28 01:14:47.110000, Total 10, Seed a538267cf2, Delay -0.0529479980469, 
+v-frame index: 19, alloc-index: 7, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '0', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0003075786']
+alloc-index: 7
+2017-03-28 01:14:47.069429 Node recv VFS_BROADCAST 21, BS time 2017-03-28 01:14:47.117000, Total 10, Seed a538267cf2, Delay -0.0475709438324, 
+v-frame index: 19, alloc-index: 7, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '0', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0003075786']
+alloc-index: 7
+2017-03-28 01:14:47.077437 Node recv VFS_BROADCAST 22, BS time 2017-03-28 01:14:47.123000, Total 10, Seed a538267cf2, Delay -0.045562505722, 
+v-frame index: 19, alloc-index: 7, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '0', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0003075786']
+alloc-index: 7
+2017-03-28 01:14:47.090488 Node recv VFS_BROADCAST 23, BS time 2017-03-28 01:14:47.129000, Total 10, Seed a538267cf2, Delay -0.0385115146637, 
+v-frame index: 19, alloc-index: 7, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '0', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0003075786']
+alloc-index: 7
+2017-03-28 01:14:47.101828 Node recv VFS_BROADCAST 24, BS time 2017-03-28 01:14:47.134000, Total 10, Seed a538267cf2, Delay -0.0321717262268, 
+v-frame index: 19, alloc-index: 7, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '0', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0003075786']
+alloc-index: 7
+2017-03-28 01:14:47.112156 Node recv VFS_BROADCAST 25, BS time 2017-03-28 01:14:47.140000, Total 10, Seed a538267cf2, Delay -0.027843952179, 
+v-frame index: 19, alloc-index: 7, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '0', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0003075786']
+alloc-index: 7
+2017-03-28 01:14:47.124943 Node recv VFS_BROADCAST 26, BS time 2017-03-28 01:14:47.147000, Total 10, Seed a538267cf2, Delay -0.0220565795898, 
+v-frame index: 19, alloc-index: 7, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '0', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0003075786']
+Cannot extract v-frame. Drop pkt!
+alloc-index: 7
+2017-03-28 01:14:47.150697 Node recv VFS_BROADCAST 28, BS time 2017-03-28 01:14:47.158000, Total 10, Seed a538267cf2, Delay -0.00730299949646, 
+v-frame index: 19, alloc-index: 7, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '0', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0003075786']
+alloc-index: 7
+2017-03-28 01:14:47.164012 Node recv VFS_BROADCAST 29, BS time 2017-03-28 01:14:47.163000, Total 10, Seed a538267cf2, Delay 0.00101184844971, 
+v-frame index: 19, alloc-index: 7, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '0', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0003075786']
+alloc-index: 7
+2017-03-28 01:14:47.171555 Node recv VFS_BROADCAST 30, BS time 2017-03-28 01:14:47.169000, Total 10, Seed a538267cf2, Delay 0.00255489349365, 
+v-frame index: 19, alloc-index: 7, fall to rand-frame: False,
+v-frame: ['0', '1', '1', '0', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0003075786']
+------ Stop listen VFS broadcast at 2017-03-28 01:14:47.573761 ------
+------ Ready to send VFS packets ------
+Fire at 2017-03-28 01:14:52.408082
+2017-03-28 01:14:52.409399 VFS: Node 0003075786 send data 1
+2017-03-28 01:14:52.414700 VFS: Node 0003075786 send data 2
+2017-03-28 01:14:52.420049 VFS: Node 0003075786 send data 3
+2017-03-28 01:14:52.425389 VFS: Node 0003075786 send data 4
+2017-03-28 01:14:52.431384 VFS: Node 0003075786 send data 5
+2017-03-28 01:14:52.437207 VFS: Node 0003075786 send data 6
+2017-03-28 01:14:52.443856 VFS: Node 0003075786 send data 7
+2017-03-28 01:14:52.449244 VFS: Node 0003075786 send data 8
+2017-03-28 01:14:52.455996 VFS: Node 0003075786 send data 9
+2017-03-28 01:14:52.461179 VFS: Node 0003075786 send data 10
+2017-03-28 01:14:52.466404 VFS: Node 0003075786 send data 11
+2017-03-28 01:14:52.471929 VFS: Node 0003075786 send data 12
+2017-03-28 01:14:52.477496 VFS: Node 0003075786 send data 13
+2017-03-28 01:14:52.483842 VFS: Node 0003075786 send data 14
+2017-03-28 01:14:52.488874 VFS: Node 0003075786 send data 15
+2017-03-28 01:14:52.494764 VFS: Node 0003075786 send data 16
+2017-03-28 01:14:52.502273 VFS: Node 0003075786 send data 17
+2017-03-28 01:14:52.508075 VFS: Node 0003075786 send data 18
+2017-03-28 01:14:52.514309 VFS: Node 0003075786 send data 19
+2017-03-28 01:14:52.521661 VFS: Node 0003075786 send data 20
+2017-03-28 01:14:52.526655 VFS: Node 0003075786 send data 21
+2017-03-28 01:14:52.533439 VFS: Node 0003075786 send data 22
+2017-03-28 01:14:52.539066 VFS: Node 0003075786 send data 23
+2017-03-28 01:14:52.543981 VFS: Node 0003075786 send data 24
+2017-03-28 01:14:52.549984 VFS: Node 0003075786 send data 25
+2017-03-28 01:14:52.555580 VFS: Node 0003075786 send data 26
+2017-03-28 01:14:52.562623 VFS: Node 0003075786 send data 27
+2017-03-28 01:14:52.567850 VFS: Node 0003075786 send data 28
+2017-03-28 01:14:52.574075 VFS: Node 0003075786 send data 29
+2017-03-28 01:14:52.579032 VFS: Node 0003075786 send data 30
+2017-03-28 01:14:52.580128 - thread done - 
+ - duration 0.171939849854 -
+------ Send VFS packets end ------
+
+ - VFS duration 7.99900460243 -
+------ VFS cycle ends at 2017-03-28 01:14:54.376979 ------
+
+
+
+=============================================================================================
+========================================= TEST END ==========================================
+=============================================================================================
+
+
