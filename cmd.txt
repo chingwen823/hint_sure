@@ -1,3 +1,6 @@
 bs side
 ./test_uci_rbk.py -v --antenna=TX/RX --bandwidth=1000000 --fft-length=512 --freq=2.49G --tx-amplitude=0.1 --tx-gain=20 --rx-gain=20 --scheme=VFS --logfile=bs_vfs.log 
 
+node side
+./test_uci_rbk_n.py -v --antenna=TX/RX --bandwidth=1000000 --fft-length=512 --freq=2.49G --tx-amplitude=0.1 --tx-gain=20 --rx-gain=30 --args='serial=3075786' --scheme=VFS --logfile=3075786_vfs.log
+
