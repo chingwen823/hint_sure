@@ -31,7 +31,7 @@ logging.config.fileConfig('logging.ini', defaults={'log_file': args.log_file})
 logger = logging.getLogger()
 
 # Adjustable variables
-REPEAT_TEST_COUNT = 2000
+REPEAT_TEST_COUNT = 10000
 IS_BS_ROLE = True
 FRAME_TIME_T = 8        # seconds
 assert FRAME_TIME_T >=8, "Shortest adjustable FRAME_TIME_T for VFS is 8 seconds (measured)"
@@ -265,7 +265,7 @@ def main():
             logger.warning("Timestamp {} is not a float. Drop pkt!".format(pkt_timestamp_str))
             return
 
-        now_timestamp = rx_tb.source.get_time_now().get_real_secs()
+        now_timestamp = tx_tb.source.get_time_now().get_real_secs()
         # now_timestamp_str = '{:.3f}'.format(now_timestamp)
         delta = now_timestamp - pkt_timestamp   # +ve: Node earlier; -ve: BS earlier
         if not -5 < delta < 5:
@@ -361,7 +361,7 @@ def main():
             logger.warning("Timestamp {} is not a float. Drop pkt!".format(pkt_timestamp_str))
             return
 
-        now_timestamp = rx_tb.source.get_time_now().get_real_secs()
+        now_timestamp = tx_tb.source.get_time_now().get_real_secs()
         # now_timestamp_str = '{:.3f}'.format(now_timestamp)
         delta = now_timestamp - pkt_timestamp   # +ve: BS earlier; -ve: Node earlier
         if not -5 < delta < 5:
@@ -387,8 +387,8 @@ def main():
             # mean_delta_str = '{:07.3f}'.format(delta)
             # Adjust time if needed
             if not -0.05 <= mean_delta <= 0.05:
-                rx_tb.source.set_time_now(uhd.time_spec(pkt_timestamp))
-                now_timestamp = rx_tb.source.get_time_now().get_real_secs()
+#                rx_tb.source.set_time_now(uhd.time_spec(pkt_timestamp))
+#                now_timestamp = rx_tb.source.get_time_now().get_real_secs()
                 logger.info("Adjust time... New time: {}".format(str(datetime.fromtimestamp(now_timestamp))))
 
             stop_rx_ts = now_timestamp + 0.5 - COMMAND_DELAY
@@ -555,19 +555,19 @@ def main():
         logger.info("----------------------------------------------------------\n")          
     # build tx/rx tables
     tx_tb = TxTopBlock(options)
-    if IS_BS_ROLE:
+#    if IS_BS_ROLE:
         #rx_tb = RxTopBlock(rx_bs_callback, options)
-        rx_tb = RxTopBlock(rx_bs_callback, options)
+#        rx_tb = RxTopBlock(rx_bs_callback, options)
 
-    else:   # Node role
-        rx_tb = RxTopBlock(rx_node_callback, options)
+#    else:   # Node role
+#        rx_tb = RxTopBlock(rx_node_callback, options)
 
-        # Use device serial number as Node ID
-        NODE_ID = tx_tb.sink.get_usrp_mboard_serial()
+# Use device serial number as Node ID
+    NODE_ID = tx_tb.sink.get_usrp_mboard_serial()
         # Append to required length
-        NODE_ID = NODE_ID.zfill(NODE_ID_LEN)
-        assert len(NODE_ID) == NODE_ID_LEN, "USRP NODE_ID {} len must be {}".format(NODE_ID, NODE_ID_LEN)
-        logger.info("\nNODE ID: {}".format(NODE_ID))
+    NODE_ID = NODE_ID.zfill(NODE_ID_LEN)
+    assert len(NODE_ID) == NODE_ID_LEN, "USRP NODE_ID {} len must be {}".format(NODE_ID, NODE_ID_LEN)
+    logger.info("\nNODE ID: {}".format(NODE_ID))
 
     logger.info("\nClock Rate: {} MHz".format(tx_tb.sink.get_clock_rate() / 1000000))
 
@@ -594,15 +594,15 @@ def main():
 
     pkt_size = int(options.size)
     tx_tb.start()
-    rx_tb.start()
+#    rx_tb.start()
     
     if IS_BS_ROLE:
         xmode = txrx.tx        
-        rx_tb.lock()
+#        rx_tb.lock()
     else:
         xmode = txrx.rx
-        rx_tb.lock()
-        rx_tb.unlock()        
+#        rx_tb.lock()
+#        rx_tb.unlock()        
     
     for y in range(REPEAT_TEST_COUNT):
 
@@ -699,118 +699,14 @@ def main():
 
         ######################## SYNC : END #########################
 
-        if options.scheme == Scheme.PS.key:
-            ################### Perfect Scheme: START ###################
-
-            if IS_BS_ROLE:
-                ################# BS #################
-                # Deprecated
-                # nodes_sync_delta.update({NODE_ID_A: [1, 2, 3],
-                #                          NODE_ID_B: [4, 5, 6],
-                #                          '0000000003': [7, 8, 9],
-                #                          '0000000004': [10, 11, 12],
-                #                          '0000000005': [13, 14, 15]})
-                # node_amount = len(nodes_sync_delta)
-
-                # rx_tb.lock()
-
-                # Mark Frame T start time
-                _ps_start = tx_tb.sink.get_time_now().get_real_secs()
-
-                # calculate perfect seed
-                _start = tx_tb.sink.get_time_now().get_real_secs()
-                ps_model.generate_perfect_seed(TEST_NODE_LIST)
-                _end = rx_tb.source.get_time_now().get_real_secs()
-                logger.info(" - duration {} -".format(_end - _start))
-
-                tx_tb.unlock()
-                logger.info("------ Broadcast PS packets ------")
-                # To ensure broadcast end within a full second, adjust to start at absolute second
-                fire_at_absolute_second()
-
-                _start = tx_tb.sink.get_time_now().get_real_secs()
-                do_every_protocol_bs(0.005, ps_model.broadcast_ps_pkt, tx_tb, pkt_size, len(TEST_NODE_LIST), MAX_PKT_AMT)
-                # Clocking thread
-                check_thread_is_done(MAX_PKT_AMT)
-                _end = rx_tb.source.get_time_now().get_real_secs()
-                logger.info(" - duration {} -".format(_end - _start))
-                logger.info("------ Broadcast PS end ------")
-                tx_tb.lock()
-
-                rx_tb.unlock()
-                logger.info("------ Listen PS packets start ------")
-                listen_only_to = [PacketType.PS_PKT.index]
-                _start = tx_tb.sink.get_time_now().get_real_secs()
-                # Listen end time is after last node transmission ended. Add some misc delay
-                stop_rx_ts = ps_model.nodes_expect_time[-1][-1] + 0.5
-                while stop_rx_ts == 0 or stop_rx_ts > now_ts:
-                    time.sleep(0.01)
-                    now_ts = rx_tb.source.get_time_now().get_real_secs()
-                    # logger.debug("now {} next {}".format(str(datetime.fromtimestamp(now_ts)), str(datetime.fromtimestamp(next_tx_ts))))
-                _end = rx_tb.source.get_time_now().get_real_secs()
-                logger.info(" - duration {} -".format(_end - _start))
-                logger.info("------ Listen PS packets end ------")
-                listen_only_to = []
-                rx_tb.lock()
-
-                now_ts = rx_tb.source.get_time_now().get_real_secs()
-                logger.info("\n - PS duration {} -".format(now_ts - _ps_start))
-                logger.info("------ PS cycle ends at {} ------\n".format(str(datetime.fromtimestamp(now_ts))))
-
-                # logger.info("Sleep for 0.2 second")
-                # usrp_sleep(0.2)
-                ################ BS end ##############
-
-            else:
-                ################ Node ################
-                rx_tb.unlock()
-                logger.info("------ Listening PS broadcast ------")
-                listen_only_to = [PacketType.PS_BROADCAST.index]
-                stop_rx_ts = 0  # reset
-                while stop_rx_ts == 0 or stop_rx_ts > now_ts:
-                    time.sleep(0.01)
-                    now_ts = rx_tb.source.get_time_now().get_real_secs()
-                    # logger.debug("now {} next {}".format(str(datetime.fromtimestamp(now_ts)), str(datetime.fromtimestamp(stop_rx_ts))))
-                logger.info("------ Stop listen PS broadcast at {} ------".format(str(datetime.fromtimestamp(now_ts))))
-                listen_only_to = []
-                rx_tb.lock()
-
-                # TODO: Adjust to node alloc period
-                assert alloc_index != -1, "alloc_index is -1"
-
-                logger.info("------ Ready to send PS packets ------")
-                if y != 0:
-                    tx_tb.unlock()
-
-                fire_at_expected_time(next_tx_ts + COMMAND_DELAY)
-
-                _start = tx_tb.sink.get_time_now().get_real_secs()
-                ps_data = "Hello, I am node {}".format(NODE_ID)
-                do_every_protocol_node(0.005, ps_model.send_ps_pkt, NODE_ID, tx_tb, pkt_size, ps_data, MAX_PKT_AMT_FOR_NODE)
-                # Clocking thread
-                check_thread_is_done(MAX_PKT_AMT_FOR_NODE)
-                _end = rx_tb.source.get_time_now().get_real_secs()
-                logger.info(" - duration {} -".format(_end - _start))
-                logger.info("------ Send PS packets end ------")
-                tx_tb.lock()
-
-                # Node wait until PS cycle is over
-                now_ts = rx_tb.source.get_time_now().get_real_secs()
-                usrp_sleep(ps_end_ts - now_ts + COMMAND_DELAY)
-
-                now_ts = rx_tb.source.get_time_now().get_real_secs()
-                logger.info("\n------ PS cycle ends at {} ------\n".format(str(datetime.fromtimestamp(now_ts))))
-                ################ Node end ############
-
-            ##################### Perfect Scheme: END #####################
-
-        elif options.scheme == Scheme.VFS.key:
+      
+        if options.scheme == Scheme.VFS.key:
             ################### Virtual Frame Scheme: START ###################
             logger.info("start rbk test")
             if IS_BS_ROLE:
 
                 if xmode == txrx.rx:
-                    rx_tb.lock()
+ #                   rx_tb.lock()
                     xmode=txrx.tx
                
                     
@@ -945,53 +841,53 @@ def main():
 
             else:
                 ################ Node ################
-                # Mark Frame T start time & expected end time
-                vfs_start_ts = tx_tb.sink.get_time_now().get_real_secs()
-                vfs_end_ts = vfs_start_ts + FRAME_TIME_T - 0.01     # give a bit deplay for ending
-
-                rx_tb.unlock()
-                logger.info("------ Listening VFS broadcast ------")
-                listen_only_to = [PacketType.VFS_BROADCAST.index]
-                stop_rx_ts = 0  # reset
-                while stop_rx_ts == 0 or stop_rx_ts > now_ts:
-                    time.sleep(0.01)
-                    now_ts = rx_tb.source.get_time_now().get_real_secs()
-                    # logger.debug("now {} next {}".format(str(datetime.fromtimestamp(now_ts)), str(datetime.fromtimestamp(stop_rx_ts))))
-                logger.info("------ Stop listen VFS broadcast at {} ------".format(str(datetime.fromtimestamp(now_ts))))
-                listen_only_to = []
-                rx_tb.lock()
-
-                # TODO: Adjust to node alloc period
-                if alloc_index == -1:
-                    logger.warning("WARNING: alloc_index is -1, cannot join this session. Skip...")
-                    time.sleep(7)
-                    continue
-                # assert alloc_index != -1, "alloc_index is -1"
-
-                logger.info("------ Ready to send VFS packets ------")
-                if y != 0:
-                    tx_tb.unlock()
-
-                fire_at_expected_time(next_tx_ts + COMMAND_DELAY)
-
-                _start = tx_tb.sink.get_time_now().get_real_secs()
-                vfs_data = "Hello, I am node {}".format(NODE_ID)
-                do_every_protocol_node(0.005, vfs_model.send_vfs_pkt, NODE_ID, tx_tb, pkt_size, vfs_data, MAX_PKT_AMT_FOR_NODE)
-                # Clocking thread
-                check_thread_is_done(MAX_PKT_AMT_FOR_NODE)
-                _end = rx_tb.source.get_time_now().get_real_secs()
-                logger.info(" - duration {} -".format(_end - _start))
-                logger.info("------ Send VFS packets end ------")
-                tx_tb.lock()
-
-                # Node wait until VFS cycle is over
-                now_ts = rx_tb.source.get_time_now().get_real_secs()
-                usrp_sleep(vfs_end_ts - now_ts + COMMAND_DELAY)
-
-                now_ts = rx_tb.source.get_time_now().get_real_secs()
-                logger.info("\n - VFS duration {} -".format(now_ts - vfs_start_ts))
+#                # Mark Frame T start time & expected end time
+#                vfs_start_ts = tx_tb.sink.get_time_now().get_real_secs()
+#                vfs_end_ts = vfs_start_ts + FRAME_TIME_T - 0.01     # give a bit deplay for ending
+#
+#                rx_tb.unlock()
+#                logger.info("------ Listening VFS broadcast ------")
+#                listen_only_to = [PacketType.VFS_BROADCAST.index]
+#                stop_rx_ts = 0  # reset
+#                while stop_rx_ts == 0 or stop_rx_ts > now_ts:
+#                    time.sleep(0.01)
+#                    now_ts = rx_tb.source.get_time_now().get_real_secs()
+#                    # logger.debug("now {} next {}".format(str(datetime.fromtimestamp(now_ts)), str(datetime.fromtimestamp(stop_rx_ts))))
+#                logger.info("------ Stop listen VFS broadcast at {} ------".format(str(datetime.fromtimestamp(now_ts))))
+#                listen_only_to = []
+#                rx_tb.lock()
+#
+#                # TODO: Adjust to node alloc period
+#                if alloc_index == -1:
+#                    logger.warning("WARNING: alloc_index is -1, cannot join this session. Skip...")
+#                    time.sleep(7)
+#                    continue
+#                # assert alloc_index != -1, "alloc_index is -1"
+#
+#                logger.info("------ Ready to send VFS packets ------")
+#                if y != 0:
+#                    tx_tb.unlock()
+#
+#                fire_at_expected_time(next_tx_ts + COMMAND_DELAY)
+#
+#                _start = tx_tb.sink.get_time_now().get_real_secs()
+#                vfs_data = "Hello, I am node {}".format(NODE_ID)
+#                do_every_protocol_node(0.005, vfs_model.send_vfs_pkt, NODE_ID, tx_tb, pkt_size, vfs_data, MAX_PKT_AMT_FOR_NODE)
+#                # Clocking thread
+#                check_thread_is_done(MAX_PKT_AMT_FOR_NODE)
+#                _end = rx_tb.source.get_time_now().get_real_secs()
+#                logger.info(" - duration {} -".format(_end - _start))
+#                logger.info("------ Send VFS packets end ------")
+#                tx_tb.lock()
+#
+#                # Node wait until VFS cycle is over
+#                now_ts = rx_tb.source.get_time_now().get_real_secs()
+#                usrp_sleep(vfs_end_ts - now_ts + COMMAND_DELAY)
+#
+#                now_ts = rx_tb.source.get_time_now().get_real_secs()
+#                logger.info("\n - VFS duration {} -".format(now_ts - vfs_start_ts))
                 logger.info("------ VFS cycle ends at {} ------\n".format(str(datetime.fromtimestamp(now_ts))))
-                ################ Node end ############
+#                ################ Node end ############
 
             ##################### Virtual Frame Scheme: END #####################
 
@@ -1000,7 +896,7 @@ def main():
     #rx_tb.unlock()
     #rx_tb.wait()
     tx_tb.stop()
-    rx_tb.stop()
+#    rx_tb.stop()
 
     logger.info("\n\n=============================================================================================")
     logger.info("========================================= TEST END ==========================================")
