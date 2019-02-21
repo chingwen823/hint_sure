@@ -461,7 +461,7 @@ def main():
 
     def fire_at_absolute_second():
         for i in range(10000):
-            check_time = tx_tb.sink.get_time_now().get_real_secs()
+            check_time = rx_tb.sink.get_time_now().get_real_secs()
             pivot_time = math.ceil(check_time)
             variance = pivot_time - check_time
             if -0.0002 < variance < 0.0002:
@@ -470,16 +470,16 @@ def main():
             time.sleep(0.0001)
 
     def usrp_sleep(interval_sec):
-        wake_up_timestamp = tx_tb.sink.get_time_now().get_real_secs() + interval_sec
+        wake_up_timestamp = rx_tb.sink.get_time_now().get_real_secs() + interval_sec
         for i in range(50000):
-            now_timestamp = tx_tb.sink.get_time_now().get_real_secs()
+            now_timestamp = rx_tb.sink.get_time_now().get_real_secs()
             if now_timestamp >= wake_up_timestamp:
                 break
             time.sleep(0.0001)
 
     def fire_at_expected_time(start_time):
         for i in range(50000):
-            now_timestamp = tx_tb.sink.get_time_now().get_real_secs()
+            now_timestamp = rx_tb.sink.get_time_now().get_real_secs()
             if now_timestamp >= start_time:
                 logger.info("Fire at {}".format(str(datetime.fromtimestamp(now_timestamp))))
                 return
@@ -489,11 +489,11 @@ def main():
     def check_thread_is_done(max_pkt_amt):
         for i in range(10000):
             if not my_thread.is_alive() and my_iteration >= max_pkt_amt:
-                now_ts = tx_tb.sink.get_time_now().get_real_secs()
+                now_ts = rx_tb.sink.get_time_now().get_real_secs()
                 logger.debug("{} - thread done - ".format(str(datetime.fromtimestamp(now_ts))))
                 return
             time.sleep(0.0001)
-        now_ts = tx_tb.sink.get_time_now().get_real_secs()
+        now_ts = rx_tb.sink.get_time_now().get_real_secs()
         logger.debug("ALERT!! thread timeout at {}".format(str(datetime.fromtimestamp(now_ts))))
 
 
@@ -559,7 +559,7 @@ def main():
         logger.info("----------------------------------------------------------\n")
         
     # build tx/rx tables
-    tx_tb = TxTopBlock(options)
+#    tx_tb = TxTopBlock(options)
     if IS_BS_ROLE:
         rx_tb = RxTopBlock(rx_bs_callback, options)
     else:   # Node role
@@ -567,13 +567,13 @@ def main():
         
         #rx_tb = RxTopBlock(rx_rbk_node_callback, options)
         # Use device serial number as Node ID
-        NODE_ID = tx_tb.sink.get_usrp_mboard_serial()
+        NODE_ID = rx_tb.source.get_usrp_mboard_serial()
         # Append to required length
         NODE_ID = NODE_ID.zfill(NODE_ID_LEN)
         assert len(NODE_ID) == NODE_ID_LEN, "USRP NODE_ID {} len must be {}".format(NODE_ID, NODE_ID_LEN)
         logger.info("\nNODE ID: {}".format(NODE_ID))
 
-    logger.info("\nClock Rate: {} MHz".format(tx_tb.sink.get_clock_rate() / 1000000))
+#    logger.info("\nClock Rate: {} MHz".format(tx_tb.sink.get_clock_rate() / 1000000))
 
     logger.info("\n####### Test Protocol: {} #######".format(options.scheme))
 
@@ -582,8 +582,8 @@ def main():
 
     # USRP device aligns with PC time (NTP)
     pc_now = time.time()
-    tx_tb.sink.set_time_now(uhd.time_spec(pc_now))
-    now_ts = tx_tb.sink.get_time_now().get_real_secs()
+    rx_tb.source.set_time_now(uhd.time_spec(pc_now))
+    now_ts = rx_tb.source.get_time_now().get_real_secs()
     logger.info("\n{} Adjust to PC time: {}\n".format(
                 str(datetime.fromtimestamp(time.time())), str(datetime.fromtimestamp(now_ts))))
     # now_ts2 = rx_tb.source.get_time_now().get_real_secs()
@@ -597,7 +597,7 @@ def main():
         logger.error("Warning: failed to enable realtime scheduling")
 
     pkt_size = int(options.size)
-    tx_tb.start()
+#    tx_tb.start()
     rx_tb.start()
     
     if IS_BS_ROLE:
@@ -702,170 +702,13 @@ def main():
             ################ Node end ############
 
         ######################## SYNC : END #########################
+######### Perfect Scheme: END #####################
 
-        if options.scheme == Scheme.PS.key:
-            ################### Perfect Scheme: START ###################
-
-            if IS_BS_ROLE:
-                ################# BS #################
-                # Deprecated
-                # nodes_sync_delta.update({NODE_ID_A: [1, 2, 3],
-                #                          NODE_ID_B: [4, 5, 6],
-                #                          '0000000003': [7, 8, 9],
-                #                          '0000000004': [10, 11, 12],
-                #                          '0000000005': [13, 14, 15]})
-                # node_amount = len(nodes_sync_delta)
-
-                # rx_tb.lock()
-
-                # Mark Frame T start time
-                _ps_start = tx_tb.sink.get_time_now().get_real_secs()
-
-                # calculate perfect seed
-                _start = tx_tb.sink.get_time_now().get_real_secs()
-                ps_model.generate_perfect_seed(TEST_NODE_LIST)
-                _end = rx_tb.source.get_time_now().get_real_secs()
-                logger.info(" - duration {} -".format(_end - _start))
-
-                tx_tb.unlock()
-                logger.info("------ Broadcast PS packets ------")
-                # To ensure broadcast end within a full second, adjust to start at absolute second
-                fire_at_absolute_second()
-
-                _start = tx_tb.sink.get_time_now().get_real_secs()
-                do_every_protocol_bs(0.005, ps_model.broadcast_ps_pkt, tx_tb, pkt_size, len(TEST_NODE_LIST), MAX_PKT_AMT)
-                # Clocking thread
-                check_thread_is_done(MAX_PKT_AMT)
-                _end = rx_tb.source.get_time_now().get_real_secs()
-                logger.info(" - duration {} -".format(_end - _start))
-                logger.info("------ Broadcast PS end ------")
-                tx_tb.lock()
-
-                rx_tb.unlock()
-                logger.info("------ Listen PS packets start ------")
-                listen_only_to = [PacketType.PS_PKT.index]
-                _start = tx_tb.sink.get_time_now().get_real_secs()
-                # Listen end time is after last node transmission ended. Add some misc delay
-                stop_rx_ts = ps_model.nodes_expect_time[-1][-1] + 0.5
-                while stop_rx_ts == 0 or stop_rx_ts > now_ts:
-                    time.sleep(0.01)
-                    now_ts = rx_tb.source.get_time_now().get_real_secs()
-                    # logger.debug("now {} next {}".format(str(datetime.fromtimestamp(now_ts)), str(datetime.fromtimestamp(next_tx_ts))))
-                _end = rx_tb.source.get_time_now().get_real_secs()
-                logger.info(" - duration {} -".format(_end - _start))
-                logger.info("------ Listen PS packets end ------")
-                listen_only_to = []
-                rx_tb.lock()
-
-                now_ts = rx_tb.source.get_time_now().get_real_secs()
-                logger.info("\n - PS duration {} -".format(now_ts - _ps_start))
-                logger.info("------ PS cycle ends at {} ------\n".format(str(datetime.fromtimestamp(now_ts))))
-
-                # logger.info("Sleep for 0.2 second")
-                # usrp_sleep(0.2)
-                ################ BS end ##############
-
-            else:
-                ################ Node ################
-                rx_tb.unlock()
-                logger.info("------ Listening PS broadcast ------")
-                listen_only_to = [PacketType.PS_BROADCAST.index]
-                stop_rx_ts = 0  # reset
-                while stop_rx_ts == 0 or stop_rx_ts > now_ts:
-                    time.sleep(0.01)
-                    now_ts = rx_tb.source.get_time_now().get_real_secs()
-                    # logger.debug("now {} next {}".format(str(datetime.fromtimestamp(now_ts)), str(datetime.fromtimestamp(stop_rx_ts))))
-                logger.info("------ Stop listen PS broadcast at {} ------".format(str(datetime.fromtimestamp(now_ts))))
-                listen_only_to = []
-                rx_tb.lock()
-
-                # TODO: Adjust to node alloc period
-                assert alloc_index != -1, "alloc_index is -1"
-
-                logger.info("------ Ready to send PS packets ------")
-                if y != 0:
-                    tx_tb.unlock()
-
-                fire_at_expected_time(next_tx_ts + COMMAND_DELAY)
-
-                _start = tx_tb.sink.get_time_now().get_real_secs()
-                ps_data = "Hello, I am node {}".format(NODE_ID)
-                do_every_protocol_node(0.005, ps_model.send_ps_pkt, NODE_ID, tx_tb, pkt_size, ps_data, MAX_PKT_AMT_FOR_NODE)
-                # Clocking thread
-                check_thread_is_done(MAX_PKT_AMT_FOR_NODE)
-                _end = rx_tb.source.get_time_now().get_real_secs()
-                logger.info(" - duration {} -".format(_end - _start))
-                logger.info("------ Send PS packets end ------")
-                tx_tb.lock()
-
-                # Node wait until PS cycle is over
-                now_ts = rx_tb.source.get_time_now().get_real_secs()
-                usrp_sleep(ps_end_ts - now_ts + COMMAND_DELAY)
-
-                now_ts = rx_tb.source.get_time_now().get_real_secs()
-                logger.info("\n------ PS cycle ends at {} ------\n".format(str(datetime.fromtimestamp(now_ts))))
-                ################ Node end ############
-
-            ##################### Perfect Scheme: END #####################
-
-        elif options.scheme == Scheme.VFS.key:
+        if options.scheme == Scheme.VFS.key:
             ################### Virtual Frame Scheme: START ###################
 
             if IS_BS_ROLE:
-                ################# BS #################
-                # Deprecated
-                # nodes_sync_delta.update({NODE_ID_A: [1, 2, 3],
-                #                          NODE_ID_B: [4, 5, 6],
-                #                          '0000000003': [7, 8, 9],
-                #                          '0000000004': [10, 11, 12],
-                #                          '0000000005': [13, 14, 15]})
-                # node_amount = len(nodes_sync_delta)
-
-                # rx_tb.lock()
-
-                # Mark Frame T start time & expected end time
-                vfs_start_ts = tx_tb.sink.get_time_now().get_real_secs()
-                vfs_end_ts = vfs_start_ts + FRAME_TIME_T - 0.01     # give a bit deplay for ending
-
-                # calculate VFS seed, v-frame & rand-frame
-                _start = tx_tb.sink.get_time_now().get_real_secs()
-                vfs_model.generate_seed_v_frame_rand_frame(TEST_NODE_LIST)
-                _end = rx_tb.source.get_time_now().get_real_secs()
-                logger.info(" - duration {} -".format(_end - _start))
-
-                tx_tb.unlock()
-                logger.info("------ Broadcast VFS packets ------")
-                # To ensure broadcast end within a full second, adjust to start at absolute second
-                fire_at_absolute_second()
-
-                _start = tx_tb.sink.get_time_now().get_real_secs()
-                do_every_protocol_bs(0.005, vfs_model.broadcast_vfs_pkt, tx_tb, pkt_size, len(TEST_NODE_LIST), MAX_PKT_AMT)
-                # Clocking thread
-                check_thread_is_done(MAX_PKT_AMT)
-                _end = rx_tb.source.get_time_now().get_real_secs()
-                logger.info(" - duration {} -".format(_end - _start))
-                logger.info("------ Broadcast VFS end ------")
-                tx_tb.lock()
-
-                rx_tb.unlock()
-                logger.info("------ Listen VFS packets start ------")
-                listen_only_to = [PacketType.VFS_PKT.index]
-                _start = tx_tb.sink.get_time_now().get_real_secs()
-                # Listen end time is after last node transmission ended, or till frame T ended.
-                stop_rx_ts = vfs_model.nodes_expect_time[-1][-1] + 0.5  # Add misc delay
-                while stop_rx_ts == 0 or stop_rx_ts > now_ts or vfs_end_ts > now_ts:
-                    time.sleep(0.01)
-                    now_ts = rx_tb.source.get_time_now().get_real_secs()
-                    # logger.debug("now {} next {}".format(str(datetime.fromtimestamp(now_ts)), str(datetime.fromtimestamp(next_tx_ts))))
-                _end = rx_tb.source.get_time_now().get_real_secs()
-                logger.info(" - duration {} -".format(_end - _start))
-                logger.info("------ Listen VFS packets end ------")
-                listen_only_to = []
-                rx_tb.lock()
-
-                now_ts = rx_tb.source.get_time_now().get_real_secs()
-                logger.info("\n - VFS duration {} -".format(now_ts - vfs_start_ts))
-                logger.info("------ VFS cycle ends at {} ------\n".format(str(datetime.fromtimestamp(now_ts))))
+                   logger.info("------ VFS cycle ends at {} ------\n".format(str(datetime.fromtimestamp(now_ts))))
 
                 # logger.info("Sleep for 0.2 second")
                 # usrp_sleep(0.2)
@@ -1027,7 +870,7 @@ def main():
     #tx_tb.wait()
     #rx_tb.unlock()
     #rx_tb.wait()
-    tx_tb.stop()
+#    tx_tb.stop()
     rx_tb.stop()
 
     logger.info("\n\n=============================================================================================")
