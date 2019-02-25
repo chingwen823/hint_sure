@@ -92,6 +92,35 @@ PacketType = Enum(
 txrx = Enum(
     'tx',
     'rx')
+class my_top_block(gr.top_block):
+    def __init__(self, callback, options):
+        gr.top_block.__init__(self)
+ 
+
+
+        self.source = uhd_receiver(options.args,
+                                   options.bandwidth, 
+                                   options.rx_freq,                          
+                                   options.lo_offset, 
+                                   #10000000,
+                                   options.rx_gain,
+                                   options.spec, 
+                                   #options.antenna,
+                                   "RX2",
+                                   options.clock_source, options.verbose)
+        self.sink = uhd_transmitter(options.args,
+                                    options.bandwidth, 
+                                    options.tx_freq,
+                                    options.lo_offset, options.tx_gain,
+                                    options.spec, options.antenna,
+                                    options.clock_source, options.verbose)
+
+        self.txpath = transmit_path(options)
+        self.rxpath = receive_path(callback, options)
+        self.connect(self.txpath, self.sink)
+        self.connect(self.source, self.rxpath)
+        
+
 
 class RxTopBlock(gr.top_block):
     def __init__(self, callback, options):
@@ -144,7 +173,7 @@ def main():
     vf_len = 8
     
     #rbk test code
-    global down_payload,up_payload, downnum, upnum, cnt
+    global down_payload,up_payload, downnum, upnum, cnt, rx_tb
     down_payload = struct.pack('!H',0 & 0xffff)
     up_payload = struct.pack('!H',0 & 0xffff)
     downnum = 0
@@ -169,7 +198,8 @@ def main():
         
     def send_test_pkt(my_tb, pkt_size, pkt_no,numdata):
         # payload = prefix + now + beacon + data + dummy
-
+        payload_header = struct.pack('!H',0xffff)
+        payload_size = struct.pack('H',0x0000)
         payload_prefix = struct.pack('!H', pkt_no & 0xffff)
         testup = struct.pack('!H', PacketType.RBKTESTUP.index & 0xffff)
         data = struct.pack('!H',numdata & 0xffff)
@@ -177,9 +207,12 @@ def main():
         dummy = (pkt_size - data_size) * chr(pkt_no & 0xff)
         now_timestamp = my_tb.sink.get_time_now().get_real_secs()
         now_timestamp_str = '{:.3f}'.format(now_timestamp)
-        payload = payload_prefix + now_timestamp_str + testup + data + dummy
+        payload = payload_header + payload_size + payload_prefix + now_timestamp_str + testup + data + dummy
+        payload_size = struct.pack('H',len(payload) & 0xffff)        
+        payload = payload_header + payload_size + payload_prefix + now_timestamp_str + testup + data + dummy                
         my_tb.txpath.send_pkt(payload)
-        logger.info("{} data up {:x} - {}".format(str(datetime.fromtimestamp(now_timestamp)), numdata, pkt_no))
+        
+        #logger.info("<{:x}\n".format(numdata))
 
     # Deprecated
     # def send_resp_beacon_pkt(my_tb, pkt_size, pkt_no):     # Node only
@@ -336,30 +369,38 @@ def main():
     def rx_node_callback(ok, payload):    # For Node
         global n_rcvd, n_right, mean_delta, next_tx_ts, stop_rx_ts, ps_end_ts, alloc_index, vf_index, \
             listen_only_to
-
+     
         n_rcvd += 1
+#        if n_rcvd < 100:
+#            logger.info("data detected\n");
+#        while(ord(payload[0])!=0x41 or ord(payload[1])!=0x41):
+##            logger.info("{:2x} {:2x}".format(ord(payload[0]),ord(payload[1])))
+#            payload = payload[1:]
+#            if len(payload)<=2:
+#                return
+     
 
-        (pktno,) = struct.unpack('!H', payload[0:2])
+        (pktno,) = struct.unpack('!H', payload[4:6])
         # Filter out incorrect pkt
         if pktno >= wrong_pktno:
             logger.warning("Wrong pktno {}. Drop pkt!".format(pktno))
             return
 
         try:
-            pkt_timestamp_str = payload[2:2+TIMESTAMP_LEN]
+            pkt_timestamp_str = payload[6:6+TIMESTAMP_LEN]
             pkt_timestamp = float(pkt_timestamp_str)
         except:
-            logger.warning("Timestamp {} is not a float. Drop pkt!".format(pkt_timestamp_str))
+            #logger.warning("Timestamp {} is not a float. Drop pkt!".format(pkt_timestamp_str))
             return
 
         now_timestamp = rx_tb.source.get_time_now().get_real_secs()
-        # now_timestamp_str = '{:.3f}'.format(now_timestamp)
-        delta = now_timestamp - pkt_timestamp   # +ve: BS earlier; -ve: Node earlier
-        if not -5 < delta < 5:
-            logger.warning("Delay out-of-range: {}, timestamp {}. Drop pkt!".format(delta, pkt_timestamp_str))
-            return
+#        # now_timestamp_str = '{:.3f}'.format(now_timestamp)
+#        delta = now_timestamp - pkt_timestamp   # +ve: BS earlier; -ve: Node earlier
+#        if not -5 < delta < 5:
+#            logger.warning("Delay out-of-range: {}, timestamp {}. Drop pkt!".format(delta, pkt_timestamp_str))
+#            return
 
-        (pkt_type,) = struct.unpack('!H', payload[2+TIMESTAMP_LEN:2+TIMESTAMP_LEN+2])
+        (pkt_type,) = struct.unpack('!H', payload[6+TIMESTAMP_LEN:6+TIMESTAMP_LEN+2])
         if pkt_type not in [PacketType.BEACON.index, PacketType.ACK_RESPOND.index,
                             PacketType.PS_BROADCAST.index, PacketType.VFS_BROADCAST.index,
                             PacketType.RBKTESTDOWN.index]:
@@ -394,12 +435,13 @@ def main():
             return
         if pkt_type == PacketType.RBKTESTDOWN.index:
             global downnum, cnt
-            (num,) = struct.unpack('!H', payload[4 + TIMESTAMP_LEN: 6 + TIMESTAMP_LEN ])
-            cnt = cnt + 1            
-            logger.info("get RBKTESTDOWN {:x} cnt {:d}\n".format(num, cnt))
+            (num,) = struct.unpack('!H', payload[8 + TIMESTAMP_LEN: 10 + TIMESTAMP_LEN ])
+                
+
             downnum = num
+            cnt = cnt + 1
             
-            upload_event.set()
+#            upload_event.set()
             return
             
         if pkt_type == PacketType.PS_BROADCAST.index:
@@ -561,9 +603,9 @@ def main():
     # build tx/rx tables
 #    tx_tb = TxTopBlock(options)
     if IS_BS_ROLE:
-        rx_tb = RxTopBlock(rx_bs_callback, options)
+        rx_tb = my_top_block(rx_bs_callback, options)
     else:   # Node role
-        rx_tb = RxTopBlock(rx_node_callback, options)
+        rx_tb = my_top_block(rx_node_callback, options)
         
         #rx_tb = RxTopBlock(rx_rbk_node_callback, options)
         # Use device serial number as Node ID
@@ -573,7 +615,7 @@ def main():
         assert len(NODE_ID) == NODE_ID_LEN, "USRP NODE_ID {} len must be {}".format(NODE_ID, NODE_ID_LEN)
         logger.info("\nNODE ID: {}".format(NODE_ID))
 
-#    logger.info("\nClock Rate: {} MHz".format(tx_tb.sink.get_clock_rate() / 1000000))
+#    logger.info("\nClock Rate: {} MHz".format(rx_tb.sink.get_clock_rate() / 1000000))
 
     logger.info("\n####### Test Protocol: {} #######".format(options.scheme))
 
@@ -602,23 +644,22 @@ def main():
     
     if IS_BS_ROLE:
         xmode = txrx.tx
-        rx_tb.lock()
+ 
     else:
         xmode = txrx.rx
-        rx_tb.lock()
-        rx_tb.unlock() 
+
     for y in range(REPEAT_TEST_COUNT):
 
-        logger.info("====== ROUND {} ======".format(y+1))
+#        logger.info("====== ROUND {} ======".format(y+1))
 
 
         #################### SYNC : START #####################
 
         #rbk i think we can remove this sync code
-#
+##
 #        if IS_BS_ROLE:
 #            ################# BS #################
-#            _sync_start = tx_tb.sink.get_time_now().get_real_secs()
+#            _sync_start = rx_tb.sink.get_time_now().get_real_secs()
 #
 #            sync_counts = 2
 #            for z in range(sync_counts):
@@ -629,9 +670,9 @@ def main():
 #                    tx_tb.unlock()
 #
 #                logger.info("------ Broadcast Beacon ------")
-#                _start = tx_tb.sink.get_time_now().get_real_secs()
+#                _start = rx_tb.sink.get_time_now().get_real_secs()
 #                # BS: Send beacon signals. Time precision thread
-#                do_every_beacon(0.005, send_beacon_pkt, tx_tb, pkt_size, MAX_PKT_AMT)
+#                do_every_beacon(0.005, send_beacon_pkt, rx_tb, pkt_size, MAX_PKT_AMT)
 #                # Clocking thread
 #                check_thread_is_done(MAX_PKT_AMT)
 #                _end = rx_tb.source.get_time_now().get_real_secs()
@@ -672,34 +713,34 @@ def main():
 #                # logger.debug("now {} next {}".format(str(datetime.fromtimestamp(now_ts)), str(datetime.fromtimestamp(stop_rx_ts))))
 #            rx_tb.lock()
 #            logger.info("------ Stop listen at {} ------".format(str(datetime.fromtimestamp(now_ts))))
-
-            # Deprecated. PROF TSENG: No need response-beacon, might cause collision
-            # for z in range(2):
-            #
-            #     if z != 0:
-            #         rx_tb.unlock()
-            #     logger.info("------ Listening ------")
-            #     next_tx_ts = 0  # reset next_tx
-            #     while next_tx_ts == 0 or next_tx_ts > now_ts:
-            #         time.sleep(0.01)
-            #         now_ts = rx_tb.source.get_time_now().get_real_secs()
-            #         # logger.debug("now {} next {}".format(str(datetime.fromtimestamp(now_ts)), str(datetime.fromtimestamp(next_tx_ts))))
-            #     logger.info("------ Stop listen at {} ------".format(str(datetime.fromtimestamp(now_ts))))
-            #     rx_tb.lock()
-            #
-            #     if z != 0:
-            #         tx_tb.unlock()
-            #     logger.info("------ Send Response Beacon ------")
-            #     _start = tx_tb.sink.get_time_now().get_real_secs()
-            #     # Node: Send response-beacon signals. Time precision thread
-            #     do_every_beacon(0.005, send_resp_beacon_pkt, tx_tb, pkt_size, MAX_PKT_AMT)
-            #     # Clocking thread
-            #     check_thread_is_done(MAX_PKT_AMT)
-            #     _end = rx_tb.source.get_time_now().get_real_secs()
-            #     logger.info(" - duration {} -".format(_end - _start))
-            #     logger.info("------ Send Response Beacon end ------")
-            #     tx_tb.lock()
-            ################ Node end ############
+#
+#            # Deprecated. PROF TSENG: No need response-beacon, might cause collision
+#            # for z in range(2):
+#            #
+#            #     if z != 0:
+#            #         rx_tb.unlock()
+#            #     logger.info("------ Listening ------")
+#            #     next_tx_ts = 0  # reset next_tx
+#            #     while next_tx_ts == 0 or next_tx_ts > now_ts:
+#            #         time.sleep(0.01)
+#            #         now_ts = rx_tb.source.get_time_now().get_real_secs()
+#            #         # logger.debug("now {} next {}".format(str(datetime.fromtimestamp(now_ts)), str(datetime.fromtimestamp(next_tx_ts))))
+#            #     logger.info("------ Stop listen at {} ------".format(str(datetime.fromtimestamp(now_ts))))
+#            #     rx_tb.lock()
+#            #
+#            #     if z != 0:
+#            #         tx_tb.unlock()
+#            #     logger.info("------ Send Response Beacon ------")
+#            #     _start = tx_tb.sink.get_time_now().get_real_secs()
+#            #     # Node: Send response-beacon signals. Time precision thread
+#            #     do_every_beacon(0.005, send_resp_beacon_pkt, tx_tb, pkt_size, MAX_PKT_AMT)
+#            #     # Clocking thread
+#            #     check_thread_is_done(MAX_PKT_AMT)
+#            #     _end = rx_tb.source.get_time_now().get_real_secs()
+#            #     logger.info(" - duration {} -".format(_end - _start))
+#            #     logger.info("------ Send Response Beacon end ------")
+#            #     tx_tb.lock()
+#            ################ Node end ############
 
         ######################## SYNC : END #########################
 ######### Perfect Scheme: END #####################
@@ -714,28 +755,36 @@ def main():
                 # usrp_sleep(0.2)
                 ################# BS end #############
 
-            else:
-                logger.info("start rbk test")
+            else:#    
+#                if xmode == txrx.tx:
+##                    rx_tb.lock()
+##                    rx_tb.unlock()  
+#                    xmode = txrx.rx
+       
+
+ 
+           
                 
-                if xmode == txrx.tx:
-                    rx_tb.lock()
-                    rx_tb.unlock()  
-                    xmode = txrx.rx
-                    
-                     
-                while(True):
-                    time.sleep(0.1)
-                #if False == upload_event.wait(1):
-                #    continue
-                #upload_event.clear()    
+#                if False == upload_event.wait(1):
+#                    continue
+
+                
+#                upload_event.clear()    
                 
 #                rx_tb.lock()
 #                xmode = txrx.tx
-#                time.sleep(1)
 #                
-#                upnum = downnum + 1  
-#                send_test_pkt(tx_tb,pkt_size,0,upnum)
-                               
+#                logger.info(">{:x}\n".format(downnum)) #
+#                send_test_pkt(rx_tb,pkt_size,0,upnum)
+#                upnum = downnum + 1 
+                while(True):
+                    send_test_pkt(rx_tb,pkt_size,0,upnum)  
+                    #time.sleep(0.1)
+                
+#                rx_tb.stop()
+#                rx_tb.wait()
+#                rx_tb.start()
+                             
                 #########################################
 #                if y<1000:
 #                    if y==0:
@@ -883,4 +932,9 @@ if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt:
+        rx_tb.stop()
+        rx_tb.wait()
+        
+        logger.info("cnt {}, downnum {}".format(cnt,downnum))
+        logger.info("program out")
         pass
