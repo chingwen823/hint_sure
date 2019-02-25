@@ -31,7 +31,7 @@ logging.config.fileConfig('logging.ini', defaults={'log_file': args.log_file})
 logger = logging.getLogger()
 
 # Adjustable variables
-REPEAT_TEST_COUNT = 10000
+REPEAT_TEST_COUNT = 1000
 IS_BS_ROLE = True
 FRAME_TIME_T = 8        # seconds
 assert FRAME_TIME_T >=8, "Shortest adjustable FRAME_TIME_T for VFS is 8 seconds (measured)"
@@ -93,6 +93,41 @@ txrx = Enum(
     'tx',
     'rx')
 
+class my_top_block(gr.top_block):
+    def __init__(self, callback, options):
+        gr.top_block.__init__(self)
+
+        self.source = uhd_receiver(options.args,
+                                   options.bandwidth,
+                                   options.rx_freq,
+                                   options.lo_offset,
+                                   options.rx_gain,
+                                   options.spec, 
+                                   #options.antenna,
+                                   "RX2",
+                                   options.clock_source, options.verbose)
+
+        self.sink = uhd_transmitter(options.args,
+                                    options.bandwidth, 
+                                    options.tx_freq,
+                                    options.lo_offset,
+                                    #10000000,
+                                    options.tx_gain,
+                                    options.spec, 
+                                    options.antenna,
+                                    options.clock_source, options.verbose)
+
+
+        self.txpath = transmit_path(options)
+        self.rxpath = receive_path(callback, options)
+
+        self.connect(self.txpath, self.sink)
+        self.connect(self.source, self.rxpath)
+        
+        """
+        Set the center frequency we're interested in.
+        """
+
 class RxTopBlock(gr.top_block):
     def __init__(self, callback, options):
         gr.top_block.__init__(self)
@@ -144,7 +179,7 @@ def main():
     vf_len = 8
 
 #rbk test variable
-    global down_payload, up_payload, downnum, upnum
+    global down_payload, up_payload, downnum, upnum, tx_tb
     down_payload = struct.pack('!H', 0 & 0xffff)
     up_payload = struct.pack('!H', 0 & 0xffff)
     downnum = 0
@@ -155,20 +190,24 @@ def main():
 
     def send_beacon_pkt(my_tb, pkt_size, pkt_no):        # BS only
         # payload = prefix + now + beacon + dummy
-
+        payload_header = struct.pack('!H', 0x4141)
+        payload_size = struct.pack('!H', 0x0000)
         payload_prefix = struct.pack('!H', pkt_no & 0xffff)
         beacon = struct.pack('!H', PacketType.BEACON.index & 0xffff)
         data_size = len(payload_prefix) + TIMESTAMP_LEN + len(beacon)
         dummy = (pkt_size - data_size) * chr(pkt_no & 0xff)
         now_timestamp = my_tb.sink.get_time_now().get_real_secs()
         now_timestamp_str = '{:.3f}'.format(now_timestamp)
-        payload = payload_prefix + now_timestamp_str + beacon + dummy
+        payload = payload_header + payload_size + payload_prefix + now_timestamp_str + beacon + dummy
+        payload_size = struct.pack('!H', len(payload) & 0xffff)    
+        payload = payload_header + payload_size + payload_prefix + now_timestamp_str + beacon + dummy
         my_tb.txpath.send_pkt(payload)
         logger.info("{} broadcast BEACON - {}".format(str(datetime.fromtimestamp(now_timestamp)), pkt_no))
 
     def send_test_pkt(my_tb, pkt_size, pkt_no, numdata):       
         # payload = prefix + now + beacon + data + dummy
-
+        payload_header = struct.pack('!H', 0x4141)
+        payload_size = struct.pack('!H', 0x0000)
         payload_prefix = struct.pack('!H', pkt_no & 0xffff)
         testdown = struct.pack('!H', PacketType.RBKTESTDOWN.index & 0xffff)
         data = struct.pack('!H',numdata & 0xffff)
@@ -176,9 +215,12 @@ def main():
         dummy = (pkt_size - data_size) * chr(pkt_no & 0xff)
         now_timestamp = my_tb.sink.get_time_now().get_real_secs()
         now_timestamp_str = '{:.3f}'.format(now_timestamp)
-        payload = payload_prefix + now_timestamp_str + testdown + data + dummy
-        my_tb.txpath.send_pkt(payload)
-        logger.info("{} data down {:x} - {}".format(str(datetime.fromtimestamp(now_timestamp)), numdata, pkt_no))
+        payload = payload_header + payload_size + payload_prefix + now_timestamp_str + testdown + data + dummy
+        payload_size = struct.pack('!H', len(payload) & 0xffff)    
+        payload = payload_header + payload_size + payload_prefix + now_timestamp_str + testdown + data + dummy
+       
+        my_tb.txpath.send_pkt(payload)    
+#        logger.info(">{:x}\n".format(numdata))
 
     # Deprecated
     # def send_resp_beacon_pkt(my_tb, pkt_size, pkt_no):     # Node only
@@ -251,28 +293,33 @@ def main():
         global n_rcvd, n_right, mean_delta, next_tx_ts, stop_rx_ts, nodes_sync_delta, listen_only_to
 
         n_rcvd += 1
+        
+        while(ord(payload[0])!=0xff or ord(payload[1])!=0xff):
+            payload = payload[1:]
+            if len(payload)<=2:
+                return
 
-        (pktno,) = struct.unpack('!H', payload[0:2])
+        (pktno,) = struct.unpack('!H', payload[4:6])
         # Filter out incorrect pkt
         if pktno >= wrong_pktno:
             logger.warning("wrong pktno {}. Drop pkt!".format(pktno))
             return
 
         try:
-            pkt_timestamp_str = payload[2:2+TIMESTAMP_LEN]
+            pkt_timestamp_str = payload[6:6+TIMESTAMP_LEN]
             pkt_timestamp = float(pkt_timestamp_str)
         except:
             logger.warning("Timestamp {} is not a float. Drop pkt!".format(pkt_timestamp_str))
             return
 
         now_timestamp = tx_tb.source.get_time_now().get_real_secs()
-        # now_timestamp_str = '{:.3f}'.format(now_timestamp)
-        delta = now_timestamp - pkt_timestamp   # +ve: Node earlier; -ve: BS earlier
-        if not -5 < delta < 5:
-            logger.warning("Delay out-of-range: {}, timestamp {}. Drop pkt!".format(delta, pkt_timestamp_str))
-            return
+#        # now_timestamp_str = '{:.3f}'.format(now_timestamp)
+#        delta = now_timestamp - pkt_timestamp   # +ve: Node earlier; -ve: BS earlier
+#        if not -5 < delta < 5:
+#            logger.warning("Delay out-of-range: {}, timestamp {}. Drop pkt!".format(delta, pkt_timestamp_str))
+#            return
 
-        (pkt_type,) = struct.unpack('!H', payload[2+TIMESTAMP_LEN:2+TIMESTAMP_LEN+2])
+        (pkt_type,) = struct.unpack('!H', payload[6+TIMESTAMP_LEN:6+TIMESTAMP_LEN+2])
         # if pkt_type not in [PacketType.RESPOND_BEACON.index, PacketType.PS_PKT.index]:
         if pkt_type not in [PacketType.PS_PKT.index, PacketType.VFS_PKT.index,
                             PacketType.RBKTESTUP.index]:
@@ -306,10 +353,10 @@ def main():
 
         if pkt_type == PacketType.RBKTESTUP.index:
             global upnum
-            (num,) = struct.unpack('!H',payload[4+TIMESTAMP_LEN:6+TIMESTAMP_LEN])
-            logger.info("get RBKTESTUP {:x}".format(num))
+            (num,) = struct.unpack('!H',payload[8+TIMESTAMP_LEN:10+TIMESTAMP_LEN])
+#            logger.info"get RBKTESTUP {:x}".format(num))
             upnum = num
-            something_upload_event.set()
+#            something_upload_event.set()
             return
             
         if pkt_type == PacketType.PS_PKT.index:
@@ -554,7 +601,8 @@ def main():
         logger.info("I am Node {}".format(options.args))
         logger.info("----------------------------------------------------------\n")          
     # build tx/rx tables
-    tx_tb = TxTopBlock(options)
+#    tx_tb = TxTopBlock(options)
+    tx_tb = my_top_block(rx_bs_callback,options)  
 #    if IS_BS_ROLE:
         #rx_tb = RxTopBlock(rx_bs_callback, options)
 #        rx_tb = RxTopBlock(rx_bs_callback, options)
@@ -606,10 +654,10 @@ def main():
     
     for y in range(REPEAT_TEST_COUNT):
 
-        logger.info("====== ROUND {} ==========================================".format(y+1))
+#        logger.info("====== ROUND {} ==========================================".format(y+1))
 
 
-        ##################### SYNC : START #####################
+        #################### SYNC : START #####################
 
 #        if IS_BS_ROLE:
 #            ################# BS #################
@@ -618,10 +666,10 @@ def main():
 #            sync_counts = 2
 #            for z in range(sync_counts):
 #            # Note: TX cannot be lock initially
-#                if z == 0 and y == 0:
-#                    rx_tb.lock()
-#                else:
-#                    tx_tb.unlock()
+##                if z == 0 and y == 0:
+##                    rx_tb.lock()
+##                else:
+##                    tx_tb.unlock()
 #
 #                logger.info("------ Broadcast Beacon ------")
 #                _start = tx_tb.sink.get_time_now().get_real_secs()
@@ -629,7 +677,7 @@ def main():
 #                do_every_beacon(0.005, send_beacon_pkt, tx_tb, pkt_size, MAX_PKT_AMT)
 #                # Clocking thread
 #                check_thread_is_done(MAX_PKT_AMT)
-#                _end = rx_tb.source.get_time_now().get_real_secs()
+#                _end = tx_tb.source.get_time_now().get_real_secs()
 #                logger.info(" - duration {} -".format(_end - _start))
 #                logger.info("------ Broadcast Beacon end --------")
 #                tx_tb.lock()
@@ -639,7 +687,7 @@ def main():
 #                logger.info("Sleep for {} second\n".format(sleep_sec))
 #                usrp_sleep(sleep_sec)
 #
-#            logger.info(" - Sync duration {} -\n".format(rx_tb.source.get_time_now().get_real_secs() - _sync_start))
+#            logger.info(" - Sync duration {} -\n".format(tx_tb.source.get_time_now().get_real_secs() - _sync_start))
 #
 #            # # Deprecated. PROF TSENG: No need response-beacon, might cause collision
 #            # rx_tb.unlock()
@@ -651,11 +699,11 @@ def main():
 #            #     # logger.debug("now {} next {}".format(str(datetime.fromtimestamp(now_ts)), str(datetime.fromtimestamp(next_tx_ts))))
 #            # logger.info("------ Stop listen at {} ------".format(str(datetime.fromtimestamp(now_ts))))
 #            # rx_tb.lock()
-#            ################ BS end ##############
-#
-#
+            ################ BS end ##############
+
+
 #        else:
-#            ################ Node ################
+            ################ Node ################
 #            # Note: TX cannot be lock initially
 #            if y != 0:
 #                rx_tb.unlock()
@@ -702,23 +750,31 @@ def main():
       
         if options.scheme == Scheme.VFS.key:
             ################### Virtual Frame Scheme: START ###################
-            logger.info("start rbk test")
+       
+        
             if IS_BS_ROLE:
 
-                if xmode == txrx.rx:
- #                   rx_tb.lock()
-                    xmode=txrx.tx
+#                if xmode == txrx.rx:
+# #                   rx_tb.lock()
+#                    xmode=txrx.tx
                
-                    
-                downnum = downnum + 1
-                send_test_pkt(tx_tb, pkt_size, 0, downnum)
+#                tx_tb.source._print_verbage()    
+#                tx_tb.sink._print_verbage()  
                 
-#                rx_tb.unlock()
+#                logger.info("<{:x}\n".format(upnum))
+                send_test_pkt(tx_tb, pkt_size, 0, downnum)
+                downnum = upnum + 1
+
+
+##                rx_tb.unlock()#                tx_tb.stop()                
+#                tx_tb.wait()
+#                tx_tb.start() 
 #                xmode = txrx.rx
-#                time.sleep(1)
-#
-#                if False == something_upload_event.wait(1):
+#                time.sleep(0.1)
+##
+#                if False == something_upload_event.wait(0.1):
 #                    continue
+                
 #                something_upload_event.clear()
                     
                 ################################                
@@ -908,4 +964,7 @@ if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt:
+        tx_tb.stop()
+        tx_tb.wait()
+        logger.info("program out")
         pass
