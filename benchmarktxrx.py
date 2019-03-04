@@ -118,6 +118,8 @@ def main():
                       help="set megabytes to transmit [default=%default]")
     parser.add_option("-s", "--size", type="eng_float", default=400,
                       help="set packet size [default=%default]")
+    parser.add_option("-p", "--packno", type="eng_float", default=0,
+                      help="set packet number [default=%default]")
 
     transmit_path.add_options(parser, expert_grp)
     digital.ofdm_mod.add_options(parser, expert_grp)
@@ -134,6 +136,9 @@ def main():
             sys.stderr.write("You must specify -f FREQ or --freq FREQ\n")
             parser.print_help(sys.stderr)
             sys.exit(1)
+    if options.packno is not None:
+	packno_delta = options.packno
+	print "assign pktno start: %d" % packno_delta
 
     # build the graph
     tb = my_top_block(rx_callback, options)
@@ -156,8 +161,8 @@ def main():
             data = source_file.read(pkt_size - 2)
             if data == '':
                 break;
-
-        payload = struct.pack('!H', pktno & 0xffff) + data
+	
+        payload = struct.pack('!H', (pktno+int(packno_delta)) & 0xffff) + data
         send_pkt(payload)
         n += len(payload)
         sys.stderr.write('.')
