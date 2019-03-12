@@ -204,6 +204,10 @@ def main():
 
     (options, args) = parser.parse_args ()
 
+    # Decide is BS or Node role
+    IS_BS_ROLE = options.args
+    logger.critical("I am BS")
+
     if options.from_file is None:
         if options.rx_freq is None:
             sys.stderr.write("You must specify -f FREQ or --freq FREQ\n")
@@ -227,25 +231,26 @@ def main():
     pktno = 0
     pkt_size = int(options.size)
 
-    while n < nbytes:
-        if options.from_file is None:
-            data = (pkt_size - 2) * chr(pktno & 0xff) 
-        else:
-            data = source_file.read(pkt_size - 2)
-            if data == '':
-                break;
-	#prepare 
-        vfs_model.generate_seed_v_frame_rand_frame(TEST_NODE_LIST)
-        #send boardcast
-        vfs_model.broadcast_vfs_pkt(tb, pkt_size, len(TEST_NODE_LIST),pktno+int(packno_delta))
-                
-        #payload = struct.pack('!H', (pktno+int(packno_delta)) & 0xffff) + data
-        #send_pkt(payload)
-        #n += len(payload)
-        sys.stderr.write('.')
-        if options.discontinuous and pktno % 5 == 4:
-            time.sleep(1)
-        pktno += 1
+    if IS_BS_ROLE:
+	    while n < nbytes:
+		if options.from_file is None:
+		    data = (pkt_size - 2) * chr(pktno & 0xff) 
+		else:
+		    data = source_file.read(pkt_size - 2)
+		    if data == '':
+		        break;
+		#prepare 
+		vfs_model.generate_seed_v_frame_rand_frame(TEST_NODE_LIST)
+		#send boardcast
+		vfs_model.broadcast_vfs_pkt(tb, pkt_size, len(TEST_NODE_LIST),pktno+int(packno_delta))
+		        
+		#payload = struct.pack('!H', (pktno+int(packno_delta)) & 0xffff) + data
+		#send_pkt(payload)
+		#n += len(payload)
+		sys.stderr.write('.')
+		if options.discontinuous and pktno % 5 == 4:
+		    time.sleep(1)
+		pktno += 1
         
     send_pkt(eof=True)
     time.sleep(2)               # allow time for queued packets to be sent
