@@ -151,7 +151,7 @@ def main():
     def rx_callback(ok, payload):
         global n_rcvd, n_right
         n_rcvd += 1
-	
+	logger.warning("test")
         # Filter out incorrect pkt
         if ok:
             n_right += 1
@@ -310,6 +310,7 @@ def main():
 		    time.sleep(1)
 		pktno += 1
     else: #NODE
+	print "*"
 	node_rx_sem.acquire()
         (pktno, alloc_index,pkt_timestamp,now_timestamp) = node_rx_q.get()
     	time.sleep(alloc_index*0.5)
