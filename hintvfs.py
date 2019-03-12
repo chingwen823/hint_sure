@@ -301,7 +301,8 @@ def main():
 		vfs_model.generate_seed_v_frame_rand_frame(TEST_NODE_LIST)
 		#send boardcast
 		vfs_model.broadcast_vfs_pkt(tb, pkt_size, len(TEST_NODE_LIST),pktno+int(packno_delta))
-		        
+		
+        time.sleep(len(TEST_NODE_LIST)*NODE_SLOT_TIME)        
 		#payload = struct.pack('!H', (pktno+int(packno_delta)) & 0xffff) + data
 		#send_pkt(payload)
 		#n += len(payload)
@@ -310,12 +311,12 @@ def main():
 		    time.sleep(1)
 		pktno += 1
     else: #NODE
-	print "*"
-	node_rx_sem.acquire()
-        (pktno, alloc_index,pkt_timestamp,now_timestamp) = node_rx_q.get()
-    	time.sleep(alloc_index*0.5)
-        vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "heLLo", pktno)
-	node_rx_sem.release()
+        while(True):
+	        node_rx_sem.acquire()
+            (pktno, alloc_index,pkt_timestamp,now_timestamp) = node_rx_q.get()
+        	time.sleep(alloc_index*NODE_SLOT_TIME)
+            vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "heLLo", pktno)
+	        node_rx_sem.release()
 
     send_pkt(eof=True)
     time.sleep(2)               # allow time for queued packets to be sent
