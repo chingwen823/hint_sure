@@ -53,7 +53,14 @@ from vf_scheme import VirtualFrameScheme
 #presum
 NODE_SLOT_TIME = .5     # seconds
 TIMESTAMP_LEN = 14  # 26 # len(now)
-
+# Node: Use device serial number as Node ID
+NODE_ID = ''
+# BS: Use device serial number as Node ID
+# NODE_ID = '3094D5C'     # B210
+# NODE_ID = '30757AF'     # N210
+# NODE_ID = '3075786'     # N210
+NODE_ID_LEN = 10
+NODE_ID = NODE_ID.zfill(NODE_ID_LEN)
 # BS: presume all known Node IDs
 NODE_ID_A, NODE_ID_B = '00030757AF', '0003075786'   # N210
 NODE_ID_C = '0003094D5C'    # B210
@@ -152,7 +159,7 @@ def main():
 
         if pkt_type == PacketType.VFS_BROADCAST.index:
             node_amount = vfs_model.get_node_amount(payload)
-            seed = ps_model.get_seed(payload)
+            seed = vfs_model.get_seed(payload)
             try:
                 begin_timestamp_str = vfs_model.get_begin_time_str(payload)
                 begin_timestamp = float(begin_timestamp_str)
@@ -208,6 +215,14 @@ def main():
     IS_BS_ROLE = options.args
     if IS_BS_ROLE:
     	logger.critical("I am BS")
+    else:
+        # Use device serial number as Node ID
+        NODE_ID = tx_tb.sink.get_usrp_mboard_serial()
+        # Append to required length
+        NODE_ID = NODE_ID.zfill(NODE_ID_LEN)
+        assert len(NODE_ID) == NODE_ID_LEN, "USRP NODE_ID {} len must be {}".format(NODE_ID, NODE_ID_LEN)
+        logger.info("\nNODE ID: {}".format(NODE_ID))
+	logger.critical("I am Node {}".format(NODE_ID))
 
     if options.from_file is None:
         if options.rx_freq is None:
