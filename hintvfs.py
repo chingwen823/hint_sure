@@ -44,9 +44,9 @@ import struct, sys
 ######################################
 import numpy
 from enum import Enum 
-
+from gnuradio import uhd
 import logging.config
-
+from datetime import datetime
 # protocol
 from vf_scheme import VirtualFrameScheme
 
@@ -206,7 +206,8 @@ def main():
 
     # Decide is BS or Node role
     IS_BS_ROLE = options.args
-    logger.critical("I am BS")
+    if IS_BS_ROLE:
+    	logger.critical("I am BS")
 
     if options.from_file is None:
         if options.rx_freq is None:
@@ -220,6 +221,13 @@ def main():
     # build the graph
     tb = my_top_block(rx_callback, options)
 
+    # USRP device aligns with PC time (NTP)
+    pc_now = time.time()
+    tb.sink.set_time_now(uhd.time_spec(pc_now))
+    now_ts = tb.sink.get_time_now().get_real_secs()
+    logger.info("\n{} Adjust to PC time: {}\n".format(
+                str(datetime.fromtimestamp(time.time())), str(datetime.fromtimestamp(now_ts))))
+ 
     r = gr.enable_realtime_scheduling()
     if r != gr.RT_OK:
         print "Warning: failed to enable realtime scheduling"
