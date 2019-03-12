@@ -152,8 +152,7 @@ def main():
         global n_rcvd, n_right
         n_rcvd += 1
         
-        logger.critical("*************************test********************")
-	
+
         # Filter out incorrect pkt
         if ok:
             n_right += 1
@@ -164,7 +163,7 @@ def main():
         else:
 	        logger.warning("Packet fail. Drop pkt!")
 	        return
-        return 
+   
 
         (pktno,) = struct.unpack('!H', payload[0:2])
 
@@ -230,11 +229,11 @@ def main():
                                 str(datetime.fromtimestamp(pkt_timestamp)),
                                 node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame))
 	    if not in_rand_frame: #put info into queue, and fire upload event
-	        print "firsgt upload pkt after {:F}s".format((alloc_index+1)*NODE_SLOT_TIME)
-	        my_thread = threading.Timer((alloc_index+1)*NODE_SLOT_TIME,vfs_model.send_vfs_pkt,[NODE_id,tb,pkt_size,"hello",pktno])
-	        my_thread.start()
-	        #node_rx_q.put((pktno, alloc_index,pkt_timestamp,now_timestamp))	
-	        #node_rx_sem.release()
+	        #print "firsgt upload pkt after {:F}s".format((alloc_index+1)*NODE_SLOT_TIME)
+	        #my_thread = threading.Timer((alloc_index+1)*NODE_SLOT_TIME,vfs_model.send_vfs_pkt,[NODE_ID,tb,pkt_size,"hello",pktno])
+	        #my_thread.start()
+	        node_rx_q.put((pktno, alloc_index,pkt_timestamp,now_timestamp))	
+	        node_rx_sem.release()
             # logger.debug("begin {}, stop_rx_ts {}, next_tx_ts {}".format(
             #     str(datetime.fromtimestamp(begin_timestamp)), str(datetime.fromtimestamp(stop_rx_ts)),
             #     str(datetime.fromtimestamp(next_tx_ts))))
@@ -300,23 +299,34 @@ def main():
     pkt_size = int(options.size)
     
     def bsthreadjob(stop_event,pktno,IS_BS):
-        while not stop_event.is_set():
- 		    #prepare
-	        vfs_model.generate_seed_v_frame_rand_frame(TEST_NODE_LIST)
-	        #send boardcast
-	        print "send out pkt"
-	        vfs_model.broadcast_vfs_pkt(tb, pkt_size, len(TEST_NODE_LIST),pktno+int(packno_delta))
-	        print "sleep {:f} for next run".format(len(TEST_NODE_LIST)*NODE_SLOT_TIME) 
-	        time.sleep(len(TEST_NODE_LIST)*NODE_SLOT_TIME)
-	        print "wake up"
-	        sys.stderr.write('.')
-	        pktno += 1  
+        if IS_BS:
+            while not stop_event.is_set():
+     		    #prepare
+	            vfs_model.generate_seed_v_frame_rand_frame(TEST_NODE_LIST)
+	            #send boardcast
+	            print "send out pkt"
+	            vfs_model.broadcast_vfs_pkt(tb, pkt_size, len(TEST_NODE_LIST),pktno+int(packno_delta))
+	            print "sleep {:f} for next run".format(len(TEST_NODE_LIST)*NODE_SLOT_TIME) 
+	            time.sleep(len(TEST_NODE_LIST)*NODE_SLOT_TIME)
+	            print "wake up"
+	            sys.stderr.write('.')
+	            pktno += 1  
+        else: #NODE
+            while not stop_event.is_set():
+                if node_rx_sem.acquire(False):
+                    print "process incoming data"
+                    (pktno, alloc_index,pkt_timestamp,now_timestamp) = node_rx_q.get()
+                    #time.sleep(alloc_index*NODE_SLOT_TIME)
+                    vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "heLLo", pktno)
+                    node_rx_sem.release
+                else:
+                    time.sleep(1)
 		        
-    if IS_BS_ROLE:
-        bsthread_event = threading.Event()
-        bsthread = threading.Thread(target = bsthreadjob, args = (bsthread_event,pktno,IS_BS_ROLE,))
-        bsthread.daemon = True #make it a daemon thread
-        bsthread.start()
+    
+    bsthread_event = threading.Event()
+    bsthread = threading.Thread(target = bsthreadjob, args = (bsthread_event,pktno,IS_BS_ROLE,))
+    bsthread.daemon = True #make it a daemon thread
+    bsthread.start()
         
      
 #	    while True:
