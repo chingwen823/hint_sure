@@ -47,11 +47,15 @@ from enum import Enum
 from gnuradio import uhd
 import logging.config
 from datetime import datetime
+import threading
+import Queue
 # protocol
 from vf_scheme import VirtualFrameScheme
 
 #presum
+NODE_RX_MAX = 10
 NODE_SLOT_TIME = .5     # seconds
+TRANSMIT_DELAY = .1     # seconds
 TIMESTAMP_LEN = 14  # 26 # len(now)
 # Node: Use device serial number as Node ID
 NODE_ID = ''
@@ -127,7 +131,14 @@ def main():
     
     #import protocol model
     vfs_model = VirtualFrameScheme(PacketType.VFS_BROADCAST.index, PacketType.VFS_PKT.index, NODE_SLOT_TIME)
+    
+    #node rx queue/event
+    global node_rx_q, node_rx_sem
+    node_rx_q = Queue.Queue(maxsize = NODE_RX_MAX)
+    node_rx_sem = threading.Semaphore(NODE_RX_MAX) #up to the queue size
 
+    for i in range(NODE_RX_MAX): # make all semaphore in 0 status
+	node_rx_sem.acquire()
 
     def send_pkt(payload='', eof=False):
         return tb.txpath.send_pkt(payload, eof)
@@ -142,19 +153,46 @@ def main():
         n_rcvd += 1
 	
         # Filter out incorrect pkt
-        if not ok:
+        if ok:
+            n_right += 1
+	else:
             logger.warning("Packet fail. Drop pkt!")
             return
-	
-        n_right += 1
 
         (pktno,) = struct.unpack('!H', payload[0:2])
 
+        try:
+            pkt_timestamp_str = payload[2:2+TIMESTAMP_LEN]
+            pkt_timestamp = float(pkt_timestamp_str)
+        except:
+            logger.warning("Timestamp {} is not a float. Drop pkt!".format(pkt_timestamp_str))
+            return
+
+        now_timestamp = tb.source.get_time_now().get_real_secs()
+        # now_timestamp_str = '{:.3f}'.format(now_timestamp)
+        delta = now_timestamp - pkt_timestamp   # +ve: BS earlier; -ve: Node earlier
+        if not -5 < delta < 5:
+            logger.warning("Delay out-of-range: {}, timestamp {}. Drop pkt!".format(delta, pkt_timestamp_str))
+            return
 
         (pkt_type,) = struct.unpack('!H', payload[2+TIMESTAMP_LEN:2+TIMESTAMP_LEN+2])
-        if pkt_type not in [PacketType.BEACON.index, PacketType.ACK_RESPOND.index,
-                            PacketType.PS_BROADCAST.index, PacketType.VFS_BROADCAST.index]:
+        if pkt_type not in [PacketType.VFS_BROADCAST.index, PacketType.VFS_PKT.index]:
             logger.warning("Invalid pkt_type {}. Drop pkt!".format(pkt_type))
+            return
+
+        if pkt_type == PacketType.VFS_PKT.index:
+            for i, tpl in enumerate(vfs_model.nodes_expect_time):
+                node_id, begin_at, end_at = tpl
+                if begin_at <= now_timestamp <= end_at:
+                    logger.info("{} ({}) [Slot {}: Node {} Session] BS recv VFS_PKT {}, data: {}".format(
+                        str(datetime.fromtimestamp(now_timestamp)), now_timestamp, i, node_id, pktno,
+                        vfs_model.get_node_data(payload)))
+                    return
+
+            logger.info("{} ({}) [No slot/session] BS recv VFS_PKT {}, data: {}".format(
+                str(datetime.fromtimestamp(now_timestamp)), now_timestamp, pktno, vfs_model.get_node_data(payload)))
+            # Last timestamp for VFS_PKT session
+            #next_tx_ts = vfs_model.nodes_expect_time[-1][-1] + 0.2   # add some delay
             return
 
         if pkt_type == PacketType.VFS_BROADCAST.index:
@@ -184,6 +222,9 @@ def main():
                         .format(str(datetime.fromtimestamp(now_timestamp)), pktno,
                                 str(datetime.fromtimestamp(pkt_timestamp)),
                                 node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame))
+	    #put info into queue, and fire upload event
+	    node_rx_q.put((pktno, alloc_index,pkt_timestamp,now_timestamp))	
+	    node_rx_sem.release()
             # logger.debug("begin {}, stop_rx_ts {}, next_tx_ts {}".format(
             #     str(datetime.fromtimestamp(begin_timestamp)), str(datetime.fromtimestamp(stop_rx_ts)),
             #     str(datetime.fromtimestamp(next_tx_ts))))
@@ -213,16 +254,7 @@ def main():
 
     # Decide is BS or Node role
     IS_BS_ROLE = options.args
-    if IS_BS_ROLE:
-    	logger.critical("I am BS")
-    else:
-        # Use device serial number as Node ID
-        NODE_ID = tx_tb.sink.get_usrp_mboard_serial()
-        # Append to required length
-        NODE_ID = NODE_ID.zfill(NODE_ID_LEN)
-        assert len(NODE_ID) == NODE_ID_LEN, "USRP NODE_ID {} len must be {}".format(NODE_ID, NODE_ID_LEN)
-        logger.info("\nNODE ID: {}".format(NODE_ID))
-	logger.critical("I am Node {}".format(NODE_ID))
+
 
     if options.from_file is None:
         if options.rx_freq is None:
@@ -242,6 +274,9 @@ def main():
     now_ts = tb.sink.get_time_now().get_real_secs()
     logger.info("\n{} Adjust to PC time: {}\n".format(
                 str(datetime.fromtimestamp(time.time())), str(datetime.fromtimestamp(now_ts))))
+
+    # get this node id
+    NODE_ID = tb.sink.get_usrp_mboard_serial()
  
     r = gr.enable_realtime_scheduling()
     if r != gr.RT_OK:
@@ -274,7 +309,13 @@ def main():
 		if options.discontinuous and pktno % 5 == 4:
 		    time.sleep(1)
 		pktno += 1
-        
+    else: #NODE
+	node_rx_sem.acquire()
+        (pktno, alloc_index,pkt_timestamp,now_timestamp) = node_rx_q.get()
+    	time.sleep(alloc_index*0.5)
+        vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "heLLo", pktno)
+	node_rx_sem.release()
+
     send_pkt(eof=True)
     time.sleep(2)               # allow time for queued packets to be sent
     tb.wait()                       # wait for it to finish
