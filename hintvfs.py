@@ -95,12 +95,16 @@ PacketType = Enum(
     'DATA')
 
 #logger config
-log_parser = ArgumentParser()
-log_parser.add_argument('--logfile', dest='log_file', help='log to filename', default='hintvfs.log')
-args, unknown = log_parser.parse_known_args()
-logging.config.fileConfig('logging.ini', defaults={'log_file': args.log_file})
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+#log_parser = ArgumentParser()
+#log_parser.add_argument('--logfile', dest='log_file', help='log to filename', default='hintvfs.log')
+#args, unknown = log_parser.parse_known_args()
+#logging.config.fileConfig('logging.ini', defaults={'log_file': args.log_file})
+logging.basicConfig(level=logging.INFO,
+            format='%(name)-12s %(levelname)-8s %(message)s')
+logger = logging.getLogger('hintvfs')
+logger.setLevel(logging.WARN)
+
+
 
 class my_top_block(gr.top_block):
     def __init__(self, callback, options):
@@ -139,7 +143,8 @@ class my_top_block(gr.top_block):
 	self.connect(self.txpath, self.sink)
         
 
-def action(tb, vfs_model,payload):
+def action(tb, vfs_model, payload):
+
 	(pktno,) = struct.unpack('!H', payload[0:2])
 
 	try:
@@ -160,16 +165,22 @@ def action(tb, vfs_model,payload):
 	if pkt_type not in [PacketType.VFS_BROADCAST.index, PacketType.VFS_PKT.index]:
 	    logger.warning("Invalid pkt_type {}. Drop pkt!".format(pkt_type))
 	    return
-
-	if pkt_type == PacketType.VFS_PKT:
+        print "pkt type"
+	if pkt_type == PacketType.VFS_PKT.index:
+	    print "pkt VFS"	
 	    for i, tpl in enumerate(vfs_model.nodes_expect_time):
 		node_id, begin_at, end_at = tpl
 		if begin_at <= now_timestamp <= end_at:
+		    print "{} ({}) [Slot {}: Node {} Session] BS recv VFS_PKT.index {}, data: {}".format(
+		        str(datetime.fromtimestamp(now_timestamp)), now_timestamp, i, node_id, pktno,
+		        vfs_model.get_node_data(payload))
+
 		    logger.info("{} ({}) [Slot {}: Node {} Session] BS recv VFS_PKT.index {}, data: {}".format(
 		        str(datetime.fromtimestamp(now_timestamp)), now_timestamp, i, node_id, pktno,
 		        vfs_model.get_node_data(payload)))
 		    return
-
+	    print "{} ({}) [No slot/session] BS recv VFS_PKT {}, data: {}".format(
+		str(datetime.fromtimestamp(now_timestamp)), now_timestamp, pktno, vfs_model.get_node_data(payload))
 	    logger.info("{} ({}) [No slot/session] BS recv VFS_PKT {}, data: {}".format(
 		str(datetime.fromtimestamp(now_timestamp)), now_timestamp, pktno, vfs_model.get_node_data(payload)))
 	    # Last timestamp for VFS_PKT session
@@ -250,7 +261,7 @@ def main():
         # Filter out incorrect pkt
         if ok:
             n_right += 1
-	    logger.warning("I get something right!")
+	    logger.warning("I get something right!{}".format(n_right))
             #put info into queue, and fire upload event
             node_rx_q.put(payload)
             node_rx_sem.release()
@@ -327,63 +338,36 @@ def main():
     n = 0
     pktno = 0
     pkt_size = int(options.size)
-    print "default pkt size {}".format(int(options.size))
-    
-    def bsthreadjob(stop_event,pktno,IS_BS):
+
+    def threadjob(stop_event,pktno,IS_BS):
 	while not stop_event.is_set():
-            if IS_BS:
-            
+            if IS_BS:            
      		#prepare
 	        vfs_model.generate_seed_v_frame_rand_frame(TEST_NODE_LIST)
 	        #send boardcast
 	        vfs_model.broadcast_vfs_pkt(tb, pkt_size, len(TEST_NODE_LIST),pktno+int(packno_delta))
-		sys.stderr.write('.')
 	        time.sleep(len(TEST_NODE_LIST)*NODE_SLOT_TIME)	            
 	        pktno += 1  
             
-	    while node_rx_sem.acquire(False):
-	        print "process incoming data"
+	    while node_rx_sem.acquire(False):   
 	        payload = node_rx_q.get()
                 action(tb, vfs_model, payload)
+                #here we need to decode the payload first
 		if not IS_BS:
 	            vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "**heLLo**", pktno)
-	        node_rx_sem.release
-
-		        
+	        node_rx_sem.release       
     
-    bsthread_event = threading.Event()
-    bsthread = threading.Thread(target = bsthreadjob, args = (bsthread_event,pktno,IS_BS_ROLE,))
-    bsthread.daemon = True #make it a daemon thread
-    bsthread.start()
+    thread_event = threading.Event()
+    thread = threading.Thread(target = threadjob, args = (thread_event,pktno,IS_BS_ROLE,))
+    thread.daemon = True #make it a daemon thread
+    thread.start()
         
-     
-#	    while True:
-#		    #prepare
-#		    vfs_model.generate_seed_v_frame_rand_frame(TEST_NODE_LIST)
-		    #send boardcast
-#		    vfs_model.broadcast_vfs_pkt(tb, pkt_size, len(TEST_NODE_LIST),pktno+int(packno_delta))
-#		    time.sleep(len(TEST_NODE_LIST)*NODE_SLOT_TIME)
-#		    sys.stderr.write('.')
-#		    pktno += 1
-		    
-		    
-#    else: #NODE
-#        while(True):
-#	        while node_rx_sem.acquire():
-#	            payload = node_rx_q.get()
-#	            if payload:
-#	                print "Decode payload"
-
-#	        time.sleep(alloc_index*NODE_SLOT_TIME)
-#	        vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "heLLo", pktno)
-#	        node_rx_sem.release()
-
     #send_pkt(eof=True)
     time.sleep(2)               # allow time for queued packets to be sent
     tb.wait()                       # wait for it to finish
     print "wait done"
-    bsthread_event.set()
-    bsthread.join()
+    thread_event.set()
+    thread.join()
     print "join done"
 if __name__ == '__main__':
     try:

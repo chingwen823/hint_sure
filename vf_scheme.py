@@ -26,11 +26,13 @@ SINGLETON_RATE_THRESHOLD = 0.7
 VFS_DATA_LEN = 50
 CALC_COUNT_LIMIT = 20
 
-log_parser = ArgumentParser()
-log_parser.add_argument('--logfile', dest='log_file', help='log to filename', default='vfs_multi_nodes.log')
-args, unknown = log_parser.parse_known_args()
-logging.config.fileConfig('logging.ini', defaults={'log_file': args.log_file})
-logger = logging.getLogger()
+#log_parser = ArgumentParser()
+#log_parser.add_argument('--logfile', dest='log_file', help='log to filename', #default='vfs_multi_nodes.log')
+#args, unknown = log_parser.parse_known_args()
+#logging.config.fileConfig('logging.ini', defaults={'log_file': args.log_file})
+logging.basicConfig(level=logging.DEBUG,
+            format='%(name)-12s %(levelname)-8s %(message)s')
+logger = logging.getLogger('vf_scheme')
 logger.setLevel(logging.INFO)
 
 class VirtualFrameScheme:
