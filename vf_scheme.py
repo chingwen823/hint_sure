@@ -31,7 +31,7 @@ log_parser.add_argument('--logfile', dest='log_file', help='log to filename', de
 args, unknown = log_parser.parse_known_args()
 logging.config.fileConfig('logging.ini', defaults={'log_file': args.log_file})
 logger = logging.getLogger()
-
+logger.setLevel(logging.INFO)
 
 class VirtualFrameScheme:
     alloc_frame = []
@@ -124,7 +124,7 @@ class VirtualFrameScheme:
         # self.alloc_frame += self.rand_frame
         self.seed = salt
 
-        logger.info("Calculated VFS seed: {}, Singleton rate: {}, calculation count: {}, "
+        logger.debug("Calculated VFS seed: {}, Singleton rate: {}, calculation count: {}, "
                     "\nraw v-frame {} \nv-frame {} \nrand-frame {} \nalloc-frame {}".format(
                     salt, SINGLETON_RATE_THRESHOLD, calc_count, raw_v_frame, self.v_frame, self.rand_frame,
                     self.alloc_frame))

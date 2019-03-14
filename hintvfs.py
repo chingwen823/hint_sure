@@ -49,6 +49,7 @@ import logging.config
 from datetime import datetime
 import threading
 import Queue
+from argparse import ArgumentParser
 # protocol
 from vf_scheme import VirtualFrameScheme
 
@@ -94,8 +95,12 @@ PacketType = Enum(
     'DATA')
 
 #logger config
-#logging.config.fileConfig('logging.ini', defaults={'log_file': args.log_file})
+log_parser = ArgumentParser()
+log_parser.add_argument('--logfile', dest='log_file', help='log to filename', default='hintvfs.log')
+args, unknown = log_parser.parse_known_args()
+logging.config.fileConfig('logging.ini', defaults={'log_file': args.log_file})
 logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 class my_top_block(gr.top_block):
     def __init__(self, callback, options):
@@ -163,7 +168,7 @@ def main():
     def rx_callback(ok, payload):
         global n_rcvd, n_right
         n_rcvd += 1
-        
+        logger.warning("I get something!")
 
         # Filter out incorrect pkt
         if ok:
