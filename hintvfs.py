@@ -43,7 +43,7 @@ import struct, sys
 #  Hint protocol import and defines 
 ######################################
 import numpy
-from enum import IntEnum 
+from enum import Enum 
 from gnuradio import uhd
 import logging.config
 from datetime import datetime
@@ -70,17 +70,28 @@ NODE_ID_A, NODE_ID_B = '00030757AF', '0003075786'   # N210
 NODE_ID_C = '0003094D5C'    # B210
 TEST_NODE_LIST = [NODE_ID_A, NODE_ID_B, NODE_ID_C, '0000000004', '0000000005',
                   '0000000006', '0000000007', '0000000008', '0000000009', '0000000010']
-class PacketType(IntEnum):
-    NONE=0
-    BEACON=1
-    RESPOND_BEACON=2
-    ACK_RESPOND=3
-    PS_BROADCAST=4
-    PS_PKT=5
-    VFS_BROADCAST=6
-    VFS_PKT=7
-    CONFIRM_ALLOC=8
-    DATA=9
+#class PacketType(IntEnum):
+#    NONE=0
+#    BEACON=1
+#    RESPOND_BEACON=2
+#    ACK_RESPOND=3
+#    PS_BROADCAST=4
+#    PS_PKT=5
+#    VFS_BROADCAST=6
+#    VFS_PKT=7
+#    CONFIRM_ALLOC=8
+#    DATA=9
+PacketType = Enum(
+    'NONE',
+    'BEACON',
+    'RESPOND_BEACON',
+    'ACK_RESPOND',
+    'PS_BROADCAST',
+    'PS_PKT',
+    'VFS_BROADCAST',
+    'VFS_PKT',
+    'CONFIRM_ALLOC',
+    'DATA')
 
 #logger config
 #logging.config.fileConfig('logging.ini', defaults={'log_file': args.log_file})
@@ -130,7 +141,7 @@ class my_top_block(gr.top_block):
 def main():
     
     #import protocol model
-    vfs_model = VirtualFrameScheme(PacketType.VFS_BROADCAST, PacketType.VFS_PKT
+    vfs_model = VirtualFrameScheme(PacketType.VFS_BROADCAST.index, PacketType.VFS_PKT.index
 , NODE_SLOT_TIME)
     
     #node rx queue/event
@@ -183,7 +194,7 @@ def main():
             return
 
         (pkt_type,) = struct.unpack('!H', payload[2+TIMESTAMP_LEN:2+TIMESTAMP_LEN+2])
-        if pkt_type not in [PacketType.VFS_BROADCAST, PacketType.VFS_PKT]:
+        if pkt_type not in [PacketType.VFS_BROADCAST.index, PacketType.VFS_PKT.index]:
             logger.warning("Invalid pkt_type {}. Drop pkt!".format(pkt_type))
             return
 
@@ -191,7 +202,7 @@ def main():
             for i, tpl in enumerate(vfs_model.nodes_expect_time):
                 node_id, begin_at, end_at = tpl
                 if begin_at <= now_timestamp <= end_at:
-                    logger.info("{} ({}) [Slot {}: Node {} Session] BS recv VFS_PKT {}, data: {}".format(
+                    logger.info("{} ({}) [Slot {}: Node {} Session] BS recv VFS_PKT.index {}, data: {}".format(
                         str(datetime.fromtimestamp(now_timestamp)), now_timestamp, i, node_id, pktno,
                         vfs_model.get_node_data(payload)))
                     return
@@ -202,7 +213,7 @@ def main():
             #next_tx_ts = vfs_model.nodes_expect_time[-1][-1] + 0.2   # add some delay
             return
 
-        if pkt_type == PacketType.VFS_BROADCAST:
+        if pkt_type == PacketType.VFS_BROADCAST.index:
             node_amount = vfs_model.get_node_amount(payload)
             seed = vfs_model.get_seed(payload)
             try:
