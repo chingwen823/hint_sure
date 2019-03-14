@@ -139,9 +139,86 @@ class my_top_block(gr.top_block):
 	self.connect(self.txpath, self.sink)
         
 
+def action(payload):
+	(pktno,) = struct.unpack('!H', payload[0:2])
+
+	try:
+	    pkt_timestamp_str = payload[2:2+TIMESTAMP_LEN]
+	    pkt_timestamp = float(pkt_timestamp_str)
+	except:
+	    logger.warning("Timestamp {} is not a float. Drop pkt!".format(pkt_timestamp_str))
+	    return
+
+	now_timestamp = tb.source.get_time_now().get_real_secs()
+	# now_timestamp_str = '{:.3f}'.format(now_timestamp)
+	delta = now_timestamp - pkt_timestamp   # +ve: BS earlier; -ve: Node earlier
+	if not -5 < delta < 5:
+	    logger.warning("Delay out-of-range: {}, timestamp {}. Drop pkt!".format(delta, pkt_timestamp_str))
+	    return
+
+	(pkt_type,) = struct.unpack('!H', payload[2+TIMESTAMP_LEN:2+TIMESTAMP_LEN+2])
+	if pkt_type not in [PacketType.VFS_BROADCAST.index, PacketType.VFS_PKT.index]:
+	    logger.warning("Invalid pkt_type {}. Drop pkt!".format(pkt_type))
+	    return
+
+	if pkt_type == PacketType.VFS_PKT:
+	    for i, tpl in enumerate(vfs_model.nodes_expect_time):
+		node_id, begin_at, end_at = tpl
+		if begin_at <= now_timestamp <= end_at:
+		    logger.info("{} ({}) [Slot {}: Node {} Session] BS recv VFS_PKT.index {}, data: {}".format(
+		        str(datetime.fromtimestamp(now_timestamp)), now_timestamp, i, node_id, pktno,
+		        vfs_model.get_node_data(payload)))
+		    return
+
+	    logger.info("{} ({}) [No slot/session] BS recv VFS_PKT {}, data: {}".format(
+		str(datetime.fromtimestamp(now_timestamp)), now_timestamp, pktno, vfs_model.get_node_data(payload)))
+	    # Last timestamp for VFS_PKT session
+	    #next_tx_ts = vfs_model.nodes_expect_time[-1][-1] + 0.2   # add some delay
+	    return
+
+	if pkt_type == PacketType.VFS_BROADCAST.index:
+	    node_amount = vfs_model.get_node_amount(payload)
+	    seed = vfs_model.get_seed(payload)
+	    try:
+		begin_timestamp_str = vfs_model.get_begin_time_str(payload)
+		begin_timestamp = float(begin_timestamp_str)
+	    except:
+		logger.warning("begin_timestamp {} is not a float. Drop pkt!".format(begin_timestamp_str))
+		return
+	    try:
+		v_frame = vfs_model.get_v_frame(payload)
+	    except:
+		logger.warning("Cannot extract v-frame. Drop pkt!")
+		return
+	    vf_index = vfs_model.compute_vf_index(len(v_frame), NODE_ID, seed)
+	    alloc_index, in_rand_frame = vfs_model.compute_alloc_index(vf_index, NODE_ID, v_frame, node_amount)
+
+	    stop_rx_ts = now_timestamp + 0.4
+	    # TODO: Duo to various delays, adjust a bit to before firing round up second
+	    next_tx_ts = begin_timestamp + (NODE_SLOT_TIME * alloc_index) - TRANSMIT_DELAY
+
+	    logger.critical("{} Node recv VFS_BROADCAST {}, BS time {}, Total {}, Seed {}, Delay {}, "
+		        "\nv-frame index: {}, alloc-index: {}, fall to rand-frame: {},"
+		        "\nv-frame: {}"
+		        .format(str(datetime.fromtimestamp(now_timestamp)), pktno,
+		                str(datetime.fromtimestamp(pkt_timestamp)),
+		                node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame))
+	    #if not in_rand_frame: #put info into queue, and fire upload event
+		#print "firsgt upload pkt after {:F}s".format((alloc_index+1)*NODE_SLOT_TIME)
+		#my_thread = threading.Timer((alloc_index+1)*NODE_SLOT_TIME,vfs_model.send_vfs_pkt,[NODE_ID,tb,pkt_size,"hello",pktno])
+		#my_thread.start()
+	    #    node_rx_q.put((pktno, alloc_index,pkt_timestamp,now_timestamp))	
+	    #    node_rx_sem.release()
+	    # logger.debug("begin {}, stop_rx_ts {}, next_tx_ts {}".format(
+	    #     str(datetime.fromtimestamp(begin_timestamp)), str(datetime.fromtimestamp(stop_rx_ts)),
+	    #     str(datetime.fromtimestamp(next_tx_ts))))
+	    return
+
+
 # /////////////////////////////////////////////////////////////////////////////
 #                                   main
 # /////////////////////////////////////////////////////////////////////////////
+
 
 def main():
     
@@ -168,93 +245,21 @@ def main():
     def rx_callback(ok, payload):
         global n_rcvd, n_right
         n_rcvd += 1
-        logger.warning("I get something!")
+        
 
         # Filter out incorrect pkt
         if ok:
             n_right += 1
+	    logger.warning("I get something right!")
             #put info into queue, and fire upload event
-            #node_rx_q.put(payload)
-            
-            #node_rx_sem.release()
+            node_rx_q.put(payload)
+            node_rx_sem.release()
         else:
-	        logger.warning("Packet fail. Drop pkt!")
-	        return
-   
+	    logger.warning("Packet fail. Drop pkt!")
+	    return
+   	return
 
-        (pktno,) = struct.unpack('!H', payload[0:2])
 
-        try:
-            pkt_timestamp_str = payload[2:2+TIMESTAMP_LEN]
-            pkt_timestamp = float(pkt_timestamp_str)
-        except:
-            logger.warning("Timestamp {} is not a float. Drop pkt!".format(pkt_timestamp_str))
-            return
-
-        now_timestamp = tb.source.get_time_now().get_real_secs()
-        # now_timestamp_str = '{:.3f}'.format(now_timestamp)
-        delta = now_timestamp - pkt_timestamp   # +ve: BS earlier; -ve: Node earlier
-        if not -5 < delta < 5:
-            logger.warning("Delay out-of-range: {}, timestamp {}. Drop pkt!".format(delta, pkt_timestamp_str))
-            return
-
-        (pkt_type,) = struct.unpack('!H', payload[2+TIMESTAMP_LEN:2+TIMESTAMP_LEN+2])
-        if pkt_type not in [PacketType.VFS_BROADCAST.index, PacketType.VFS_PKT.index]:
-            logger.warning("Invalid pkt_type {}. Drop pkt!".format(pkt_type))
-            return
-
-        if pkt_type == PacketType.VFS_PKT:
-            for i, tpl in enumerate(vfs_model.nodes_expect_time):
-                node_id, begin_at, end_at = tpl
-                if begin_at <= now_timestamp <= end_at:
-                    logger.info("{} ({}) [Slot {}: Node {} Session] BS recv VFS_PKT.index {}, data: {}".format(
-                        str(datetime.fromtimestamp(now_timestamp)), now_timestamp, i, node_id, pktno,
-                        vfs_model.get_node_data(payload)))
-                    return
-
-            logger.info("{} ({}) [No slot/session] BS recv VFS_PKT {}, data: {}".format(
-                str(datetime.fromtimestamp(now_timestamp)), now_timestamp, pktno, vfs_model.get_node_data(payload)))
-            # Last timestamp for VFS_PKT session
-            #next_tx_ts = vfs_model.nodes_expect_time[-1][-1] + 0.2   # add some delay
-            return
-
-        if pkt_type == PacketType.VFS_BROADCAST.index:
-            node_amount = vfs_model.get_node_amount(payload)
-            seed = vfs_model.get_seed(payload)
-            try:
-                begin_timestamp_str = vfs_model.get_begin_time_str(payload)
-                begin_timestamp = float(begin_timestamp_str)
-            except:
-                logger.warning("begin_timestamp {} is not a float. Drop pkt!".format(begin_timestamp_str))
-                return
-            try:
-                v_frame = vfs_model.get_v_frame(payload)
-            except:
-                logger.warning("Cannot extract v-frame. Drop pkt!")
-                return
-            vf_index = vfs_model.compute_vf_index(len(v_frame), NODE_ID, seed)
-            alloc_index, in_rand_frame = vfs_model.compute_alloc_index(vf_index, NODE_ID, v_frame, node_amount)
-
-            stop_rx_ts = now_timestamp + 0.4
-            # TODO: Duo to various delays, adjust a bit to before firing round up second
-            next_tx_ts = begin_timestamp + (NODE_SLOT_TIME * alloc_index) - TRANSMIT_DELAY
-
-            logger.critical("{} Node recv VFS_BROADCAST {}, BS time {}, Total {}, Seed {}, Delay {}, "
-                        "\nv-frame index: {}, alloc-index: {}, fall to rand-frame: {},"
-                        "\nv-frame: {}"
-                        .format(str(datetime.fromtimestamp(now_timestamp)), pktno,
-                                str(datetime.fromtimestamp(pkt_timestamp)),
-                                node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame))
-	    if not in_rand_frame: #put info into queue, and fire upload event
-	        #print "firsgt upload pkt after {:F}s".format((alloc_index+1)*NODE_SLOT_TIME)
-	        #my_thread = threading.Timer((alloc_index+1)*NODE_SLOT_TIME,vfs_model.send_vfs_pkt,[NODE_ID,tb,pkt_size,"hello",pktno])
-	        #my_thread.start()
-	        node_rx_q.put((pktno, alloc_index,pkt_timestamp,now_timestamp))	
-	        node_rx_sem.release()
-            # logger.debug("begin {}, stop_rx_ts {}, next_tx_ts {}".format(
-            #     str(datetime.fromtimestamp(begin_timestamp)), str(datetime.fromtimestamp(stop_rx_ts)),
-            #     str(datetime.fromtimestamp(next_tx_ts))))
-            return
     parser = OptionParser(option_class=eng_option, conflict_handler="resolve")
     expert_grp = parser.add_option_group("Expert")
     parser.add_option("","--discontinuous", action="store_true", default=False,
@@ -322,27 +327,28 @@ def main():
     n = 0
     pktno = 0
     pkt_size = int(options.size)
+    print "default pkt size {}".format(int(options.size))
     
     def bsthreadjob(stop_event,pktno,IS_BS):
-        if IS_BS:
-            while not stop_event.is_set():
-     		    #prepare
-	            vfs_model.generate_seed_v_frame_rand_frame(TEST_NODE_LIST)
-	            #send boardcast
-	            vfs_model.broadcast_vfs_pkt(tb, pkt_size, len(TEST_NODE_LIST),pktno+int(packno_delta))
-		    sys.stderr.write('.')
-	            time.sleep(len(TEST_NODE_LIST)*NODE_SLOT_TIME)	            
-	            pktno += 1  
-        else: #NODE
-            while not stop_event.is_set():
-                if node_rx_sem.acquire(False):
-                    print "process incoming data"
-                    (pktno, alloc_index,pkt_timestamp,now_timestamp) = node_rx_q.get()
-                    #time.sleep(alloc_index*NODE_SLOT_TIME)
-                    vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "**heLLo**", pktno)
-                    node_rx_sem.release
-                else:
-                    time.sleep(1)
+	while not stop_event.is_set():
+            if IS_BS:
+            
+     		#prepare
+	        vfs_model.generate_seed_v_frame_rand_frame(TEST_NODE_LIST)
+	        #send boardcast
+	        vfs_model.broadcast_vfs_pkt(tb, pkt_size, len(TEST_NODE_LIST),pktno+int(packno_delta))
+		sys.stderr.write('.')
+	        time.sleep(len(TEST_NODE_LIST)*NODE_SLOT_TIME)	            
+	        pktno += 1  
+            
+	    while node_rx_sem.acquire(False):
+	        print "process incoming data"
+	        payload = node_rx_q.get()
+                action(payload)
+		if not IS_BS:
+	            vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "**heLLo**", pktno)
+	        node_rx_sem.release
+
 		        
     
     bsthread_event = threading.Event()
