@@ -55,7 +55,7 @@ class VirtualFrameScheme:
         hashed_bin = int(hashed, 16)
         vf_index = hashed_bin % v_frame_len
 
-        logger.info("compute_vf_index: v_frame_len {}, node_id {}, salt{}".format(v_frame_len, node_id, salt))
+        print "compute_vf_index: v_frame_len {}, node_id {}{}, salt{}{}, result hashed {} vf_index {}".format(v_frame_len,type(node_id), node_id,type(salt), salt,hashed, vf_index)
 
         return vf_index
 

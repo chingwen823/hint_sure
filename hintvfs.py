@@ -290,7 +290,12 @@ def main():
 
     # get this node id
     NODE_ID = tb.sink.get_usrp_mboard_serial()
- 
+    # Append to required length
+    NODE_ID = NODE_ID.zfill(NODE_ID_LEN)
+    assert len(NODE_ID) == NODE_ID_LEN, "USRP NODE_ID {} len must be {}".format(NODE_ID, NODE_ID_LEN)
+    logger.info("\nNODE ID: {}".format(NODE_ID))
+
+    #realtime scheduling
     r = gr.enable_realtime_scheduling()
     if r != gr.RT_OK:
         print "Warning: failed to enable realtime scheduling"
