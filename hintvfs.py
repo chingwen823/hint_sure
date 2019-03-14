@@ -139,7 +139,7 @@ class my_top_block(gr.top_block):
 	self.connect(self.txpath, self.sink)
         
 
-def action(tb,payload):
+def action(tb, vfs_model,payload):
 	(pktno,) = struct.unpack('!H', payload[0:2])
 
 	try:
@@ -344,7 +344,7 @@ def main():
 	    while node_rx_sem.acquire(False):
 	        print "process incoming data"
 	        payload = node_rx_q.get()
-                action(tb,payload)
+                action(tb, vfs_model, payload)
 		if not IS_BS:
 	            vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "**heLLo**", pktno)
 	        node_rx_sem.release
