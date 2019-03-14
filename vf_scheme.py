@@ -19,7 +19,7 @@ NODE_AMT_LEN = 4
 NODE_ID_LEN = 10
 SEED_LEN = 10
 assert NODE_ID_LEN == SEED_LEN
-V_FRAME_FACTOR = 3
+V_FRAME_FACTOR = 2
 V_FRAME_SIZE_LEN = 4
 RAND_FRAME_SIZE_LEN = 4
 SINGLETON_RATE_THRESHOLD = 0.7
@@ -54,8 +54,6 @@ class VirtualFrameScheme:
         hashed = hashlib.sha256(node_id + salt).hexdigest()
         hashed_bin = int(hashed, 16)
         vf_index = hashed_bin % v_frame_len
-
-        print "compute_vf_index: v_frame_len {}, node_id {}{}, salt{}{}, result hashed {} vf_index {}".format(v_frame_len,type(node_id), node_id,type(salt), salt,hashed, vf_index)
 
         return vf_index
 

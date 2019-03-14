@@ -324,12 +324,9 @@ def main():
      		    #prepare
 	            vfs_model.generate_seed_v_frame_rand_frame(TEST_NODE_LIST)
 	            #send boardcast
-	            print "send out pkt"
 	            vfs_model.broadcast_vfs_pkt(tb, pkt_size, len(TEST_NODE_LIST),pktno+int(packno_delta))
-	            print "sleep {:f} for next run".format(len(TEST_NODE_LIST)*NODE_SLOT_TIME) 
-	            time.sleep(len(TEST_NODE_LIST)*NODE_SLOT_TIME)
-	            print "wake up"
-	            sys.stderr.write('.')
+		    sys.stderr.write('.')
+	            time.sleep(len(TEST_NODE_LIST)*NODE_SLOT_TIME)	            
 	            pktno += 1  
         else: #NODE
             while not stop_event.is_set():
@@ -337,7 +334,7 @@ def main():
                     print "process incoming data"
                     (pktno, alloc_index,pkt_timestamp,now_timestamp) = node_rx_q.get()
                     #time.sleep(alloc_index*NODE_SLOT_TIME)
-                    vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "heLLo", pktno)
+                    vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "**heLLo**", pktno)
                     node_rx_sem.release
                 else:
                     time.sleep(1)
