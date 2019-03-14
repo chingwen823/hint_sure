@@ -43,7 +43,7 @@ import struct, sys
 #  Hint protocol import and defines 
 ######################################
 import numpy
-from enum import Enum 
+from enum import IntEnum 
 from gnuradio import uhd
 import logging.config
 from datetime import datetime
@@ -70,17 +70,17 @@ NODE_ID_A, NODE_ID_B = '00030757AF', '0003075786'   # N210
 NODE_ID_C = '0003094D5C'    # B210
 TEST_NODE_LIST = [NODE_ID_A, NODE_ID_B, NODE_ID_C, '0000000004', '0000000005',
                   '0000000006', '0000000007', '0000000008', '0000000009', '0000000010']
-PacketType = Enum(
-    'NONE',
-    'BEACON',
-    'RESPOND_BEACON',
-    'ACK_RESPOND',
-    'PS_BROADCAST',
-    'PS_PKT',
-    'VFS_BROADCAST',
-    'VFS_PKT',
-    'CONFIRM_ALLOC',
-    'DATA')
+class PacketType(IntEnum):
+    NONE=0
+    BEACON=1
+    RESPOND_BEACON=2
+    ACK_RESPOND=3
+    PS_BROADCAST=4
+    PS_PKT=5
+    VFS_BROADCAST=6
+    VFS_PKT=7
+    CONFIRM_ALLOC=8
+    DATA=9
 
 #logger config
 #logging.config.fileConfig('logging.ini', defaults={'log_file': args.log_file})
@@ -130,7 +130,8 @@ class my_top_block(gr.top_block):
 def main():
     
     #import protocol model
-    vfs_model = VirtualFrameScheme(PacketType.VFS_BROADCAST.index, PacketType.VFS_PKT.index, NODE_SLOT_TIME)
+    vfs_model = VirtualFrameScheme(PacketType.VFS_BROADCAST, PacketType.VFS_PKT
+, NODE_SLOT_TIME)
     
     #node rx queue/event
     global node_rx_q, node_rx_sem
@@ -182,11 +183,11 @@ def main():
             return
 
         (pkt_type,) = struct.unpack('!H', payload[2+TIMESTAMP_LEN:2+TIMESTAMP_LEN+2])
-        if pkt_type not in [PacketType.VFS_BROADCAST.index, PacketType.VFS_PKT.index]:
+        if pkt_type not in [PacketType.VFS_BROADCAST, PacketType.VFS_PKT]:
             logger.warning("Invalid pkt_type {}. Drop pkt!".format(pkt_type))
             return
 
-        if pkt_type == PacketType.VFS_PKT.index:
+        if pkt_type == PacketType.VFS_PKT:
             for i, tpl in enumerate(vfs_model.nodes_expect_time):
                 node_id, begin_at, end_at = tpl
                 if begin_at <= now_timestamp <= end_at:
@@ -201,7 +202,7 @@ def main():
             #next_tx_ts = vfs_model.nodes_expect_time[-1][-1] + 0.2   # add some delay
             return
 
-        if pkt_type == PacketType.VFS_BROADCAST.index:
+        if pkt_type == PacketType.VFS_BROADCAST:
             node_amount = vfs_model.get_node_amount(payload)
             seed = vfs_model.get_seed(payload)
             try:
@@ -250,6 +251,10 @@ def main():
                       help="set packet size [default=%default]")
     parser.add_option("-p", "--packno", type="eng_float", default=0,
                       help="set packet number [default=%default]")
+    parser.add_option("","--to-file", default=None,
+                      help="Output file for modulated samples")
+    parser.add_option("","--bs", default=None,
+                      help="assign if bs")
 
     transmit_path.add_options(parser, expert_grp)
     digital.ofdm_mod.add_options(parser, expert_grp)
@@ -262,9 +267,8 @@ def main():
     (options, args) = parser.parse_args ()
 
     # Decide is BS or Node role
-    IS_BS_ROLE = options.args
-
-
+    IS_BS_ROLE = bool(options.bs)
+    
     if options.from_file is None:
         if options.rx_freq is None:
             sys.stderr.write("You must specify -f FREQ or --freq FREQ\n")

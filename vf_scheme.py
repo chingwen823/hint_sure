@@ -54,6 +54,9 @@ class VirtualFrameScheme:
         hashed = hashlib.sha256(node_id + salt).hexdigest()
         hashed_bin = int(hashed, 16)
         vf_index = hashed_bin % v_frame_len
+
+        logger.info("compute_vf_index: v_frame_len {}, node_id {}, salt{}".format(v_frame_len, node_id, salt))
+
         return vf_index
 
     def get_random_seed(self):
@@ -166,7 +169,10 @@ class VirtualFrameScheme:
         payload = payload_prefix + now_timestamp_str + broadcast + node_amount_str + self.seed + begin_timestamp_str\
             + v_frame_size_str + v_frame_str + dummy
         my_tb.txpath.send_pkt(payload)
-        logger.info("{} send VFS_BROADCAST {}, Total nodes: {}, Seed: {}, Node begin: {}, \nSession: {}".format(
+        #logger.info("{} send VFS_BROADCAST {}, Total nodes: {}, Seed: {}, Node begin: {}, \nSession: {}".format(
+        #            str(datetime.fromtimestamp(now_timestamp)), pktno, node_amount, self.seed,
+        #            str(datetime.fromtimestamp(begin_timestamp)), self.nodes_expect_time))
+        logger.info("{} send VFS_BROADCAST {}, Total nodes: {}, Seed: {}, Node begin: {}".format(
                     str(datetime.fromtimestamp(now_timestamp)), pktno, node_amount, self.seed,
                     str(datetime.fromtimestamp(begin_timestamp)), self.nodes_expect_time))
 
