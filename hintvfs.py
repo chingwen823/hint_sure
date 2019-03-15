@@ -111,15 +111,15 @@ class my_top_block(gr.top_block):
         gr.top_block.__init__(self)
 
         if(options.tx_freq is not None): 
-	    self.sink = uhd_transmitter(options.args,
+            self.sink = uhd_transmitter(options.args,
                                        options.bandwidth, options.tx_freq, 
                                        options.lo_offset, options.tx_gain,
                                        options.spec, options.antenna,
                                        options.clock_source, options.verbose)
-	elif(options.to_file is not None):
-	    self.sink = blocks.file_sink(gr.sizeof_gr_complex, options.to_file)
-	else:
-	    self.sink = blocks.null_sink(gr.sizeof_gr_complex)
+        elif(options.to_file is not None):
+            self.sink = blocks.file_sink(gr.sizeof_gr_complex, options.to_file)
+        else:
+            self.sink = blocks.null_sink(gr.sizeof_gr_complex)
 
         if(options.rx_freq is not None):
             self.source = uhd_receiver(options.args,
@@ -137,93 +137,84 @@ class my_top_block(gr.top_block):
         # do this after for any adjustments to the options that may
         # occur in the sinks (specifically the UHD sink)
         self.rxpath = receive_path(callback, options)
-	self.txpath = transmit_path(options)
+        self.txpath = transmit_path(options)
 
         self.connect(self.source, self.rxpath)
-	self.connect(self.txpath, self.sink)
+        self.connect(self.txpath, self.sink)
         
 
 def action(tb, vfs_model, payload):
 
-	(pktno,) = struct.unpack('!H', payload[0:2])
+    (pktno,) = struct.unpack('!H', payload[0:2])
 
-	try:
-	    pkt_timestamp_str = payload[2:2+TIMESTAMP_LEN]
-	    pkt_timestamp = float(pkt_timestamp_str)
-	except:
-	    logger.warning("Timestamp {} is not a float. Drop pkt!".format(pkt_timestamp_str))
-	    return False
+    try:
+        pkt_timestamp_str = payload[2:2+TIMESTAMP_LEN]
+        pkt_timestamp = float(pkt_timestamp_str)
+    except:
+        logger.warning("Timestamp {} is not a float. Drop pkt!".format(pkt_timestamp_str))
+        return False
 
-	now_timestamp = tb.source.get_time_now().get_real_secs()
-	# now_timestamp_str = '{:.3f}'.format(now_timestamp)
-	delta = now_timestamp - pkt_timestamp   # +ve: BS earlier; -ve: Node earlier
-	if not -5 < delta < 5:
-	    logger.warning("Delay out-of-range: {}, timestamp {}. Drop pkt!".format(delta, pkt_timestamp_str))
-	    return False
+    now_timestamp = tb.source.get_time_now().get_real_secs()
+    # now_timestamp_str = '{:.3f}'.format(now_timestamp)
+    delta = now_timestamp - pkt_timestamp   # +ve: BS earlier; -ve: Node earlier
+    if not -5 < delta < 5:
+        logger.warning("Delay out-of-range: {}, timestamp {}. Drop pkt!".format(delta, pkt_timestamp_str))
+        return False
 
-	(pkt_type,) = struct.unpack('!H', payload[2+TIMESTAMP_LEN:2+TIMESTAMP_LEN+2])
-	if pkt_type not in [PacketType.VFS_BROADCAST.index, PacketType.VFS_PKT.index]:
-	    #logger.warning("Invalid pkt_type {}. Drop pkt!".format(pkt_type))
-	    return False
+    (pkt_type,) = struct.unpack('!H', payload[2+TIMESTAMP_LEN:2+TIMESTAMP_LEN+2])
+    if pkt_type not in [PacketType.VFS_BROADCAST.index, PacketType.VFS_PKT.index]:
+        #logger.warning("Invalid pkt_type {}. Drop pkt!".format(pkt_type))
+        return False
   
-	if pkt_type == PacketType.VFS_PKT.index:
-	
-	    for i, tpl in enumerate(vfs_model.nodes_expect_time):
-		node_id, begin_at, end_at = tpl
-		if begin_at <= now_timestamp <= end_at:
-		    print "{} ({}) [Slot {}: Node {} Session] BS recv VFS_PKT.index {}, data: {}".format(
-		        str(datetime.fromtimestamp(now_timestamp)), now_timestamp, i, node_id, pktno,
-		        vfs_model.get_node_data(payload))
+    if pkt_type == PacketType.VFS_PKT.index:
+        
+        for i, tpl in enumerate(vfs_model.nodes_expect_time):
+            node_id, begin_at, end_at = tpl
+            if begin_at <= now_timestamp <= end_at:
+                print "{} ({}) [Slot {}: Node {} Session] BS recv VFS_PKT.index {}, data: {}".format(
+                    str(datetime.fromtimestamp(now_timestamp)), now_timestamp, i, node_id, pktno,
+                    vfs_model.get_node_data(payload))
 
-		    logger.info("{} ({}) [Slot {}: Node {} Session] BS recv VFS_PKT.index {}, data: {}".format(
-		        str(datetime.fromtimestamp(now_timestamp)), now_timestamp, i, node_id, pktno,
-		        vfs_model.get_node_data(payload)))
-		    return
-	    print "{} ({}) [No slot/session] BS recv VFS_PKT {}, data: {}".format(
-		str(datetime.fromtimestamp(now_timestamp)), now_timestamp, pktno, vfs_model.get_node_data(payload))
-	    logger.info("{} ({}) [No slot/session] BS recv VFS_PKT {}, data: {}".format(
-		str(datetime.fromtimestamp(now_timestamp)), now_timestamp, pktno, vfs_model.get_node_data(payload)))
-	    # Last timestamp for VFS_PKT session
-	    #next_tx_ts = vfs_model.nodes_expect_time[-1][-1] + 0.2   # add some delay
-	    return True
+                logger.info("{} ({}) [Slot {}: Node {} Session] BS recv VFS_PKT.index {}, data: {}".format(
+                    str(datetime.fromtimestamp(now_timestamp)), now_timestamp, i, node_id, pktno,
+                    vfs_model.get_node_data(payload)))
+                return
+            print "{} ({}) [No slot/session] BS recv VFS_PKT {}, data: {}".format(
+            str(datetime.fromtimestamp(now_timestamp)), now_timestamp, pktno, vfs_model.get_node_data(payload))
+            logger.info("{} ({}) [No slot/session] BS recv VFS_PKT {}, data: {}".format(
+            str(datetime.fromtimestamp(now_timestamp)), now_timestamp, pktno, vfs_model.get_node_data(payload)))
+            # Last timestamp for VFS_PKT session
+            #next_tx_ts = vfs_model.nodes_expect_time[-1][-1] + 0.2   # add some delay
+            return True
 
-	if pkt_type == PacketType.VFS_BROADCAST.index:
-	    node_amount = vfs_model.get_node_amount(payload)
-	    seed = vfs_model.get_seed(payload)
-	    try:
-		begin_timestamp_str = vfs_model.get_begin_time_str(payload)
-		begin_timestamp = float(begin_timestamp_str)
-	    except:
-		logger.warning("begin_timestamp {} is not a float. Drop pkt!".format(begin_timestamp_str))
-		return False
-	    try:
-		v_frame = vfs_model.get_v_frame(payload)
-	    except:
-		logger.warning("Cannot extract v-frame. Drop pkt!")
-		return False
-	    vf_index = vfs_model.compute_vf_index(len(v_frame), NODE_ID, seed)
-	    alloc_index, in_rand_frame = vfs_model.compute_alloc_index(vf_index, NODE_ID, v_frame, node_amount)
+    if pkt_type == PacketType.VFS_BROADCAST.index:
+        node_amount = vfs_model.get_node_amount(payload)
+        seed = vfs_model.get_seed(payload)
+        try:
+            begin_timestamp_str = vfs_model.get_begin_time_str(payload)
+            begin_timestamp = float(begin_timestamp_str)
+        except:
+            logger.warning("begin_timestamp {} is not a float. Drop pkt!".format(begin_timestamp_str))
+            return False
+        try:
+            v_frame = vfs_model.get_v_frame(payload)
+        except:
+            logger.warning("Cannot extract v-frame. Drop pkt!")
+            return False
+            vf_index = vfs_model.compute_vf_index(len(v_frame), NODE_ID, seed)
+            alloc_index, in_rand_frame = vfs_model.compute_alloc_index(vf_index, NODE_ID, v_frame, node_amount)
 
-	    stop_rx_ts = now_timestamp + 0.4
-	    # TODO: Duo to various delays, adjust a bit to before firing round up second
-	    next_tx_ts = begin_timestamp + (NODE_SLOT_TIME * alloc_index) - TRANSMIT_DELAY
+            stop_rx_ts = now_timestamp + 0.4
+            # TODO: Duo to various delays, adjust a bit to before firing round up second
+            next_tx_ts = begin_timestamp + (NODE_SLOT_TIME * alloc_index) - TRANSMIT_DELAY
 
-	    logger.critical("{} Node recv VFS_BROADCAST {}, BS time {}, Total {}, Seed {}, Delay {}, "
-		        "\nv-frame index: {}, alloc-index: {}, fall to rand-frame: {},"
-		        "\nv-frame: {}"
-		        .format(str(datetime.fromtimestamp(now_timestamp)), pktno,
-		                str(datetime.fromtimestamp(pkt_timestamp)),
-		                node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame))
-	    #if not in_rand_frame: #put info into queue, and fire upload event
-		#print "firsgt upload pkt after {:F}s".format((alloc_index+1)*NODE_SLOT_TIME)
-		#my_thread = threading.Timer((alloc_index+1)*NODE_SLOT_TIME,vfs_model.send_vfs_pkt,[NODE_ID,tb,pkt_size,"hello",pktno])
-		#my_thread.start()
-	    #    node_rx_q.put((pktno, alloc_index,pkt_timestamp,now_timestamp))	
-	    #    node_rx_sem.release()
-	    # logger.debug("begin {}, stop_rx_ts {}, next_tx_ts {}".format(
-	    #     str(datetime.fromtimestamp(begin_timestamp)), str(datetime.fromtimestamp(stop_rx_ts)),
-	    #     str(datetime.fromtimestamp(next_tx_ts))))
-	    return True
+            logger.critical("{} Node recv VFS_BROADCAST {}, BS time {}, Total {}, Seed {}, Delay {}, "
+                "\nv-frame index: {}, alloc-index: {}, fall to rand-frame: {},"
+                "\nv-frame: {}"
+                .format(str(datetime.fromtimestamp(now_timestamp)), pktno,
+                        str(datetime.fromtimestamp(pkt_timestamp)),
+                        node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame))
+            return True
 
 
 # /////////////////////////////////////////////////////////////////////////////
@@ -234,16 +225,16 @@ def action(tb, vfs_model, payload):
 def main():
     
     #import protocol model
-    vfs_model = VirtualFrameScheme(PacketType.VFS_BROADCAST.index, PacketType.VFS_PKT.index
-, NODE_SLOT_TIME)
+    vfs_model = VirtualFrameScheme(PacketType.VFS_BROADCAST.index, PacketType.VFS_PKT.index, NODE_SLOT_TIME)
     
     #node rx queue/event
-    global node_rx_q, node_rx_sem
+    global node_rx_q, node_rx_sem, thread_run
     node_rx_q = Queue.Queue(maxsize = NODE_RX_MAX)
     node_rx_sem = threading.Semaphore(NODE_RX_MAX) #up to the queue size
+    thread_run = True 
 
     for i in range(NODE_RX_MAX): # make all semaphore in 0 status
-	node_rx_sem.acquire()
+        node_rx_sem.acquire()
 
     def send_pkt(payload='', eof=False):
         return tb.txpath.send_pkt(payload, eof)
@@ -259,36 +250,36 @@ def main():
         
         # Filter out incorrect pkt
         if ok:
-	    (pktno,) = struct.unpack('!H', payload[0:2])
+            (pktno,) = struct.unpack('!H', payload[0:2])
 
-	    try:
-	        pkt_timestamp_str = payload[2:2+TIMESTAMP_LEN]
-	        pkt_timestamp = float(pkt_timestamp_str)
-	    except:
-	        logger.warning("Timestamp {} is not a float. Drop pkt!".format(pkt_timestamp_str))
-	        return 
+            try:
+                pkt_timestamp_str = payload[2:2+TIMESTAMP_LEN]
+                pkt_timestamp = float(pkt_timestamp_str)
+            except:
+                logger.warning("Timestamp {} is not a float. Drop pkt!".format(pkt_timestamp_str))
+                return 
 
-	    now_timestamp = tb.source.get_time_now().get_real_secs()
-	    # now_timestamp_str = '{:.3f}'.format(now_timestamp)
-	    delta = now_timestamp - pkt_timestamp   # +ve: BS earlier; -ve: Node earlier
-	    if not -5 < delta < 5:
-	        logger.warning("Delay out-of-range: {}, timestamp {}. Drop pkt!".format(delta, pkt_timestamp_str))
-	        return 
+            now_timestamp = tb.source.get_time_now().get_real_secs()
+            # now_timestamp_str = '{:.3f}'.format(now_timestamp)
+            delta = now_timestamp - pkt_timestamp   # +ve: BS earlier; -ve: Node earlier
+            if not -5 < delta < 5:
+                logger.warning("Delay out-of-range: {}, timestamp {}. Drop pkt!".format(delta, pkt_timestamp_str))
+                return 
 
-	    (pkt_type,) = struct.unpack('!H', payload[2+TIMESTAMP_LEN:2+TIMESTAMP_LEN+2])
-	    if pkt_type not in [PacketType.VFS_BROADCAST.index, PacketType.VFS_PKT.index]:
-	    #logger.warning("Invalid pkt_type {}. Drop pkt!".format(pkt_type))
-	    	return 
+            (pkt_type,) = struct.unpack('!H', payload[2+TIMESTAMP_LEN:2+TIMESTAMP_LEN+2])
+            if pkt_type not in [PacketType.VFS_BROADCAST.index, PacketType.VFS_PKT.index]:
+            #logger.warning("Invalid pkt_type {}. Drop pkt!".format(pkt_type))
+                return 
 
             n_right += 1
-	    logger.info("I get {}bytes, #{}".format(len(payload),n_right))
+            logger.info("I get {}bytes, #{}".format(len(payload),n_right))
 
             #put info into queue, and fire upload event
             node_rx_q.put(payload)
             #node_rx_sem.release()
         else:
-	    logger.warning("Packet fail. Drop pkt!")
-	    return
+            logger.warning("Packet fail. Drop pkt!")
+            return
    	return
 
     parser = OptionParser(option_class=eng_option, conflict_handler="resolve")
@@ -327,8 +318,8 @@ def main():
             parser.print_help(sys.stderr)
             sys.exit(1)
     if options.packno is not None:
-	packno_delta = options.packno
-	print "assign pktno start: %d" % packno_delta
+        packno_delta = options.packno
+        logger.info("assign pktno start: %d" % packno_delta)
 
     # build the graph
     tb = my_top_block(rx_callback, options)
@@ -350,7 +341,7 @@ def main():
     #realtime scheduling
     r = gr.enable_realtime_scheduling()
     if r != gr.RT_OK:
-        print "Warning: failed to enable realtime scheduling"
+        logger.warn( "Warning: failed to enable realtime scheduling")
 
     tb.start()                      # start flow graph
     # generate and send packets
@@ -360,51 +351,59 @@ def main():
     pkt_size = int(options.size)
 
     def threadjob(stop_event,pktno,IS_BS):
-	start_time = time.time()
+        global thread_run
+        start_time = time.time()
         time_data_collecting = len(TEST_NODE_LIST)*NODE_SLOT_TIME
 
-	while not stop_event.is_set():
+        #while not stop_event.is_set():
+        while thread_run:    
             if IS_BS:
                 if time.time() > start_time + time_data_collecting:
-                 
-			elapsed_time = time.time() - start_time            
-	     		#prepare
-			vfs_model.generate_seed_v_frame_rand_frame(TEST_NODE_LIST)
-			#send boardcast
-			vfs_model.broadcast_vfs_pkt(tb, pkt_size, len(TEST_NODE_LIST),pktno+int(packno_delta))
-			#time.sleep(len(TEST_NODE_LIST)*NODE_SLOT_TIME)	            
-			pktno += 1  
+        
+                    elapsed_time = time.time() - start_time            
+                    #prepare
+                    vfs_model.generate_seed_v_frame_rand_frame(TEST_NODE_LIST)
+                    #send boardcast
+                    vfs_model.broadcast_vfs_pkt(tb, pkt_size, len(TEST_NODE_LIST),pktno+int(packno_delta))
+                    #time.sleep(len(TEST_NODE_LIST)*NODE_SLOT_TIME)
+                    pktno += 1
+                    start_time = time.time()
+                    #time.sleep(0.1)
+                else:
+                    vfs_model.send_dummy_pkt(tb)
 
-			start_time = time.time()
-		else:
-        		vfs_model.send_dummy_pkt(tb)
-			#time.sleep(0.01)	
-	    else:
+            else: #node
                 vfs_model.send_dummy_pkt(tb)
-		#time.sleep(0.01)
-            
-	    #while node_rx_sem.acquire(False):   
+
+            #while node_rx_sem.acquire(False):   
             try:
-	        payload = node_rx_q.get_nowait()
+                payload = node_rx_q.get_nowait()
                 if payload and action(tb, vfs_model, payload):
                 #here we need to decode the payload first
-		    if not IS_BS:
-	                vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "**heLLo**", pktno)
+                    if not IS_BS:
+                        vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "**heLLo**", pktno)
             except Queue.Empty:
                 pass
-	    #node_rx_sem.release       
-    
+            #node_rx_sem.release 
+        print "thread done"
+
     thread_event = threading.Event()
     thread = threading.Thread(target = threadjob, args = (thread_event,pktno,IS_BS_ROLE,))
     thread.daemon = True #make it a daemon thread
+    thread_run = True
     thread.start()
-        
+
+    
     #send_pkt(eof=True)
     time.sleep(2)               # allow time for queued packets to be sent
     tb.wait()                       # wait for it to finish
     print "wait done"
-    thread_event.set()
-    thread.join()
+    thread_run = False
+    #thread_event.set()  
+    while thread.isAlive():
+        time.sleep(1)   
+    #thread.join()
+    
     print "join done"
 if __name__ == '__main__':
     try:
