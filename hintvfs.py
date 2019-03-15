@@ -261,12 +261,12 @@ def main():
         # Filter out incorrect pkt
         if ok:
             n_right += 1
-	    logger.warning("I get something right!{}".format(n_right))
+	    #logger.info("I get {}bytes, #{}".format(len(payload),n_right))
             #put info into queue, and fire upload event
             node_rx_q.put(payload)
             node_rx_sem.release()
         else:
-	    logger.warning("Packet fail. Drop pkt!")
+	    #logger.warning("Packet fail. Drop pkt!")
 	    return
    	return
 
@@ -360,6 +360,7 @@ def main():
     thread_event = threading.Event()
     thread = threading.Thread(target = threadjob, args = (thread_event,pktno,IS_BS_ROLE,))
     thread.daemon = True #make it a daemon thread
+    time.sleep(2)  
     thread.start()
         
     #send_pkt(eof=True)
