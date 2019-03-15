@@ -357,13 +357,14 @@ def main():
         bs_start_time = 0
         nd_start_time = 0
 
-        if IS_BS:
-            while time.time() < (boot_time + 10):        
-                vfs_model.send_dummy_pkt(tb)
+    
+        while time.time() < (boot_time + 10):        
+            vfs_model.send_dummy_pkt(tb)
          
         print "============================="
         print "===========Lock ============="
         print "============================="
+    
         nd_in_response = False
         time_data_collecting = len(TEST_NODE_LIST)*NODE_SLOT_TIME
         time_wait_for_my_slot = 0
