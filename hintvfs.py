@@ -166,7 +166,7 @@ def decode_common_pkt_header(tb,payload):
 
     return(pktno,pkt_timestamp,pkt_type)
 
-def action(tb, vfs_model, payload):
+def action(tb, vfs_model, payload,NODE_ID):
 
     thingy = decode_common_pkt_header(tb,payload)
 
@@ -346,8 +346,11 @@ def main():
     pktno = 0
     pkt_size = int(options.size)
 
-    def threadjob(stop_event,pktno,IS_BS):
+    def threadjob(stop_event,pktno,IS_BS,NODE_ID):
         global thread_run
+
+        print "NODE_ID thread begin{}".format(NODE_ID)
+
         bs_start_time = 0
         nd_start_time = 0
         nd_in_response = False
@@ -385,8 +388,10 @@ def main():
                     if IS_BS:
                         action(tb, vfs_model, payload)
                     else:
-                        thingy = action(tb, vfs_model, payload)
-                        logger.info( "{}".format(thingy))
+
+                        print "NODE_ID {}".format(NODE_ID)
+                        thingy = action(tb, vfs_model, payload,NODE_ID)
+                
                         if thingy:
                             (node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame) = thingy
                             time_wait_for_my_slot = alloc_index * NODE_SLOT_TIME
@@ -401,7 +406,7 @@ def main():
         print "thread done"
 
     thread_event = threading.Event()
-    thread = threading.Thread(target = threadjob, args = (thread_event,pktno,IS_BS_ROLE,))
+    thread = threading.Thread(target = threadjob, args = (thread_event,pktno,IS_BS_ROLE,NODE_ID))
     thread.daemon = True #make it a daemon thread
     thread_run = True
     thread.start()

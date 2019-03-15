@@ -172,12 +172,22 @@ class VirtualFrameScheme:
         begin_timestamp_str = '{:.3f}'.format(begin_timestamp)
         # For BS recv VFS_PKT session timer use
         self.nodes_expect_time = []
+#        for i in range(node_amount):
+#            # Each node time slot: 0.5 seconds
+#            begin_at = begin_timestamp + (self.node_slot_time * i)
+#            end_at = begin_at + 0.5 - 0.0001
+#            n_id = self.alloc_frame[i] if i < len(self.alloc_frame) else 'rand_frame'
+#            self.nodes_expect_time.append((n_id, begin_at, end_at))
+
+        #use this instead
         for i in range(node_amount):
-            # Each node time slot: 0.5 seconds
-            begin_at = begin_timestamp + (self.node_slot_time * i)
-            end_at = begin_at + 0.5 - 0.0001
+            # Each node time slot: self.node_slot_time seconds
+            begin_at = now_timestamp + self.node_slot_time * i
+            end_at = begin_at + self.node_slot_time
             n_id = self.alloc_frame[i] if i < len(self.alloc_frame) else 'rand_frame'
             self.nodes_expect_time.append((n_id, begin_at, end_at))
+            print "Prepare pkt {} node {}, {}~{}".format(pktno, n_id, begin_at, end_at)
+
         payload = payload_prefix + now_timestamp_str + broadcast + node_amount_str + self.seed + begin_timestamp_str\
             + v_frame_size_str + v_frame_str + dummy
         my_tb.txpath.send_pkt(payload)
@@ -185,7 +195,7 @@ class VirtualFrameScheme:
         #            str(datetime.fromtimestamp(now_timestamp)), pktno, node_amount, self.seed,
         #            str(datetime.fromtimestamp(begin_timestamp)), self.nodes_expect_time))
         logger.info("{} send VFS_BROADCAST {}, Total nodes: {}, Seed: {}, Node begin: {}".format(
-                    now_timestamp, pktno, node_amount, self.seed,
+                    str(datetime.fromtimestamp(now_timestamp)), pktno, node_amount, self.seed,
                     str(datetime.fromtimestamp(begin_timestamp)), self.nodes_expect_time))
 
     def send_vfs_pkt(self, node_id, my_tb, pkt_size, vfs_data, pktno=1):               # Node only
