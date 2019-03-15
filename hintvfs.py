@@ -417,7 +417,7 @@ def main():
                 else:
                     #pass
                     vfs_model.send_dummy_pkt(tb)
-                    #time.sleep(1)
+                    time.sleep(0.01)
 
             else: #node
                 if (nd_in_response != False) and (time.time() > (nd_start_time + time_wait_for_my_slot)):
@@ -427,7 +427,7 @@ def main():
                 else:
                     #pass
                     vfs_model.send_dummy_pkt(tb)
-                    #time.sleep(1)
+                    time.sleep(0.01)
 
             #while node_rx_sem.acquire(False):   
             if not node_rx_q.empty():
