@@ -137,7 +137,7 @@ class VirtualFrameScheme:
     def send_dummy_pkt(self, my_tb, pktno=1):     # BS Nodes
 
         payload_prefix = struct.pack('!H', pktno & 0xffff)
-        broadcast = struct.pack('!H', 0 & 0xffff)
+        broadcast = struct.pack('!H', dummy_id & 0xffff)
 
         now_timestamp = my_tb.sink.get_time_now().get_real_secs()
         now_timestamp_str = '{:.3f}'.format(now_timestamp)
