@@ -185,7 +185,7 @@ class VirtualFrameScheme:
         #            str(datetime.fromtimestamp(now_timestamp)), pktno, node_amount, self.seed,
         #            str(datetime.fromtimestamp(begin_timestamp)), self.nodes_expect_time))
         logger.info("{} send VFS_BROADCAST {}, Total nodes: {}, Seed: {}, Node begin: {}".format(
-                    str(datetime.fromtimestamp(now_timestamp)), pktno, node_amount, self.seed,
+                    now_timestamp, pktno, node_amount, self.seed,
                     str(datetime.fromtimestamp(begin_timestamp)), self.nodes_expect_time))
 
     def send_vfs_pkt(self, node_id, my_tb, pkt_size, vfs_data, pktno=1):               # Node only

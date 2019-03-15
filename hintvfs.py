@@ -173,31 +173,30 @@ def action(tb, vfs_model, payload):
     if not thingy:
         logger.info("decode_common_pkt_header return nil")
         return 
-
-    logger.info("{}".format(thingy)) 
+    
     (pktno,pkt_timestamp,pkt_type) = thingy
+    logger.info("decode_common_pkt_header pktno {}, pkt_ts {}, pkt_type".format(pktno,pkt_timestamp,pkt_type))
 
     now_timestamp = tb.source.get_time_now().get_real_secs()
     delta = now_timestamp - pkt_timestamp
 
     if pkt_type == PacketType.VFS_PKT.index:
-        
+
+        logger.info("identify node from nowtime {}, delta {}".format(now_timestamp,delta))
+
         for i, tpl in enumerate(vfs_model.nodes_expect_time):
             node_id, begin_at, end_at = tpl
+            print "node {}, {}~{}".format(node_id,begin_at,end_at)
             if begin_at <= now_timestamp <= end_at:
-                print "{} ({}) [Slot {}: Node {} Session] BS recv VFS_PKT.index {}, data: {}".format(
-                    str(datetime.fromtimestamp(now_timestamp)), now_timestamp, i, node_id, pktno,
-                    vfs_model.get_node_data(payload))
-
                 logger.info("{} ({}) [Slot {}: Node {} Session] BS recv VFS_PKT.index {}, data: {}".format(
                     str(datetime.fromtimestamp(now_timestamp)), now_timestamp, i, node_id, pktno,
                     vfs_model.get_node_data(payload)))
-                return
-            logger.info("{} ({}) [No slot/session] BS recv VFS_PKT {}, data: {}".format(
-            str(datetime.fromtimestamp(now_timestamp)), now_timestamp, pktno, vfs_model.get_node_data(payload)))
-            # Last timestamp for VFS_PKT session
-            #next_tx_ts = vfs_model.nodes_expect_time[-1][-1] + 0.2   # add some delay
-            return True
+                return True
+        logger.info("{} ({}) [No slot/session] BS recv VFS_PKT {}, data: {}".format(
+        str(datetime.fromtimestamp(now_timestamp)), now_timestamp, pktno, vfs_model.get_node_data(payload)))
+        # Last timestamp for VFS_PKT session
+        #next_tx_ts = vfs_model.nodes_expect_time[-1][-1] + 0.2   # add some delay
+        return True
 
     if pkt_type == PacketType.VFS_BROADCAST.index:
 
@@ -357,7 +356,7 @@ def main():
         #while not stop_event.is_set():
         while thread_run:    
             if IS_BS:
-                if time.time() > bs_start_time + time_data_collecting:
+                if time.time() > (bs_start_time + time_data_collecting):
         
                     #elapsed_time = time.time() - start_time            
                     #prepare
@@ -371,7 +370,7 @@ def main():
                     vfs_model.send_dummy_pkt(tb)
 
             else: #node
-                if (nd_in_response != False) and (time.time() > nd_start_time + time_wait_for_my_slot):
+                if (nd_in_response != False) and (time.time() > (nd_start_time + time_wait_for_my_slot)):
                     vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "**heLLo**{}".format(pktno), pktno)
                     pktno += 1
                     nd_in_response = False
@@ -391,6 +390,7 @@ def main():
                         if thingy:
                             (node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame) = thingy
                             time_wait_for_my_slot = alloc_index * NODE_SLOT_TIME
+                            logger.info( "I will upload at slot {}, wait for {}s".format(alloc_index,time_wait_for_my_slot))
                             nd_start_time = time.time()
                             nd_in_response = True
                             #vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "**heLLo**{}".pktno, pktno)
