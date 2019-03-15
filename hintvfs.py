@@ -362,6 +362,7 @@ def main():
     def threadjob(stop_event,pktno,IS_BS):
 	start_time = time.time()
         time_data_collecting = len(TEST_NODE_LIST)*NODE_SLOT_TIME
+
 	while not stop_event.is_set():
             if IS_BS:
                 if time.time() > start_time + time_data_collecting:
@@ -377,9 +378,10 @@ def main():
 			start_time = time.time()
 		else:
         		vfs_model.send_dummy_pkt(tb)
-			#time.sleep(0.01)	
+			time.sleep(0.01)	
 	    else:
                 vfs_model.send_dummy_pkt(tb)
+		time.sleep(0.01)
             
 	    while node_rx_sem.acquire(False) and not stop_event.is_set() :   
 	        payload = node_rx_q.get()
