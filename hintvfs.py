@@ -353,8 +353,14 @@ def main():
 
         print "NODE_ID thread begin{}".format(NODE_ID)
 
+        boot_time = time.time()
         bs_start_time = 0
         nd_start_time = 0
+
+        if time.time() < (boot_time + 10):        
+            vfs_model.send_dummy_pkt(tb)
+        print "===========Lock ============="
+
         nd_in_response = False
         time_data_collecting = len(TEST_NODE_LIST)*NODE_SLOT_TIME
         time_wait_for_my_slot = 0
@@ -372,8 +378,8 @@ def main():
                     bs_start_time = time.time()
                   
                 else:
-                    #pass
-                    vfs_model.send_dummy_pkt(tb)
+                    pass
+                    #vfs_model.send_dummy_pkt(tb)
                     #time.sleep(1)
 
             else: #node
@@ -382,8 +388,8 @@ def main():
                     pktno += 1
                     nd_in_response = False
                 else:
-                    #pass
-                    vfs_model.send_dummy_pkt(tb)
+                    pass
+                    #vfs_model.send_dummy_pkt(tb)
                     #time.sleep(1)
 
             #while node_rx_sem.acquire(False):   
