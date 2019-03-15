@@ -163,7 +163,7 @@ def action(tb, vfs_model, payload):
 
 	(pkt_type,) = struct.unpack('!H', payload[2+TIMESTAMP_LEN:2+TIMESTAMP_LEN+2])
 	if pkt_type not in [PacketType.VFS_BROADCAST.index, PacketType.VFS_PKT.index]:
-	    logger.warning("Invalid pkt_type {}. Drop pkt!".format(pkt_type))
+	    #logger.warning("Invalid pkt_type {}. Drop pkt!".format(pkt_type))
 	    return False
   
 	if pkt_type == PacketType.VFS_PKT.index:
@@ -259,8 +259,30 @@ def main():
         
         # Filter out incorrect pkt
         if ok:
+	    (pktno,) = struct.unpack('!H', payload[0:2])
+
+	    try:
+	        pkt_timestamp_str = payload[2:2+TIMESTAMP_LEN]
+	        pkt_timestamp = float(pkt_timestamp_str)
+	    except:
+	        logger.warning("Timestamp {} is not a float. Drop pkt!".format(pkt_timestamp_str))
+	        return 
+
+	    now_timestamp = tb.source.get_time_now().get_real_secs()
+	    # now_timestamp_str = '{:.3f}'.format(now_timestamp)
+	    delta = now_timestamp - pkt_timestamp   # +ve: BS earlier; -ve: Node earlier
+	    if not -5 < delta < 5:
+	        logger.warning("Delay out-of-range: {}, timestamp {}. Drop pkt!".format(delta, pkt_timestamp_str))
+	        return 
+
+	    (pkt_type,) = struct.unpack('!H', payload[2+TIMESTAMP_LEN:2+TIMESTAMP_LEN+2])
+	    if pkt_type not in [PacketType.VFS_BROADCAST.index, PacketType.VFS_PKT.index]:
+	    #logger.warning("Invalid pkt_type {}. Drop pkt!".format(pkt_type))
+	    	return 
+
             n_right += 1
 	    logger.info("I get {}bytes, #{}".format(len(payload),n_right))
+
             #put info into queue, and fire upload event
             node_rx_q.put(payload)
             node_rx_sem.release()
