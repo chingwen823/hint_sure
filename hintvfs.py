@@ -379,7 +379,7 @@ def main():
             if not node_rx_q.empty():
                 payload = node_rx_q.get()
                 if payload: 
-                    action(tb, vfs_model, payload):
+                    action(tb, vfs_model, payload)
                 #here we need to decode the payload first
                     if not IS_BS:
                         vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "**heLLo**", pktno)
