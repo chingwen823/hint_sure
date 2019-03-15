@@ -270,7 +270,8 @@ def main():
             (pktno,pkt_timestamp,pkt_type) = thingy
 
             n_right += 1
-            logger.info("I get {} bytes, pktno {}".format(len(payload),pktno))
+            now_ts = tb.sink.get_time_now().get_real_secs()
+            logger.info("I get {} bytes, pktno {}, now_ts {}".format(len(payload),pktno,now_ts))
 
             node_rx_q.put(payload)
         else:
@@ -323,6 +324,7 @@ def main():
     # USRP device aligns with PC time (NTP)
     pc_now = time.time()
     tb.sink.set_time_now(uhd.time_spec(pc_now))
+    tb.source.set_time_now(uhd.time_spec(pc_now))
     now_ts = tb.sink.get_time_now().get_real_secs()
     logger.info("\n{} Adjust to PC time: {}\n".format(
                 str(datetime.fromtimestamp(time.time())), str(datetime.fromtimestamp(now_ts))))
@@ -370,7 +372,8 @@ def main():
                     bs_start_time = time.time()
                   
                 else:
-                    vfs_model.send_dummy_pkt(tb)
+                    pass
+                    #vfs_model.send_dummy_pkt(tb)
 
             else: #node
                 if (nd_in_response != False) and (time.time() > (nd_start_time + time_wait_for_my_slot)):
@@ -378,7 +381,8 @@ def main():
                     pktno += 1
                     nd_in_response = False
                 else:
-                    vfs_model.send_dummy_pkt(tb)
+                    pass
+                    #vfs_model.send_dummy_pkt(tb)
 
             #while node_rx_sem.acquire(False):   
             if not node_rx_q.empty():
@@ -386,10 +390,8 @@ def main():
                 if payload: 
                     #here we need to decode the payload first
                     if IS_BS:
-                        action(tb, vfs_model, payload)
+                        action(tb, vfs_model, payload,NODE_ID)
                     else:
-
-                        print "NODE_ID {}".format(NODE_ID)
                         thingy = action(tb, vfs_model, payload,NODE_ID)
                 
                         if thingy:
