@@ -394,17 +394,17 @@ def main():
         bs_start_time = 0
         nd_start_time = 0
 
-        if IS_BS:
-            print "============================="
-            print "========= purge ============="
+#        if IS_BS:
+#            print "============================="
+#            print "========= purge ============="
 
-            while time.time() < (boot_time + 10):        
-                vfs_model.send_dummy_pkt(tb)
-                #vfs_model.send_beacon_pkt(tb,pkt_size,pktno)
-                #time.sleep(1)
+#            while time.time() < (boot_time + 10):        
+#                vfs_model.send_dummy_pkt(tb)
+#                #vfs_model.send_beacon_pkt(tb,pkt_size,pktno)
+#                #time.sleep(1)
 
-            print "========= purge end ========="        
-            print "============================="
+#            print "========= purge end ========="        
+#            print "============================="
     
         nd_in_response = False
         time_data_collecting = len(TEST_NODE_LIST)*NODE_SLOT_TIME
