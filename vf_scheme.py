@@ -134,59 +134,59 @@ class VirtualFrameScheme:
 
     def send_dummy_pkt(self, my_tb, pktno=1):     # BS Nodes
 
-	payload_prefix = struct.pack('!H', pktno & 0xffff)
-	broadcast = struct.pack('!H', 0 & 0xffff)
+        payload_prefix = struct.pack('!H', pktno & 0xffff)
+        broadcast = struct.pack('!H', 0 & 0xffff)
 
-	now_timestamp = my_tb.sink.get_time_now().get_real_secs()
-	now_timestamp_str = '{:.3f}'.format(now_timestamp)
+        now_timestamp = my_tb.sink.get_time_now().get_real_secs()
+        now_timestamp_str = '{:.3f}'.format(now_timestamp)
 
-	payload = payload_prefix + now_timestamp_str + broadcast
+        payload = payload_prefix + now_timestamp_str + broadcast
 
-	my_tb.txpath.send_pkt(payload)
+        my_tb.txpath.send_pkt(payload)
 
     def broadcast_vfs_pkt(self, my_tb, pkt_size, node_amount, pktno=1):     # BS only
-	# payload = prefix + now + vfs_broadcast + node_amount + seed + node_begin_time + len(v-frame) + v-frame + dummy
+        # payload = prefix + now + vfs_broadcast + node_amount + seed + node_begin_time + len(v-frame) + v-frame + dummy
 
-	assert self.seed is not None, "Seed is None!"
+        assert self.seed is not None, "Seed is None!"
 
-	v_frame_str = ''.join(self.v_frame)
-	# rand_frame_str = ','.join(self.rand_frame)
+        v_frame_str = ''.join(self.v_frame)
+        # rand_frame_str = ','.join(self.rand_frame)
 
-	payload_prefix = struct.pack('!H', pktno & 0xffff)
-	broadcast = struct.pack('!H', self.vfs_broadcast_id & 0xffff)
-	node_amount_str = str(node_amount).zfill(NODE_AMT_LEN)
-	assert len(node_amount_str) <= NODE_AMT_LEN, "Too much nodes to handle: {}".format(node_amount)
-	v_frame_size_str = str(len(v_frame_str)).zfill(V_FRAME_SIZE_LEN)
-	assert len(v_frame_size_str) <= V_FRAME_SIZE_LEN, "Too large v-frame size: {}".format(len(v_frame_str))
-	# rand_frame_size_str = str(len(rand_frame_str)).zfill(RAND_FRAME_SIZE_LEN)
-	# assert len(rand_frame_size_str) <= RAND_FRAME_SIZE_LEN, "Too large rand-frame size: {}".format(
-	#     len(rand_frame_str))
-	# v-frame & rand-frame use TLV technique
-	data_size = len(payload_prefix) + TIMESTAMP_LEN + len(broadcast) + len(node_amount_str) + len(self.seed)\
-	    + TIMESTAMP_LEN + len(v_frame_size_str) + len(v_frame_str)
-	dummy = (pkt_size - data_size) * chr(pktno & 0xff)
+        payload_prefix = struct.pack('!H', pktno & 0xffff)
+        broadcast = struct.pack('!H', self.vfs_broadcast_id & 0xffff)
+        node_amount_str = str(node_amount).zfill(NODE_AMT_LEN)
+        assert len(node_amount_str) <= NODE_AMT_LEN, "Too much nodes to handle: {}".format(node_amount)
+        v_frame_size_str = str(len(v_frame_str)).zfill(V_FRAME_SIZE_LEN)
+        assert len(v_frame_size_str) <= V_FRAME_SIZE_LEN, "Too large v-frame size: {}".format(len(v_frame_str))
+        # rand_frame_size_str = str(len(rand_frame_str)).zfill(RAND_FRAME_SIZE_LEN)
+        # assert len(rand_frame_size_str) <= RAND_FRAME_SIZE_LEN, "Too large rand-frame size: {}".format(
+        #     len(rand_frame_str))
+        # v-frame & rand-frame use TLV technique
+        data_size = len(payload_prefix) + TIMESTAMP_LEN + len(broadcast) + len(node_amount_str) + len(self.seed)\
+            + TIMESTAMP_LEN + len(v_frame_size_str) + len(v_frame_str)
+        dummy = (pkt_size - data_size) * chr(pktno & 0xff)
 
-	now_timestamp = my_tb.sink.get_time_now().get_real_secs()
-	now_timestamp_str = '{:.3f}'.format(now_timestamp)
-	begin_timestamp = math.ceil(now_timestamp + 1)      # begin time buffer 1 second, let all nodes to be ready
-	begin_timestamp_str = '{:.3f}'.format(begin_timestamp)
-	# For BS recv VFS_PKT session timer use
-	self.nodes_expect_time = []
-	for i in range(node_amount):
-	    # Each node time slot: 0.5 seconds
-	    begin_at = begin_timestamp + (self.node_slot_time * i)
-	    end_at = begin_at + 0.5 - 0.0001
-	    n_id = self.alloc_frame[i] if i < len(self.alloc_frame) else 'rand_frame'
-	    self.nodes_expect_time.append((n_id, begin_at, end_at))
-	payload = payload_prefix + now_timestamp_str + broadcast + node_amount_str + self.seed + begin_timestamp_str\
-	    + v_frame_size_str + v_frame_str + dummy
-	my_tb.txpath.send_pkt(payload)
-	#logger.info("{} send VFS_BROADCAST {}, Total nodes: {}, Seed: {}, Node begin: {}, \nSession: {}".format(
-	#            str(datetime.fromtimestamp(now_timestamp)), pktno, node_amount, self.seed,
-	#            str(datetime.fromtimestamp(begin_timestamp)), self.nodes_expect_time))
-	logger.info("{} send VFS_BROADCAST {}, Total nodes: {}, Seed: {}, Node begin: {}".format(
-	            str(datetime.fromtimestamp(now_timestamp)), pktno, node_amount, self.seed,
-	            str(datetime.fromtimestamp(begin_timestamp)), self.nodes_expect_time))
+        now_timestamp = my_tb.sink.get_time_now().get_real_secs()
+        now_timestamp_str = '{:.3f}'.format(now_timestamp)
+        begin_timestamp = math.ceil(now_timestamp + 1)      # begin time buffer 1 second, let all nodes to be ready
+        begin_timestamp_str = '{:.3f}'.format(begin_timestamp)
+        # For BS recv VFS_PKT session timer use
+        self.nodes_expect_time = []
+        for i in range(node_amount):
+            # Each node time slot: 0.5 seconds
+            begin_at = begin_timestamp + (self.node_slot_time * i)
+            end_at = begin_at + 0.5 - 0.0001
+            n_id = self.alloc_frame[i] if i < len(self.alloc_frame) else 'rand_frame'
+            self.nodes_expect_time.append((n_id, begin_at, end_at))
+        payload = payload_prefix + now_timestamp_str + broadcast + node_amount_str + self.seed + begin_timestamp_str\
+            + v_frame_size_str + v_frame_str + dummy
+        my_tb.txpath.send_pkt(payload)
+        #logger.info("{} send VFS_BROADCAST {}, Total nodes: {}, Seed: {}, Node begin: {}, \nSession: {}".format(
+        #            str(datetime.fromtimestamp(now_timestamp)), pktno, node_amount, self.seed,
+        #            str(datetime.fromtimestamp(begin_timestamp)), self.nodes_expect_time))
+        logger.info("{} send VFS_BROADCAST {}, Total nodes: {}, Seed: {}, Node begin: {}".format(
+                    str(datetime.fromtimestamp(now_timestamp)), pktno, node_amount, self.seed,
+                    str(datetime.fromtimestamp(begin_timestamp)), self.nodes_expect_time))
 
     def send_vfs_pkt(self, node_id, my_tb, pkt_size, vfs_data, pktno=1):               # Node only
         # payload = prefix + now + vfs_pkt + data + dummy

@@ -164,16 +164,21 @@ def decode_common_pkt_header(tb,payload):
         #logger.warning("Invalid pkt_type {}. Drop pkt!".format(pkt_type))
         return 
 
-    return(pktno,now_timestamp,pkt_type)
+    return(pktno,pkt_timestamp,pkt_type)
 
 def action(tb, vfs_model, payload):
 
     thingy = decode_common_pkt_header(tb,payload)
 
     if not thingy:
+        logger.info("decode_common_pkt_header return nil")
         return 
 
-    (pktno,now_timestamp,pkt_type) = thingy
+    logger.info("{}".format(thingy)) 
+    (pktno,pkt_timestamp,pkt_type) = thingy
+
+    now_timestamp = tb.source.get_time_now().get_real_secs()
+    delta = now_timestamp - pkt_timestamp
 
     if pkt_type == PacketType.VFS_PKT.index:
         
@@ -188,8 +193,6 @@ def action(tb, vfs_model, payload):
                     str(datetime.fromtimestamp(now_timestamp)), now_timestamp, i, node_id, pktno,
                     vfs_model.get_node_data(payload)))
                 return
-            print "{} ({}) [No slot/session] BS recv VFS_PKT {}, data: {}".format(
-            str(datetime.fromtimestamp(now_timestamp)), now_timestamp, pktno, vfs_model.get_node_data(payload))
             logger.info("{} ({}) [No slot/session] BS recv VFS_PKT {}, data: {}".format(
             str(datetime.fromtimestamp(now_timestamp)), now_timestamp, pktno, vfs_model.get_node_data(payload)))
             # Last timestamp for VFS_PKT session
@@ -197,6 +200,7 @@ def action(tb, vfs_model, payload):
             return True
 
     if pkt_type == PacketType.VFS_BROADCAST.index:
+
         node_amount = vfs_model.get_node_amount(payload)
         seed = vfs_model.get_seed(payload)
         try:
@@ -210,20 +214,21 @@ def action(tb, vfs_model, payload):
         except:
             logger.warning("Cannot extract v-frame. Drop pkt!")
             return 
-            vf_index = vfs_model.compute_vf_index(len(v_frame), NODE_ID, seed)
-            alloc_index, in_rand_frame = vfs_model.compute_alloc_index(vf_index, NODE_ID, v_frame, node_amount)
+        vf_index = vfs_model.compute_vf_index(len(v_frame), NODE_ID, seed)
+        alloc_index, in_rand_frame = vfs_model.compute_alloc_index(vf_index, NODE_ID, v_frame, node_amount)
 
-            stop_rx_ts = now_timestamp + 0.4
-            # TODO: Duo to various delays, adjust a bit to before firing round up second
-            next_tx_ts = begin_timestamp + (NODE_SLOT_TIME * alloc_index) - TRANSMIT_DELAY
+        stop_rx_ts = now_timestamp + 0.4
+        # TODO: Duo to various delays, adjust a bit to before firing round up second
+        next_tx_ts = begin_timestamp + (NODE_SLOT_TIME * alloc_index) - TRANSMIT_DELAY
 
-            logger.critical("{} Node recv VFS_BROADCAST {}, BS time {}, Total {}, Seed {}, Delay {}, "
-                "\nv-frame index: {}, alloc-index: {}, fall to rand-frame: {},"
-                "\nv-frame: {}"
-                .format(str(datetime.fromtimestamp(now_timestamp)), pktno,
-                        str(datetime.fromtimestamp(pkt_timestamp)),
-                        node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame))
-            return (node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame)
+        logger.info("{} Node recv VFS_BROADCAST {}, BS time {}, Total {}, Seed {}, Delay {}, "
+            "\nv-frame index: {}, alloc-index: {}, fall to rand-frame: {},"
+            "\nv-frame: {}"
+            .format(str(datetime.fromtimestamp(now_timestamp)), pktno,
+                    str(datetime.fromtimestamp(pkt_timestamp)),
+                    node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame))
+       
+        return (node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame)
 
 
 # /////////////////////////////////////////////////////////////////////////////
@@ -263,9 +268,10 @@ def main():
             thingy = decode_common_pkt_header(tb,payload)
             if not thingy:
                 return 
+            (pktno,pkt_timestamp,pkt_type) = thingy
 
             n_right += 1
-            logger.info("I get {}bytes, pktno{}".format(len(payload),pktno))
+            logger.info("I get {} bytes, pktno {}".format(len(payload),pktno))
 
             node_rx_q.put(payload)
         else:
@@ -345,6 +351,7 @@ def main():
         global thread_run
         bs_start_time = 0
         nd_start_time = 0
+        nd_in_response = False
         time_data_collecting = len(TEST_NODE_LIST)*NODE_SLOT_TIME
         time_wait_for_my_slot = 0
         #while not stop_event.is_set():
@@ -364,8 +371,10 @@ def main():
                     vfs_model.send_dummy_pkt(tb)
 
             else: #node
-                if (nd_start_time != 0) and (time.time() > nd_start_time + time_wait_for_my_slot):
-                    vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "**heLLo**{}".pktno, pktno)
+                if (nd_in_response != False) and (time.time() > nd_start_time + time_wait_for_my_slot):
+                    vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "**heLLo**{}".format(pktno), pktno)
+                    pktno += 1
+                    nd_in_response = False
                 else:
                     vfs_model.send_dummy_pkt(tb)
 
@@ -378,10 +387,12 @@ def main():
                         action(tb, vfs_model, payload)
                     else:
                         thingy = action(tb, vfs_model, payload)
+                        logger.info( "{}".format(thingy))
                         if thingy:
                             (node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame) = thingy
                             time_wait_for_my_slot = alloc_index * NODE_SLOT_TIME
                             nd_start_time = time.time()
+                            nd_in_response = True
                             #vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "**heLLo**{}".pktno, pktno)
                         else:
                             logger.warn( "error during decode VFS_BROADCAST")
