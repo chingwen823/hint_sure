@@ -360,6 +360,7 @@ def main():
 
         while time.time() < (boot_time + 10):        
             vfs_model.send_dummy_pkt(tb)
+            time.sleep(0.01)
         print "============================="
         print "===========Lock ============="
         print "============================="
