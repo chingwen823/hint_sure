@@ -382,15 +382,16 @@ def main():
         bs_start_time = 0
         nd_start_time = 0
 
-        if IS_BS:
-            while time.time() < (boot_time + 10):        
-                #vfs_model.send_dummy_pkt(tb)
-                vfs_model.send_beacon_pkt(tb,pkt_size,pktno)
-                time.sleep(0.1)
+        #if IS_BS:
+        #    while time.time() < (boot_time + 10):        
+        #        #vfs_model.send_dummy_pkt(tb)
+        #        vfs_model.send_beacon_pkt(tb,pkt_size,pktno)
+        #        time.sleep(0.1)
              
-            print "============================="
-            print "===========Lock ============="
-            print "============================="
+        #    print "============================="
+        #    print "===========Lock ============="
+        
+        #    print "============================="
     
         nd_in_response = False
         time_data_collecting = len(TEST_NODE_LIST)*NODE_SLOT_TIME
