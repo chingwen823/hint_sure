@@ -55,7 +55,7 @@ from vf_scheme import VirtualFrameScheme
 
 #presum
 NODE_RX_MAX = 10
-NODE_SLOT_TIME = .5     # seconds
+NODE_SLOT_TIME = .01     # seconds
 TRANSMIT_DELAY = .1     # seconds
 TIMESTAMP_LEN = 14  # 26 # len(now)
 # Node: Use device serial number as Node ID
@@ -165,9 +165,9 @@ def action(tb, vfs_model, payload):
 	if pkt_type not in [PacketType.VFS_BROADCAST.index, PacketType.VFS_PKT.index]:
 	    logger.warning("Invalid pkt_type {}. Drop pkt!".format(pkt_type))
 	    return
-        print "pkt type"
+  
 	if pkt_type == PacketType.VFS_PKT.index:
-	    print "pkt VFS"	
+	
 	    for i, tpl in enumerate(vfs_model.nodes_expect_time):
 		node_id, begin_at, end_at = tpl
 		if begin_at <= now_timestamp <= end_at:
@@ -261,12 +261,12 @@ def main():
         # Filter out incorrect pkt
         if ok:
             n_right += 1
-	    #logger.info("I get {}bytes, #{}".format(len(payload),n_right))
+	    logger.info("I get {}bytes, #{}".format(len(payload),n_right))
             #put info into queue, and fire upload event
             node_rx_q.put(payload)
             node_rx_sem.release()
         else:
-	    #logger.warning("Packet fail. Drop pkt!")
+	    logger.warning("Packet fail. Drop pkt!")
 	    return
    	return
 
@@ -340,14 +340,23 @@ def main():
     pkt_size = int(options.size)
 
     def threadjob(stop_event,pktno,IS_BS):
+	start_time = time.time()
+        time_data_collecting = len(TEST_NODE_LIST)*NODE_SLOT_TIME
 	while not stop_event.is_set():
-            if IS_BS:            
-     		#prepare
-	        vfs_model.generate_seed_v_frame_rand_frame(TEST_NODE_LIST)
-	        #send boardcast
-	        vfs_model.broadcast_vfs_pkt(tb, pkt_size, len(TEST_NODE_LIST),pktno+int(packno_delta))
-	        time.sleep(len(TEST_NODE_LIST)*NODE_SLOT_TIME)	            
-	        pktno += 1  
+            if IS_BS:
+                if time.time() > start_time + time_data_collecting:
+                 
+			elapsed_time = time.time() - start_time            
+	     		#prepare
+			vfs_model.generate_seed_v_frame_rand_frame(TEST_NODE_LIST)
+			#send boardcast
+			vfs_model.broadcast_vfs_pkt(tb, pkt_size, len(TEST_NODE_LIST),pktno+int(packno_delta))
+			#time.sleep(len(TEST_NODE_LIST)*NODE_SLOT_TIME)	            
+			pktno += 1  
+
+			start_time = time.time()
+		else:
+			time.sleep(0.1)	  
             
 	    while node_rx_sem.acquire(False):   
 	        payload = node_rx_q.get()
@@ -360,7 +369,6 @@ def main():
     thread_event = threading.Event()
     thread = threading.Thread(target = threadjob, args = (thread_event,pktno,IS_BS_ROLE,))
     thread.daemon = True #make it a daemon thread
-    time.sleep(2)  
     thread.start()
         
     #send_pkt(eof=True)
