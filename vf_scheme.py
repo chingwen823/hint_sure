@@ -42,11 +42,12 @@ class VirtualFrameScheme:
     seed = None
     nodes_expect_time = []
 
-    def __init__(self, broadcast_id, send_pkt_id, node_slot_time,beacon_id):
-        self.vfs_broadcast_id = broadcast_id
-        self.vfs_send_pkt_id = send_pkt_id
+    def __init__(self, PacketType, node_slot_time):
+        self.vfs_broadcast_id = PacketType.VFS_BROADCAST.index
+        self.vfs_send_pkt_id = PacketType.VFS_PKT.index
         self.node_slot_time = node_slot_time
-        self.beacon_id = beacon_id
+        self.beacon_id = PacketType.BEACON.index
+        self.dummy_id = PacketType.DUMMY.index
 
     def compute_vf_index(self, v_frame_len, node_id, salt):
         """

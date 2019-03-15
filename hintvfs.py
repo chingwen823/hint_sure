@@ -268,7 +268,7 @@ def action(tb, vfs_model, payload,NODE_ID):
 def main():
     
     #import protocol model
-    vfs_model = VirtualFrameScheme(PacketType.VFS_BROADCAST.index, PacketType.VFS_PKT.index, NODE_SLOT_TIME,PacketType.BEACON.index)
+    vfs_model = VirtualFrameScheme(PacketType, NODE_SLOT_TIME)
     
     #node rx queue/event
     global node_rx_q, node_rx_sem, thread_run
