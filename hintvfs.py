@@ -416,8 +416,8 @@ def main():
                   
                 else:
                     #pass
-                    #vfs_model.send_dummy_pkt(tb)
-                    tb.txpath.send_pkt(eof=True)
+                    vfs_model.send_dummy_pkt(tb)
+                    #tb.txpath.send_pkt(eof=True)
                     
 
             else: #node
@@ -427,8 +427,8 @@ def main():
                     nd_in_response = False
                 else:
                     #pass
-                    #vfs_model.send_dummy_pkt(tb)
-                    tb.txpath.send_pkt(eof=True)
+                    vfs_model.send_dummy_pkt(tb)
+                    #tb.txpath.send_pkt(eof=True)
                     
             #while node_rx_sem.acquire(False):   
             if not node_rx_q.empty():
