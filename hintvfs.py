@@ -160,7 +160,7 @@ def decode_common_pkt_header(tb,payload):
         return 
 
     (pkt_type,) = struct.unpack('!H', payload[2+TIMESTAMP_LEN:2+TIMESTAMP_LEN+2])
-    if pkt_type not in [PacketType.VFS_BROADCAST.index, PacketType.VFS_PKT.index]:
+    if pkt_type not in [PacketType.VFS_BROADCAST.index, PacketType.VFS_PKT.index, PacketType.BEACON.index]:
         #logger.warning("Invalid pkt_type {}. Drop pkt!".format(pkt_type))
         return 
 
@@ -179,6 +179,29 @@ def action(tb, vfs_model, payload,NODE_ID):
 
     now_timestamp = tb.source.get_time_now().get_real_secs()
     delta = now_timestamp - pkt_timestamp
+
+    if pkt_type == PacketType.BEACON.index:
+            delta_list.append(delta)
+            # Keep delta_list in size limit
+            if len(delta_list) > MAX_DELTA_AMT:
+                delta_list.pop(0)
+            mean_delta = numpy.mean(delta_list)
+            # mean_delta_str = '{:07.3f}'.format(delta)
+            # Adjust time if needed
+            if not -0.05 <= mean_delta <= 0.05:
+                tb.source.set_time_now(uhd.time_spec(pkt_timestamp))
+                now_timestamp = tb.source.get_time_now().get_real_secs()
+                logger.info("Adjust time... New time: {}".format(str(datetime.fromtimestamp(now_timestamp))))
+
+            #stop_rx_ts = now_timestamp + 0.5 - COMMAND_DELAY
+            # Hack: for RX2400
+            #if pktno >= MAX_PKT_AMT - 10:
+            #    stop_rx_ts -= 0.3
+
+            logger.info("{} Node recv BEACON {}. BS time: {}, Avg delay: {}".format(
+                str(datetime.fromtimestamp(now_timestamp)), pktno, str(datetime.fromtimestamp(pkt_timestamp)), mean_delta))
+            # logger.debug("stop_rx_ts {}".format(str(datetime.fromtimestamp(stop_rx_ts))))
+            return
 
     if pkt_type == PacketType.VFS_PKT.index:
 
@@ -357,14 +380,14 @@ def main():
         bs_start_time = 0
         nd_start_time = 0
 
-    
-        while time.time() < (boot_time + 10):        
-            vfs_model.send_dummy_pkt(tb)
-            time.sleep(0.01)
-         
-        print "============================="
-        print "===========Lock ============="
-        print "============================="
+        if IS_BS:
+            while time.time() < (boot_time + 10):        
+                vfs_model.send_dummy_pkt(tb)
+                time.sleep(0.01)
+             
+            print "============================="
+            print "===========Lock ============="
+            print "============================="
     
         nd_in_response = False
         time_data_collecting = len(TEST_NODE_LIST)*NODE_SLOT_TIME
