@@ -88,9 +88,9 @@ PacketType = Enum(
     'DUMMY')
 
 logging.basicConfig(level=logging.INFO,
-            format='%(name)s %(levelname)s %(message)s')
+            format='%(name)-12s %(levelname)-8s %(message)s')
 logger = logging.getLogger('hintvfs')
-logger.setLevel(logging.WARN)
+logger.setLevel(logging.INFO)
 
 
 
@@ -196,13 +196,13 @@ def action(tb, vfs_model, payload,NODE_ID):
 
         for i, tpl in enumerate(vfs_model.nodes_expect_time):
             node_id, begin_at, end_at = tpl
-            #logger.info( "node {}, {}~{}".format(node_id,begin_at,end_at))
+            print "node {}, {}~{}".format(node_id,begin_at,end_at)
             if begin_at <= now_timestamp <= end_at:
-                logger.info("{} ({}) [Slot {}: Node {} pktno{}] data: {}".format(
+                logger.info("{} ({}) [Slot {}: Node {} Session] BS recv VFS_PKT.index {}, data: {}".format(
                     str(datetime.fromtimestamp(now_timestamp)), now_timestamp, i, node_id, pktno,
                     vfs_model.get_node_data(payload)))
                 return True
-        logger.info("{} ({}) [No slot/session] pktno {}, data: {}".format(
+        logger.info("{} ({}) [No slot/session] BS recv VFS_PKT {}, data: {}".format(
         str(datetime.fromtimestamp(now_timestamp)), now_timestamp, pktno, vfs_model.get_node_data(payload)))
         # Last timestamp for VFS_PKT session
         #next_tx_ts = vfs_model.nodes_expect_time[-1][-1] + 0.2   # add some delay

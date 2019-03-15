@@ -31,9 +31,9 @@ CALC_COUNT_LIMIT = 20
 #args, unknown = log_parser.parse_known_args()
 #logging.config.fileConfig('logging.ini', defaults={'log_file': args.log_file})
 logging.basicConfig(level=logging.DEBUG,
-            format='%(name)s %(levelname)s %(message)s')
+            format='%(name)-12s %(levelname)-8s %(message)s')
 logger = logging.getLogger('vf_scheme')
-logger.setLevel(logging.WARN)
+logger.setLevel(logging.INFO)
 
 class VirtualFrameScheme:
     alloc_frame = []
@@ -201,7 +201,7 @@ class VirtualFrameScheme:
             end_at = begin_at + self.node_slot_time
             n_id = self.alloc_frame[i] if i < len(self.alloc_frame) else 'rand_frame'
             self.nodes_expect_time.append((n_id, begin_at, end_at))
-            logger.info("pkt plan node {}, {}~{}".format(pktno, n_id, begin_at, end_at))
+            print "Prepare pkt {} node {}, {}~{}".format(pktno, n_id, begin_at, end_at)
 
         payload = payload_prefix + now_timestamp_str + broadcast + node_amount_str + self.seed + begin_timestamp_str\
             + v_frame_size_str + v_frame_str + dummy
