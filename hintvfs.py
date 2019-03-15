@@ -164,7 +164,7 @@ def decode_common_pkt_header(tb,payload):
 
     (pkt_type,) = struct.unpack('!H', payload[2+TIMESTAMP_LEN:2+TIMESTAMP_LEN+2])
 
-    if pkt_type is PacketType.DUMMY.index
+    if pkt_type == PacketType.DUMMY.index:
         return
 
     if pkt_type not in [PacketType.VFS_BROADCAST.index, PacketType.VFS_PKT.index, PacketType.BEACON.index]:
