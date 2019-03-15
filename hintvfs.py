@@ -58,6 +58,7 @@ NODE_RX_MAX = 10
 NODE_SLOT_TIME = .5     # seconds
 TRANSMIT_DELAY = .1     # seconds
 TIMESTAMP_LEN = 14  # 26 # len(now)
+delta_list = []
 # Node: Use device serial number as Node ID
 NODE_ID = ''
 # BS: Use device serial number as Node ID
