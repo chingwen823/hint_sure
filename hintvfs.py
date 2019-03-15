@@ -217,7 +217,7 @@ def action(tb, vfs_model, payload,NODE_ID):
         #
         #  hacking - usrp transmission clost and delay problem
         #
-        now_timestamp = now_timestamp - delta
+        #  now_timestamp = now_timestamp - delta
         #
         #
 
