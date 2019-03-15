@@ -360,7 +360,7 @@ def main():
 
     def threadjob(stop_event,pktno,IS_BS,NODE_ID):
         global thread_run
-        print "Please start host now...")
+        print "Please start host now..."
         boot_time = time.time()
         bs_start_time = 0
         nd_start_time = 0
