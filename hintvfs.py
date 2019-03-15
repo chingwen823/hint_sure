@@ -357,7 +357,7 @@ def main():
         bs_start_time = 0
         nd_start_time = 0
 
-        if time.time() < (boot_time + 10):        
+        if time.time() < (boot_time + 1000):        
             vfs_model.send_dummy_pkt(tb)
         print "===========Lock ============="
 
