@@ -161,7 +161,7 @@ def decode_common_pkt_header(tb,payload):
 
     (pkt_type,) = struct.unpack('!H', payload[2+TIMESTAMP_LEN:2+TIMESTAMP_LEN+2])
     if pkt_type not in [PacketType.VFS_BROADCAST.index, PacketType.VFS_PKT.index, PacketType.BEACON.index]:
-        #logger.warning("Invalid pkt_type {}. Drop pkt!".format(pkt_type))
+        logger.warning("Invalid pkt_type {}. Drop pkt!".format(pkt_type))
         return 
 
     return(pktno,pkt_timestamp,pkt_type)
@@ -299,8 +299,8 @@ def main():
             node_rx_q.put(payload)
         else:
             logger.warning("Packet fail. Drop pkt!")
-            return
-   	return
+           
+        return
 
     parser = OptionParser(option_class=eng_option, conflict_handler="resolve")
     expert_grp = parser.add_option_group("Expert")
