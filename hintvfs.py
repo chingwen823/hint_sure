@@ -376,11 +376,12 @@ def main():
 
 			start_time = time.time()
 		else:
-        		vfs_model.broadcast_dummy_pkt(tb)
-			time.sleep(0.01)	
-	
+        		vfs_model.send_dummy_pkt(tb)
+			#time.sleep(0.01)	
+	    else:
+                vfs_model.send_dummy_pkt(tb)
             
-	    while node_rx_sem.acquire(False):   
+	    while node_rx_sem.acquire(False) and not stop_event.is_set() :   
 	        payload = node_rx_q.get()
                 if action(tb, vfs_model, payload):
                 #here we need to decode the payload first

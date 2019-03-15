@@ -132,7 +132,7 @@ class VirtualFrameScheme:
                     self.alloc_frame))
 
 
-    def broadcast_dummy_pkt(self, my_tb, pktno=1):     # BS only
+    def send_dummy_pkt(self, my_tb, pktno=1):     # BS Nodes
 
 	payload_prefix = struct.pack('!H', pktno & 0xffff)
 	broadcast = struct.pack('!H', 0 & 0xffff)
