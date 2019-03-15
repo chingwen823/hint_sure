@@ -416,8 +416,9 @@ def main():
                   
                 else:
                     #pass
-                    vfs_model.send_dummy_pkt(tb)
-                    time.sleep(0.01)
+                    #vfs_model.send_dummy_pkt(tb)
+                    tb.txpath.send_pkt(eof=True)
+                    
 
             else: #node
                 if (nd_in_response != False) and (time.time() > (nd_start_time + time_wait_for_my_slot)):
@@ -426,9 +427,9 @@ def main():
                     nd_in_response = False
                 else:
                     #pass
-                    vfs_model.send_dummy_pkt(tb)
-                    time.sleep(0.01)
-
+                    #vfs_model.send_dummy_pkt(tb)
+                    tb.txpath.send_pkt(eof=True)
+                    
             #while node_rx_sem.acquire(False):   
             if not node_rx_q.empty():
                 payload = node_rx_q.get()
