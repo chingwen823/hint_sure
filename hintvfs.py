@@ -94,7 +94,8 @@ PacketType = Enum(
     'VFS_BROADCAST',
     'VFS_PKT',
     'CONFIRM_ALLOC',
-    'DATA')
+    'DATA',
+    'DUMMY')
 
 #logger config
 #log_parser = ArgumentParser()
@@ -162,6 +163,10 @@ def decode_common_pkt_header(tb,payload):
         return 
 
     (pkt_type,) = struct.unpack('!H', payload[2+TIMESTAMP_LEN:2+TIMESTAMP_LEN+2])
+
+    if pkt_type is PacketType.DUMMY.index
+        return
+
     if pkt_type not in [PacketType.VFS_BROADCAST.index, PacketType.VFS_PKT.index, PacketType.BEACON.index]:
         logger.warning("Invalid pkt_type {}. Drop pkt!".format(pkt_type))
         return 
