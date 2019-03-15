@@ -285,7 +285,7 @@ def main():
 
             #put info into queue, and fire upload event
             node_rx_q.put(payload)
-            node_rx_sem.release()
+            #node_rx_sem.release()
         else:
 	    logger.warning("Packet fail. Drop pkt!")
 	    return
@@ -378,18 +378,21 @@ def main():
 			start_time = time.time()
 		else:
         		vfs_model.send_dummy_pkt(tb)
-			time.sleep(0.01)	
+			#time.sleep(0.01)	
 	    else:
                 vfs_model.send_dummy_pkt(tb)
-		time.sleep(0.01)
+		#time.sleep(0.01)
             
-	    while node_rx_sem.acquire(False) and not stop_event.is_set() :   
-	        payload = node_rx_q.get()
-                if action(tb, vfs_model, payload):
+	    #while node_rx_sem.acquire(False):   
+            try:
+	        payload = node_rx_q.get_nowait()
+                if payload and action(tb, vfs_model, payload):
                 #here we need to decode the payload first
 		    if not IS_BS:
 	                vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "**heLLo**", pktno)
-	        node_rx_sem.release       
+            except Queue.Empty:
+                pass
+	    #node_rx_sem.release       
     
     thread_event = threading.Event()
     thread = threading.Thread(target = threadjob, args = (thread_event,pktno,IS_BS_ROLE,))
