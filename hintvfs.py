@@ -402,7 +402,7 @@ def main():
             while time.time() < (boot_time + 10):        
                 #vfs_model.send_dummy_pkt(tb)
                 vfs_model.send_beacon_pkt(tb,pkt_size,pktno)
-                time.sleep(0.1)
+                time.sleep(1)
              
             print "============================="
             print "========= sync end    ======="        
