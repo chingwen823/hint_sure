@@ -418,6 +418,7 @@ def main():
                     #prepare
                     vfs_model.generate_seed_v_frame_rand_frame(TEST_NODE_LIST)
                     #send boardcast
+                    vfs_model.send_dummy_pkt(tb)
                     vfs_model.broadcast_vfs_pkt(tb, pkt_size, len(TEST_NODE_LIST),pktno+int(packno_delta))
                     pktno += 1
                     bs_start_time = time.time()
@@ -430,6 +431,7 @@ def main():
 
             else: #node
                 if (nd_in_response != False) and (time.time() > (nd_start_time + time_wait_for_my_slot)):
+                    vfs_model.send_dummy_pkt(tb)
                     vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "**heLLo**{}".format(pktno), pktno)
                     pktno += 1
                     nd_in_response = False
