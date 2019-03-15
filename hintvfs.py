@@ -396,16 +396,14 @@ def main():
 
         if IS_BS:
             print "============================="
-            print "========= clock sync  ======="
-            print "============================="
+            print "========= purge ============="
 
             while time.time() < (boot_time + 10):        
                 vfs_model.send_dummy_pkt(tb)
                 #vfs_model.send_beacon_pkt(tb,pkt_size,pktno)
-                time.sleep(1)
-             
-            print "============================="
-            print "========= sync end    ======="        
+                #time.sleep(1)
+
+            print "========= purge end ========="        
             print "============================="
     
         nd_in_response = False
@@ -425,8 +423,8 @@ def main():
                     bs_start_time = time.time()
                   
                 else:
-                    #pass
-                    vfs_model.send_dummy_pkt(tb)
+                    pass
+                    #vfs_model.send_dummy_pkt(tb)
                     #tb.txpath.send_pkt(eof=True)
                     
 
@@ -436,8 +434,8 @@ def main():
                     pktno += 1
                     nd_in_response = False
                 else:
-                    #pass
-                    vfs_model.send_dummy_pkt(tb)
+                    pass
+                    #vfs_model.send_dummy_pkt(tb)
                     #tb.txpath.send_pkt(eof=True)
                     
             #while node_rx_sem.acquire(False):   
