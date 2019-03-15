@@ -42,10 +42,11 @@ class VirtualFrameScheme:
     seed = None
     nodes_expect_time = []
 
-    def __init__(self, broadcast_id, send_pkt_id, node_slot_time):
+    def __init__(self, broadcast_id, send_pkt_id, node_slot_time,beacon_id):
         self.vfs_broadcast_id = broadcast_id
         self.vfs_send_pkt_id = send_pkt_id
         self.node_slot_time = node_slot_time
+        self.beacon_id = beacon_id
 
     def compute_vf_index(self, v_frame_len, node_id, salt):
         """
@@ -143,6 +144,19 @@ class VirtualFrameScheme:
         payload = payload_prefix + now_timestamp_str + broadcast
 
         my_tb.txpath.send_pkt(payload)
+
+    def send_beacon_pkt(self,my_tb, pkt_size, pkt_no):        # BS only
+        # payload = prefix + now + beacon + dummy
+
+        payload_prefix = struct.pack('!H', pkt_no & 0xffff)
+        beacon = struct.pack('!H', self.beacon_id & 0xffff)
+        data_size = len(payload_prefix) + TIMESTAMP_LEN + len(beacon)
+        dummy = (pkt_size - data_size) * chr(pkt_no & 0xff)
+        now_timestamp = my_tb.sink.get_time_now().get_real_secs()
+        now_timestamp_str = '{:.3f}'.format(now_timestamp)
+        payload = payload_prefix + now_timestamp_str + beacon + dummy
+        my_tb.txpath.send_pkt(payload)
+        logger.info("{} broadcast BEACON - {}".format(str(datetime.fromtimestamp(now_timestamp)), pkt_no))
 
     def broadcast_vfs_pkt(self, my_tb, pkt_size, node_amount, pktno=1):     # BS only
         # payload = prefix + now + vfs_broadcast + node_amount + seed + node_begin_time + len(v-frame) + v-frame + dummy
