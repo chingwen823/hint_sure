@@ -73,17 +73,7 @@ NODE_ID_A, NODE_ID_B = '00030757AF', '0003075786'   # N210
 NODE_ID_C = '0003094D5C'    # B210
 TEST_NODE_LIST = [NODE_ID_A, NODE_ID_B, NODE_ID_C, '0000000004', '0000000005',
                   '0000000006', '0000000007', '0000000008', '0000000009', '0000000010']
-#class PacketType(IntEnum):
-#    NONE=0
-#    BEACON=1
-#    RESPOND_BEACON=2
-#    ACK_RESPOND=3
-#    PS_BROADCAST=4
-#    PS_PKT=5
-#    VFS_BROADCAST=6
-#    VFS_PKT=7
-#    CONFIRM_ALLOC=8
-#    DATA=9
+
 PacketType = Enum(
     'NONE',
     'BEACON',
@@ -97,11 +87,6 @@ PacketType = Enum(
     'DATA',
     'DUMMY')
 
-#logger config
-#log_parser = ArgumentParser()
-#log_parser.add_argument('--logfile', dest='log_file', help='log to filename', default='hintvfs.log')
-#args, unknown = log_parser.parse_known_args()
-#logging.config.fileConfig('logging.ini', defaults={'log_file': args.log_file})
 logging.basicConfig(level=logging.INFO,
             format='%(name)-12s %(levelname)-8s %(message)s')
 logger = logging.getLogger('hintvfs')
@@ -200,11 +185,6 @@ def action(tb, vfs_model, payload,NODE_ID):
                 now_timestamp = tb.source.get_time_now().get_real_secs()
                 logger.info("Adjust time... New time: {}".format(str(datetime.fromtimestamp(now_timestamp))))
 
-            #stop_rx_ts = now_timestamp + 0.5 - COMMAND_DELAY
-            # Hack: for RX2400
-            #if pktno >= MAX_PKT_AMT - 10:
-            #    stop_rx_ts -= 0.3
-
             logger.info("{} Node recv BEACON {}. BS time: {}, Avg delay: {}".format(
                 str(datetime.fromtimestamp(now_timestamp)), pktno, str(datetime.fromtimestamp(pkt_timestamp)), mean_delta))
             # logger.debug("stop_rx_ts {}".format(str(datetime.fromtimestamp(stop_rx_ts))))
@@ -213,13 +193,6 @@ def action(tb, vfs_model, payload,NODE_ID):
     if pkt_type == PacketType.VFS_PKT.index:
 
         logger.info("identify node from nowtime {}, delta {}".format(now_timestamp,delta))
-
-        #
-        #  hacking - usrp transmission clost and delay problem
-        #
-        #  now_timestamp = now_timestamp - delta
-        #
-        #
 
         for i, tpl in enumerate(vfs_model.nodes_expect_time):
             node_id, begin_at, end_at = tpl
@@ -387,25 +360,10 @@ def main():
 
     def threadjob(stop_event,pktno,IS_BS,NODE_ID):
         global thread_run
-
-        print "NODE_ID thread begin{}".format(NODE_ID)
-
+        print "Please start host now...")
         boot_time = time.time()
         bs_start_time = 0
         nd_start_time = 0
-
-#        if IS_BS:
-#            print "============================="
-#            print "========= purge ============="
-
-#            while time.time() < (boot_time + 10):        
-#                vfs_model.send_dummy_pkt(tb)
-#                #vfs_model.send_beacon_pkt(tb,pkt_size,pktno)
-#                #time.sleep(1)
-
-#            print "========= purge end ========="        
-#            print "============================="
-    
         nd_in_response = False
         time_data_collecting = len(TEST_NODE_LIST)*NODE_SLOT_TIME
         time_wait_for_my_slot = 0
@@ -418,7 +376,7 @@ def main():
                     #prepare
                     vfs_model.generate_seed_v_frame_rand_frame(TEST_NODE_LIST)
                     #send boardcast
-                    vfs_model.send_dummy_pkt(tb)
+                    vfs_model.send_dummy_pkt(tb) # hacking, send dummy pkt to avoid data lost
                     vfs_model.broadcast_vfs_pkt(tb, pkt_size, len(TEST_NODE_LIST),pktno+int(packno_delta))
                     pktno += 1
                     bs_start_time = time.time()
@@ -431,7 +389,7 @@ def main():
 
             else: #node
                 if (nd_in_response != False) and (time.time() > (nd_start_time + time_wait_for_my_slot)):
-                    vfs_model.send_dummy_pkt(tb)
+                    vfs_model.send_dummy_pkt(tb)# hacking, send dummy pkt to avoid data lost
                     vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "**heLLo**{}".format(pktno), pktno)
                     pktno += 1
                     nd_in_response = False
@@ -461,8 +419,7 @@ def main():
                             logger.warn( "error during decode VFS_BROADCAST")
             
             #node_rx_sem.release 
-        print "thread done"
-
+  
     thread_event = threading.Event()
     thread = threading.Thread(target = threadjob, args = (thread_event,pktno,IS_BS_ROLE,NODE_ID))
     thread.daemon = True #make it a daemon thread
@@ -473,11 +430,10 @@ def main():
     #send_pkt(eof=True)
     time.sleep(2)               # allow time for queued packets to be sent
     tb.wait()                       # wait for it to finish
-    print "wait done"
     thread_run = False
     while thread.isAlive():
         time.sleep(1)   
-        
+       
     print "join done"
 if __name__ == '__main__':
     try:
