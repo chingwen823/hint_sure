@@ -1,7 +1,19 @@
-bs side
+[tao's program test_uci]
+#bs side
 ./test_uci_rbk.py -v --antenna=TX/RX --bandwidth=1000000 --fft-length=512 --freq=2.49G --tx-amplitude=0.1 --tx-gain=20 --rx-gain=20 --scheme=VFS --logfile=bs_vfs.log 
-
-node side
+#node side
 ./test_uci_rbk_n.py -v --antenna=TX/RX --bandwidth=1000000 --fft-length=512 --freq=2.49G --tx-amplitude=0.1 --tx-gain=20 --rx-gain=30 --args='serial=3075786' --scheme=VFS --logfile=3075786_vfs.log
-uhd node 1 2, not listen self => gain 20->50
+#uhd node 1 2, not listen self => gain 20->50
 ./test_uci_rbk_n.py -v --antenna=TX/RX --bandwidth=1000000 --fft-length=512 --freq=2.49G --tx-amplitude=0.1 --tx-gain=20 --rx-gain=50 --args='serial=30757AF' --scheme=VFS --logfile=3075786_vfs.log
+
+[my program hintvfs.py]
+
+before running
+#resize buffer
+sudo sysctl -w net.core.rmem_max=50000000
+sudo sysctl -w net.core.wmem_max=1048576
+
+#bs side 
+./hintvfs.py --tx-freq 2.49G --rx-freq 2.39G --bs yes
+#node side
+./hintvfs.py --tx-freq 2.39G --rx-freq 2.49G

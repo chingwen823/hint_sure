@@ -74,6 +74,7 @@ NODE_ID_C = '0003094D5C'    # B210
 TEST_NODE_LIST = [NODE_ID_A, NODE_ID_B, NODE_ID_C, '0000000004', '0000000005',
                   '0000000006', '0000000007', '0000000008', '0000000009', '0000000010']
 
+
 PacketType = Enum(
     'NONE',
     'BEACON',
@@ -90,7 +91,7 @@ PacketType = Enum(
 logging.basicConfig(level=logging.INFO,
             format='%(name)-12s %(levelname)-8s %(message)s')
 logger = logging.getLogger('hintvfs')
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.WARN)
 
 
 
@@ -160,10 +161,12 @@ def decode_common_pkt_header(tb,payload):
 
 def action(tb, vfs_model, payload,NODE_ID):
 
+    global alloc_index_last
+
     thingy = decode_common_pkt_header(tb,payload)
 
     if not thingy:
-        logger.info("decode_common_pkt_header return nil")
+        logger.wran("decode_common_pkt_header return nil")
         return 
     
     (pktno,pkt_timestamp,pkt_type) = thingy
@@ -196,19 +199,39 @@ def action(tb, vfs_model, payload,NODE_ID):
 
         for i, tpl in enumerate(vfs_model.nodes_expect_time):
             node_id, begin_at, end_at = tpl
-            print "node {}, {}~{}".format(node_id,begin_at,end_at)
+
             if begin_at <= now_timestamp <= end_at:
-                logger.info("{} ({}) [Slot {}: Node {} Session] BS recv VFS_PKT.index {}, data: {}".format(
-                    str(datetime.fromtimestamp(now_timestamp)), now_timestamp, i, node_id, pktno,
-                    vfs_model.get_node_data(payload)))
-                return True
+                #check if time out(response in 1 frame time) 
+                if vfs_model.check_node_intime( node_id, now_timestamp, len(TEST_NODE_LIST)):
+                    logger.info("{} ({}) [Slot {}: Node {} ] BS recv VFS_PKT.index {}, data: {}".format(
+                        str(datetime.fromtimestamp(now_timestamp)), now_timestamp, i, node_id, pktno,
+                        vfs_model.get_node_data(payload)))
+                    return True
+                else:
+                    logger.info("[Node {} pktno{}] Upload timeout".format(node_id, pktno))
+                    return False
+                
         logger.info("{} ({}) [No slot/session] BS recv VFS_PKT {}, data: {}".format(
         str(datetime.fromtimestamp(now_timestamp)), now_timestamp, pktno, vfs_model.get_node_data(payload)))
         # Last timestamp for VFS_PKT session
         #next_tx_ts = vfs_model.nodes_expect_time[-1][-1] + 0.2   # add some delay
+
         return True
 
     if pkt_type == PacketType.VFS_BROADCAST.index:
+
+        # get vack frame
+        try:
+            vack_frame = vfs_model.get_vack_frame(payload)
+        except:
+            logger.warning("Cannot extract vack-frame. Drop pkt!")
+            return 
+        
+        if vack_frame[alloc_index_last]==1:
+            print "last time success"
+        else:
+            print "last time fail"
+
 
         node_amount = vfs_model.get_node_amount(payload)
         seed = vfs_model.get_seed(payload)
@@ -224,6 +247,7 @@ def action(tb, vfs_model, payload,NODE_ID):
             logger.warning("Cannot extract v-frame. Drop pkt!")
             return 
         vf_index = vfs_model.compute_vf_index(len(v_frame), NODE_ID, seed)
+        alloc_index_last = alloc_index
         alloc_index, in_rand_frame = vfs_model.compute_alloc_index(vf_index, NODE_ID, v_frame, node_amount)
 
         stop_rx_ts = now_timestamp + 0.4
@@ -251,7 +275,7 @@ def main():
     vfs_model = VirtualFrameScheme(PacketType, NODE_SLOT_TIME)
     
     #node rx queue/event
-    global node_rx_q, node_rx_sem, thread_run
+    global node_rx_q, node_rx_sem, thread_run, alloc_index_last
     node_rx_q = Queue.Queue(maxsize = NODE_RX_MAX)
     node_rx_sem = threading.Semaphore(NODE_RX_MAX) #up to the queue size
     thread_run = True 
@@ -281,8 +305,6 @@ def main():
 
             n_right += 1
             now_ts = tb.sink.get_time_now().get_real_secs()
-            logger.info("I get {} bytes, pktno {}, now_ts {}".format(len(payload),pktno,now_ts))
-
             node_rx_q.put(payload)
         else:
             logger.warning("Packet fail. Drop pkt!")
@@ -371,7 +393,7 @@ def main():
         while thread_run:    
             if IS_BS:
                 if time.time() > (bs_start_time + time_data_collecting):
-        
+                    print "...Frame start..."
                     #elapsed_time = time.time() - start_time            
                     #prepare
                     vfs_model.generate_seed_v_frame_rand_frame(TEST_NODE_LIST)

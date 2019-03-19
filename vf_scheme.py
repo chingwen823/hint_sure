@@ -21,6 +21,7 @@ SEED_LEN = 10
 assert NODE_ID_LEN == SEED_LEN
 V_FRAME_FACTOR = 2
 V_FRAME_SIZE_LEN = 4
+VACK_FRAME_SIZE_LEN = 4
 RAND_FRAME_SIZE_LEN = 4
 SINGLETON_RATE_THRESHOLD = 0.7
 VFS_DATA_LEN = 50
@@ -37,10 +38,16 @@ logger.setLevel(logging.INFO)
 
 class VirtualFrameScheme:
     alloc_frame = []
+    alloc_frame_last = []
     v_frame = []
+    vack_frame = []
     rand_frame = []
     seed = None
     nodes_expect_time = []
+    nodes_issue_time = {}
+    nodes_data_num = {}
+    nodes_data_intime = {}
+
 
     def __init__(self, PacketType, node_slot_time):
         self.vfs_broadcast_id = PacketType.VFS_BROADCAST.index
@@ -48,6 +55,15 @@ class VirtualFrameScheme:
         self.node_slot_time = node_slot_time
         self.beacon_id = PacketType.BEACON.index
         self.dummy_id = PacketType.DUMMY.index
+
+    def check_node_intime(self, node_id, time, node_amount):
+        if node_id in self.nodes_issue_time:
+            if self.nodes_issue_time[node_id]+node_amount*self.node_slot_time > time: # ok, no timeout
+                self.nodes_data_num[node_id] = self.nodes_data_num[node_id] + 1
+                self.nodes_data_intime[node_id] = True
+                return True
+            else:
+                return False
 
     def compute_vf_index(self, v_frame_len, node_id, salt):
         """
@@ -109,6 +125,7 @@ class VirtualFrameScheme:
                 singleton_nodes_amount, len(node_id_list), is_below_singleton_rate))
 
         raw_v_frame = self.v_frame[:]
+        self.alloc_frame_last = list(self.alloc_frame)
         self.alloc_frame = []
         self.rand_frame = []
         for i, node_l in enumerate(self.v_frame):
@@ -162,6 +179,20 @@ class VirtualFrameScheme:
     def broadcast_vfs_pkt(self, my_tb, pkt_size, node_amount, pktno=1):     # BS only
         # payload = prefix + now + vfs_broadcast + node_amount + seed + node_begin_time + len(v-frame) + v-frame + dummy
 
+        # prepare vack frame
+        print "alloc_frame_last {}".format(self.alloc_frame_last)
+        print "nodes_data_intime {}".format(self.nodes_data_intime)
+        self.vack_frame = []
+        for i,n_id in enumerate(self.alloc_frame_last):
+            if n_id in self.nodes_data_intime:
+                self.vack_frame.append(str(int(self.nodes_data_intime[n_id])))
+            else:
+                self.vack_frame.append('0')
+        print "vack_frame {}".format(self.vack_frame)     
+        vack_frame_str = ''.join(self.vack_frame) 
+        vack_frame_size_str = str(len(vack_frame_str))      
+
+
         assert self.seed is not None, "Seed is None!"
 
         v_frame_str = ''.join(self.v_frame)
@@ -178,7 +209,7 @@ class VirtualFrameScheme:
         #     len(rand_frame_str))
         # v-frame & rand-frame use TLV technique
         data_size = len(payload_prefix) + TIMESTAMP_LEN + len(broadcast) + len(node_amount_str) + len(self.seed)\
-            + TIMESTAMP_LEN + len(v_frame_size_str) + len(v_frame_str)
+            + TIMESTAMP_LEN + len(v_frame_size_str) + len(v_frame_str) + len(vack_frame_size_str)  + len(vack_frame_str)
         dummy = (pkt_size - data_size) * chr(pktno & 0xff)
 
         now_timestamp = my_tb.sink.get_time_now().get_real_secs()
@@ -194,17 +225,33 @@ class VirtualFrameScheme:
 #            n_id = self.alloc_frame[i] if i < len(self.alloc_frame) else 'rand_frame'
 #            self.nodes_expect_time.append((n_id, begin_at, end_at))
 
-        #use this instead
+
+
+        #node expect time and cmd issue time(the use of timeout)
+        self.nodes_issue_time = {}
+        self.nodes_data_intime = {}
         for i in range(node_amount):
             # Each node time slot: self.node_slot_time seconds
             begin_at = now_timestamp + self.node_slot_time * i
             end_at = begin_at + self.node_slot_time
             n_id = self.alloc_frame[i] if i < len(self.alloc_frame) else 'rand_frame'
             self.nodes_expect_time.append((n_id, begin_at, end_at))
-            print "Prepare pkt {} node {}, {}~{}".format(pktno, n_id, begin_at, end_at)
+            # mark nodes requested time
+            if i < len(self.alloc_frame): #leave rand_frame along
+                self.nodes_issue_time[n_id] = now_timestamp
+
+            #set timeout flag, init as timout
+            if i < len(self.alloc_frame): #leave rand_frame along
+                self.nodes_data_intime[n_id] = False            
+
+            #start tracking data number
+            if n_id not in self.nodes_data_num: #new node , reset the data number  
+                self.nodes_data_num[n_id] = 0 
+
+            logger.info("pkt {} node {},{}~{}".format(pktno, n_id, begin_at, end_at))
 
         payload = payload_prefix + now_timestamp_str + broadcast + node_amount_str + self.seed + begin_timestamp_str\
-            + v_frame_size_str + v_frame_str + dummy
+            + v_frame_size_str + v_frame_str + vack_frame_size_str + vack_frame_str + dummy
         my_tb.txpath.send_pkt(payload)
         #logger.info("{} send VFS_BROADCAST {}, Total nodes: {}, Seed: {}, Node begin: {}, \nSession: {}".format(
         #            str(datetime.fromtimestamp(now_timestamp)), pktno, node_amount, self.seed,
@@ -260,6 +307,17 @@ class VirtualFrameScheme:
         # return list(v_frame_str), rand_frame_str.split(',')
 
         return list(v_frame_str)
+
+    def get_vack_frame(self, payload):
+        prefix_len = 2+TIMESTAMP_LEN+2+NODE_AMT_LEN+SEED_LEN+TIMESTAMP_LEN
+        v_frame_size = payload[prefix_len:prefix_len+V_FRAME_SIZE_LEN]
+        v_frame_size = int(v_frame_size)
+        prefix_len += V_FRAME_SIZE_LEN + v_frame_size
+        vack_frame_size = payload[prefix_len:prefix_len+VACK_FRAME_SIZE_LEN]
+        prefix_len += VACK_FRAME_SIZE_LEN
+        vack_frame_str = payload[prefix_len:prefix_len+vack_frame_size]
+
+        return list(vack_frame_str)
 
     def compute_alloc_index(self, vf_index, node_id, v_frame, node_amount):
         if v_frame[vf_index] == '1':    # exists in v-frame
