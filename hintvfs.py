@@ -91,7 +91,7 @@ PacketType = Enum(
 logging.basicConfig(level=logging.INFO,
             format='%(name)-12s %(levelname)-8s %(message)s')
 logger = logging.getLogger('hintvfs')
-logger.setLevel(logging.WARN)
+logger.setLevel(logging.INFO)
 
 
 
@@ -161,7 +161,7 @@ def decode_common_pkt_header(tb,payload):
 
 def action(tb, vfs_model, payload,NODE_ID):
 
-    global alloc_index_last
+    global alloc_index
 
     thingy = decode_common_pkt_header(tb,payload)
 
@@ -234,11 +234,12 @@ def action(tb, vfs_model, payload,NODE_ID):
         except:
             logger.warning("Cannot extract vack-frame. Drop pkt!")
             return 
-        
-        if vack_frame[alloc_index_last]==1:
-            print "last time success"
-        else:
-            print "last time fail"
+        print "alloc_index {}".format(alloc_index)
+        if alloc_index != -1 and alloc_index<len(vack_frame):
+            if vack_frame[alloc_index]==1:
+                print "last time success"
+            else:
+                print "last time fail"
 
 
         node_amount = vfs_model.get_node_amount(payload)
@@ -255,7 +256,7 @@ def action(tb, vfs_model, payload,NODE_ID):
             logger.warning("Cannot extract v-frame. Drop pkt!")
             return 
         vf_index = vfs_model.compute_vf_index(len(v_frame), NODE_ID, seed)
-        alloc_index_last = alloc_index
+
         alloc_index, in_rand_frame = vfs_model.compute_alloc_index(vf_index, NODE_ID, v_frame, node_amount)
 
         stop_rx_ts = now_timestamp + 0.4
@@ -283,10 +284,12 @@ def main():
     vfs_model = VirtualFrameScheme(PacketType, NODE_SLOT_TIME)
     
     #node rx queue/event
-    global node_rx_q, node_rx_sem, thread_run, alloc_index_last
+    global node_rx_q, node_rx_sem, thread_run, alloc_index
     node_rx_q = Queue.Queue(maxsize = NODE_RX_MAX)
     node_rx_sem = threading.Semaphore(NODE_RX_MAX) #up to the queue size
     thread_run = True 
+    alloc_index = -1
+ 
 
     for i in range(NODE_RX_MAX): # make all semaphore in 0 status
         node_rx_sem.acquire()
