@@ -313,12 +313,10 @@ class VirtualFrameScheme:
         v_frame_size = payload[prefix_len:prefix_len+V_FRAME_SIZE_LEN]
         v_frame_size = int(v_frame_size)
         prefix_len += V_FRAME_SIZE_LEN + v_frame_size
-        print "prefix_len:{}".format(prefix_len)
         vack_frame_size = int(payload[prefix_len:prefix_len+VACK_FRAME_SIZE_LEN])
-        print "vack_frame_size:{}".format(vack_frame_size)
         prefix_len += VACK_FRAME_SIZE_LEN
         vack_frame_str = payload[prefix_len:prefix_len+vack_frame_size]
-        print "vack_frame_str:{}".format(vack_frame_str)
+
         return list(vack_frame_str)
 
     def compute_alloc_index(self, vf_index, node_id, v_frame, node_amount):

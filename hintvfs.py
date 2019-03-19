@@ -220,26 +220,28 @@ def action(tb, vfs_model, payload,NODE_ID):
 
     if pkt_type == PacketType.VFS_BROADCAST.index:
 
-        # get vack frame
-        i = 0
-        for c in list(payload)[0:80]:
-            i = i + 1
-            if i%16 ==0:
-                print "{} ".format(c)
-            else: 
-                print "{} ".format(c),
-            
+
+        #i = 0
+        #for c in list(payload)[0:90]:
+        #    i = i + 1
+        #    if i%16 ==0:
+        #        print "{} ".format(c)
+        #    else: 
+        #        print "{} ".format(c),
+
+        # get vack frame            
         try:
             vack_frame = vfs_model.get_vack_frame(payload)
         except:
             logger.warning("Cannot extract vack-frame. Drop pkt!")
             return 
-        print "alloc_index {}".format(alloc_index)
+        #print "alloc_index {}".format(alloc_index)
         if alloc_index != -1 and alloc_index<len(vack_frame):
             if vack_frame[alloc_index]=='1':
-                print "last time success"
+                #advance data number here
+                logger.info("Check last transmission: last time success")
             else:
-                print "last time fail"
+                logger.info("Check last transmission: last time fail")
 
 
         node_amount = vfs_model.get_node_amount(payload)
@@ -439,6 +441,7 @@ def main():
                     if IS_BS:
                         action(tb, vfs_model, payload,NODE_ID)
                     else:
+                        print "... get broadcast ..."
                         thingy = action(tb, vfs_model, payload,NODE_ID)
                 
                         if thingy:
