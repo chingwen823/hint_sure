@@ -236,7 +236,7 @@ def action(tb, vfs_model, payload,NODE_ID):
             return 
         print "alloc_index {}".format(alloc_index)
         if alloc_index != -1 and alloc_index<len(vack_frame):
-            if vack_frame[alloc_index]==1:
+            if vack_frame[alloc_index]=='1':
                 print "last time success"
             else:
                 print "last time fail"
