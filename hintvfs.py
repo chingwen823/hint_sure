@@ -221,6 +221,14 @@ def action(tb, vfs_model, payload,NODE_ID):
     if pkt_type == PacketType.VFS_BROADCAST.index:
 
         # get vack frame
+        i = 0
+        for c in list(payload)[0:80]:
+            i = i + 1
+            if i%16 ==0:
+                print "{} ".format(c)
+            else: 
+                print "{} ".format(c),
+            
         try:
             vack_frame = vfs_model.get_vack_frame(payload)
         except:

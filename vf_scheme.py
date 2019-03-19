@@ -37,8 +37,8 @@ logger = logging.getLogger('vf_scheme')
 logger.setLevel(logging.INFO)
 
 class VirtualFrameScheme:
-    alloc_frame = []
-    alloc_frame_last = []
+    alloc_frame = ['0']
+    alloc_frame_last = ['0']
     v_frame = []
     vack_frame = []
     rand_frame = []
@@ -209,7 +209,7 @@ class VirtualFrameScheme:
         #     len(rand_frame_str))
         # v-frame & rand-frame use TLV technique
         data_size = len(payload_prefix) + TIMESTAMP_LEN + len(broadcast) + len(node_amount_str) + len(self.seed)\
-            + TIMESTAMP_LEN + len(v_frame_size_str) + len(v_frame_str) + len(vack_frame_size_str)  + len(vack_frame_str)
+            + TIMESTAMP_LEN + len(v_frame_size_str) + len(v_frame_str) +len('z')+ len(vack_frame_size_str)  + len(vack_frame_str)
         dummy = (pkt_size - data_size) * chr(pktno & 0xff)
 
         now_timestamp = my_tb.sink.get_time_now().get_real_secs()
@@ -251,7 +251,7 @@ class VirtualFrameScheme:
             logger.info("pkt {} node {},{}~{}".format(pktno, n_id, begin_at, end_at))
 
         payload = payload_prefix + now_timestamp_str + broadcast + node_amount_str + self.seed + begin_timestamp_str\
-            + v_frame_size_str + v_frame_str + vack_frame_size_str + vack_frame_str + dummy
+            + v_frame_size_str + v_frame_str + 'z' + vack_frame_size_str + vack_frame_str + dummy
         my_tb.txpath.send_pkt(payload)
         #logger.info("{} send VFS_BROADCAST {}, Total nodes: {}, Seed: {}, Node begin: {}, \nSession: {}".format(
         #            str(datetime.fromtimestamp(now_timestamp)), pktno, node_amount, self.seed,
@@ -313,6 +313,7 @@ class VirtualFrameScheme:
         v_frame_size = payload[prefix_len:prefix_len+V_FRAME_SIZE_LEN]
         v_frame_size = int(v_frame_size)
         prefix_len += V_FRAME_SIZE_LEN + v_frame_size
+        print "prefix_len:{}".format(prefix_len)
         vack_frame_size = payload[prefix_len:prefix_len+VACK_FRAME_SIZE_LEN]
         prefix_len += VACK_FRAME_SIZE_LEN
         vack_frame_str = payload[prefix_len:prefix_len+vack_frame_size]
