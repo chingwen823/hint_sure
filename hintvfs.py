@@ -495,7 +495,7 @@ def main():
                         logger.info( "resend{}".format(data)) 
 
                     vfs_model.send_dummy_pkt(tb)# hacking, send dummy pkt to avoid data lost
-                    vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, data , pktno)
+                    vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, data, data_num, pktno)
                     pktno += 1
                     nd_in_response = False
                 else:
