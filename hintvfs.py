@@ -211,7 +211,7 @@ def action(tb, vfs_model, payload,NODE_ID):
                     dn = vfs_model.get_data_num(payload)
 
                     if vfs_model.check_data_num(node_id,dn):
-                        vfs_model.set_data_num(dn) #keep track in vfs module
+                        vfs_model.set_data_num(dn+1 & 0xffff) #keep track in vfs module
                         try:
                             file_output.write(vfs_model.get_node_data(payload))
                         except:
@@ -265,7 +265,7 @@ def action(tb, vfs_model, payload,NODE_ID):
                 go_on_flag = False
                 logger.info("in rand frame, treat it as missing")
 
-        if data_num == -1:
+        if data_num == 0:
             go_on_flag = True
    
 
@@ -322,7 +322,7 @@ def main():
     alloc_index = -1
     last_node_amount = -1
     data = "**heLLo**" # default data str
-    data_num = -1
+    data_num = 0
 
 
 

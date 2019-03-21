@@ -259,7 +259,7 @@ class VirtualFrameScheme:
 
             #start tracking data number
             if n_id not in self.nodes_data_num: #new node , reset the data number  
-                self.nodes_data_num[n_id] = -1
+                self.nodes_data_num[n_id] = 0
 
             logger.info("pkt {} node {},{}~{}".format(pktno, n_id, begin_at, end_at))
 
@@ -350,7 +350,7 @@ class VirtualFrameScheme:
         return int(payload[prefix_len:prefix_len+2])
 
     def check_data_num(self,node_id, datanum):
-        if self.nodes_data_num[node_id] + 1 == datanum:      
+        if self.nodes_data_num[node_id] == datanum:      
             return True
         else:
             return False
