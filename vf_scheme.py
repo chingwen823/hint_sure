@@ -189,7 +189,7 @@ class VirtualFrameScheme:
         my_tb.txpath.send_pkt(payload)
         logger.info("{} broadcast BEACON - {}".format(str(datetime.fromtimestamp(now_timestamp)), pkt_no))
 
-    def broadcast_vfs_pkt(self, my_tb, pkt_size, node_amount, data_num, pktno=1):     # BS only
+    def broadcast_vfs_pkt(self, my_tb, pkt_size, node_amount, pktno=1):     # BS only
         # payload = prefix + now + vfs_broadcast + node_amount + seed + node_begin_time + len(v-frame) + v-frame + dummy
 
         # prepare vack frame
@@ -273,7 +273,7 @@ class VirtualFrameScheme:
                     str(datetime.fromtimestamp(begin_timestamp)), self.nodes_expect_time))
 
     def get_data_num(self, payload):
-        prefix_len = len(payload_prefix) + TIMESTAMP_LEN + len(vfs_pkt) + VFS_DATA_LEN 
+        prefix_len = payload[2+TIMESTAMP_LEN+2+VFS_DATA_LEN]
         num_str = payload[prefix_len:prefix_len+2]
         return int(num_str)
 

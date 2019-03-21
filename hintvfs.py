@@ -460,7 +460,7 @@ def main():
                     vfs_model.generate_seed_v_frame_rand_frame(TEST_NODE_LIST)
                     #send boardcast
                     vfs_model.send_dummy_pkt(tb) # hacking, send dummy pkt to avoid data lost
-                    vfs_model.broadcast_vfs_pkt(tb, pkt_size, len(TEST_NODE_LIST), data_num,pktno+int(packno_delta))
+                    vfs_model.broadcast_vfs_pkt(tb, pkt_size, len(TEST_NODE_LIST),pktno+int(packno_delta))
                     pktno += 1
                     bs_start_time = time.time()
                   
