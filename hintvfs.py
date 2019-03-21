@@ -455,7 +455,7 @@ def main():
                 else:
                     pass
                     #vfs_model.send_dummy_pkt(tb)
-                    #tb.txpath.send_pkt(eof=True)
+                    
                     
 
             else: #node
@@ -464,18 +464,19 @@ def main():
                     
                     #prepare data 
                     if go_on_flag: # get next data
-             
+                        print "onhand {},going to get next data".format(data)
                         try:  
                             data = file_input.read(2)
                             if data == '':
                                 thread_run = False
+                                tb.txpath.send_pkt(eof=True)
                                 break
                             print "read current data {}".format(data)
                         except:
-                            #file end 
+                            #error end 
                             thread_run = False
-                            break
-                            #pass # not assign, file_input
+                            tb.txpath.send_pkt(eof=True)
+                     
                     else: # resend last data
                         logger.info( "resend{}".format(data)) 
 
