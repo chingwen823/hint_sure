@@ -189,7 +189,7 @@ class VirtualFrameScheme:
         my_tb.txpath.send_pkt(payload)
         logger.info("{} broadcast BEACON - {}".format(str(datetime.fromtimestamp(now_timestamp)), pkt_no))
 
-    def broadcast_vfs_pkt(self, my_tb, pkt_size, node_amount, pktno=1, data_num):     # BS only
+    def broadcast_vfs_pkt(self, my_tb, pkt_size, node_amount, data_num, pktno=1):     # BS only
         # payload = prefix + now + vfs_broadcast + node_amount + seed + node_begin_time + len(v-frame) + v-frame + dummy
 
         # prepare vack frame
@@ -269,8 +269,8 @@ class VirtualFrameScheme:
         #logger.info("{} send VFS_BROADCAST {}, Total nodes: {}, Seed: {}, Node begin: {}, \nSession: {}".format(
         #            str(datetime.fromtimestamp(now_timestamp)), pktno, node_amount, self.seed,
         #            str(datetime.fromtimestamp(begin_timestamp)), self.nodes_expect_time))
-        logger.info("{}({}) send VFS_BROADCAST {}, Total nodes: {}, Seed: {}, Data num {},Node begin: {}".format(
-                    str(datetime.fromtimestamp(now_timestamp)),now_timestamp, pktno, node_amount, self.seed,data_num_str
+        logger.info("{}({}) send VFS_BROADCAST {}, Total nodes: {}, Seed: {},Node begin: {}".format(
+                    str(datetime.fromtimestamp(now_timestamp)),now_timestamp, pktno, node_amount, self.seed,
                     str(datetime.fromtimestamp(begin_timestamp)), self.nodes_expect_time))
 
     def send_vfs_pkt(self, node_id, my_tb, pkt_size, vfs_data, pktno=1):               # Node only
@@ -350,9 +350,9 @@ class VirtualFrameScheme:
         return int(payload[prefix_len:prefix_len+2])
 
     def check_data_num(self,node_id, datanum):
-        if self.nodes_data_num[node_id] + 1 = datanum      
+        if self.nodes_data_num[node_id] + 1 == datanum:      
             return True
-        else
+        else:
             return False
 
     def set_data_num(self,node_id, datanum):
