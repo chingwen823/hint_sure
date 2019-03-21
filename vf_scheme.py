@@ -73,7 +73,6 @@ class VirtualFrameScheme:
     def check_node_intime(self, node_id, time, node_amount):
         if node_id in self.nodes_issue_time:
             if self.nodes_issue_time[node_id]+node_amount*self.node_slot_time > time: # ok, no timeout
-                self.nodes_data_num[node_id] = self.nodes_data_num[node_id] + 1
                 self.nodes_data_intime[node_id] = True
                 return True
             else:
@@ -190,7 +189,7 @@ class VirtualFrameScheme:
         my_tb.txpath.send_pkt(payload)
         logger.info("{} broadcast BEACON - {}".format(str(datetime.fromtimestamp(now_timestamp)), pkt_no))
 
-    def broadcast_vfs_pkt(self, my_tb, pkt_size, node_amount, pktno=1):     # BS only
+    def broadcast_vfs_pkt(self, my_tb, pkt_size, node_amount, pktno=1, data_num):     # BS only
         # payload = prefix + now + vfs_broadcast + node_amount + seed + node_begin_time + len(v-frame) + v-frame + dummy
 
         # prepare vack frame
@@ -218,12 +217,12 @@ class VirtualFrameScheme:
         assert len(node_amount_str) <= NODE_AMT_LEN, "Too much nodes to handle: {}".format(node_amount)
         v_frame_size_str = str(len(v_frame_str)).zfill(V_FRAME_SIZE_LEN)
         assert len(v_frame_size_str) <= V_FRAME_SIZE_LEN, "Too large v-frame size: {}".format(len(v_frame_str))
-        # rand_frame_size_str = str(len(rand_frame_str)).zfill(RAND_FRAME_SIZE_LEN)
-        # assert len(rand_frame_size_str) <= RAND_FRAME_SIZE_LEN, "Too large rand-frame size: {}".format(
-        #     len(rand_frame_str))
-        # v-frame & rand-frame use TLV technique
+
+        data_num_str = struct.pack('!H', data_num & 0xffff)
+
         data_size = len(payload_prefix) + TIMESTAMP_LEN + len(broadcast) + len(node_amount_str) + len(self.seed)\
-            + TIMESTAMP_LEN + len(v_frame_size_str) + len(v_frame_str) + len(vack_frame_size_str)  + len(vack_frame_str)
+            + TIMESTAMP_LEN + len(v_frame_size_str) + len(v_frame_str) + len(vack_frame_size_str)  + len(vack_frame_str)\
+            + len(data_num_str)
         dummy = (pkt_size - data_size) * chr(pktno & 0xff)
 
         now_timestamp = my_tb.sink.get_time_now().get_real_secs()
@@ -260,18 +259,18 @@ class VirtualFrameScheme:
 
             #start tracking data number
             if n_id not in self.nodes_data_num: #new node , reset the data number  
-                self.nodes_data_num[n_id] = 0 
+                self.nodes_data_num[n_id] = -1
 
             logger.info("pkt {} node {},{}~{}".format(pktno, n_id, begin_at, end_at))
 
         payload = payload_prefix + now_timestamp_str + broadcast + node_amount_str + self.seed + begin_timestamp_str\
-            + v_frame_size_str + v_frame_str + vack_frame_size_str + vack_frame_str + dummy
+            + v_frame_size_str + v_frame_str + vack_frame_size_str + vack_frame_str + data_num_str + dummy
         my_tb.txpath.send_pkt(payload)
         #logger.info("{} send VFS_BROADCAST {}, Total nodes: {}, Seed: {}, Node begin: {}, \nSession: {}".format(
         #            str(datetime.fromtimestamp(now_timestamp)), pktno, node_amount, self.seed,
         #            str(datetime.fromtimestamp(begin_timestamp)), self.nodes_expect_time))
-        logger.info("{}({}) send VFS_BROADCAST {}, Total nodes: {}, Seed: {}, Node begin: {}".format(
-                    str(datetime.fromtimestamp(now_timestamp)),now_timestamp, pktno, node_amount, self.seed,
+        logger.info("{}({}) send VFS_BROADCAST {}, Total nodes: {}, Seed: {}, Data num {},Node begin: {}".format(
+                    str(datetime.fromtimestamp(now_timestamp)),now_timestamp, pktno, node_amount, self.seed,data_num_str
                     str(datetime.fromtimestamp(begin_timestamp)), self.nodes_expect_time))
 
     def send_vfs_pkt(self, node_id, my_tb, pkt_size, vfs_data, pktno=1):               # Node only
@@ -340,6 +339,25 @@ class VirtualFrameScheme:
         vack_frame_str = payload[prefix_len:prefix_len+vack_frame_size]
 
         return list(vack_frame_str)
+
+    def get_data_num(self, payload):
+        prefix_len = 2+TIMESTAMP_LEN+2+NODE_AMT_LEN+SEED_LEN+TIMESTAMP_LEN
+        v_frame_size = payload[prefix_len:prefix_len+V_FRAME_SIZE_LEN]
+        v_frame_size = int(v_frame_size)
+        prefix_len += V_FRAME_SIZE_LEN + v_frame_size 
+        vack_frame_size = int(payload[prefix_len:prefix_len+VACK_FRAME_SIZE_LEN])
+        prefix_len += VACK_FRAME_SIZE_LEN + vack_frame_size
+        return int(payload[prefix_len:prefix_len+2])
+
+    def check_data_num(self,node_id, datanum):
+        if self.nodes_data_num[node_id] + 1 = datanum      
+            return True
+        else
+            return False
+
+    def set_data_num(self,node_id, datanum):
+        self.nodes_data_num[node_id]  = datanum  
+        return True
 
     def compute_alloc_index(self, vf_index, node_id, v_frame, node_amount):
         if v_frame[vf_index] == '1':    # exists in v-frame

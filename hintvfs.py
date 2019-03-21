@@ -206,12 +206,21 @@ def action(tb, vfs_model, payload,NODE_ID):
                     logger.info("{} ({}) [Slot {}: Node {} ] BS recv VFS_PKT.index {}, data: {}".format(
                         str(datetime.fromtimestamp(now_timestamp)), now_timestamp, i, node_id, pktno,
                         vfs_model.get_node_data(payload)))
-                    try:
-                        file_output.write(vfs_model.get_node_data(payload))
-                    except:
-                        logger.info("write file fail")
+                    
+                    #check the data number in payload
+                    dn = vfs_model.get_data_num(payload)
 
-                    return True
+                    if vfs_model.check_data_num(node_id,dn):
+                        vfs_model.set_data_num(dn) #keep track in vfs module
+                        try:
+                            file_output.write(vfs_model.get_node_data(payload))
+                        except:
+                            logger.info("write file fail")
+
+                        return True
+                    else:
+                        logger.info("incorrect data number,drop data ")
+                        return False
                 else:
                     logger.info("[Node {} pktno{}] Upload timeout".format(node_id, pktno))
                     return False
@@ -247,7 +256,6 @@ def action(tb, vfs_model, payload,NODE_ID):
             if alloc_index != -1 and alloc_index<len(vack_frame):
                 if vack_frame[alloc_index]=='1':
                     #advance data number here
-                    data_num = data_num + 1
                     go_on_flag = True
                     logger.info("Check last transmission: last time success")
                 else:
@@ -256,6 +264,10 @@ def action(tb, vfs_model, payload,NODE_ID):
             else:
                 go_on_flag = False
                 logger.info("in rand frame, treat it as missing")
+
+        if data_num == -1:
+            go_on_flag = True
+   
 
         node_amount = vfs_model.get_node_amount(payload)
         seed = vfs_model.get_seed(payload)
@@ -286,7 +298,7 @@ def action(tb, vfs_model, payload,NODE_ID):
                     node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame))
         last_node_amount = node_amount
        
-        return (node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame)
+        return (node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame, data_number)
 
 
 # /////////////////////////////////////////////////////////////////////////////
@@ -308,7 +320,7 @@ def main():
     alloc_index = -1
     last_node_amount = -1
     data = "**heLLo**" # default data str
-    data_num = 0
+    data_num = -1
 
 
 
@@ -449,7 +461,7 @@ def main():
                     vfs_model.generate_seed_v_frame_rand_frame(TEST_NODE_LIST)
                     #send boardcast
                     vfs_model.send_dummy_pkt(tb) # hacking, send dummy pkt to avoid data lost
-                    vfs_model.broadcast_vfs_pkt(tb, pkt_size, len(TEST_NODE_LIST),pktno+int(packno_delta))
+                    vfs_model.broadcast_vfs_pkt(tb, pkt_size, len(TEST_NODE_LIST),pktno+int(packno_delta), data_num)
                     pktno += 1
                     bs_start_time = time.time()
                   
@@ -464,7 +476,7 @@ def main():
                 if (nd_in_response) and (time.time() > (nd_start_time + time_wait_for_my_slot)):
                     
                     #prepare data 
-                    if go_on_flag or (data_num == 0): # get next data
+                    if go_on_flag : # get next data
                         print "onhand {},going to get next data".format(data)
                         try:  
                             data = file_input.read(2)
@@ -472,7 +484,9 @@ def main():
                                 thread_run = False
                                 tb.txpath.send_pkt(eof=True)
                                 break
+                            data_num = data_num + 1 
                             print "read current data {}".format(data)
+
                         except:
                             #error end 
                             thread_run = False
