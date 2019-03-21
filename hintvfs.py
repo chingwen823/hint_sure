@@ -206,6 +206,11 @@ def action(tb, vfs_model, payload,NODE_ID):
                     logger.info("{} ({}) [Slot {}: Node {} ] BS recv VFS_PKT.index {}, data: {}".format(
                         str(datetime.fromtimestamp(now_timestamp)), now_timestamp, i, node_id, pktno,
                         vfs_model.get_node_data(payload)))
+                    try:
+                        file_output.write(vfs_model.get_node_data(payload))
+                    except:
+                        logger.info("write file fail")
+
                     return True
                 else:
                     logger.info("[Node {} pktno{}] Upload timeout".format(node_id, pktno))
@@ -214,10 +219,7 @@ def action(tb, vfs_model, payload,NODE_ID):
         logger.info("{} ({}) [No slot/session] BS recv VFS_PKT {}, data: {}".format(
         str(datetime.fromtimestamp(now_timestamp)), now_timestamp, pktno, vfs_model.get_node_data(payload)))
         
-        try:
-            file_output.write(vfs_model.get_node_data(payload))
-        except:
-            logger.info("write file fail")
+
 
         return True
 
@@ -463,7 +465,7 @@ def main():
                         try:  
                             data = file_input.read(2)
                             if data == '':
-                                data = False
+                                thread_run = False
                                 break
                             print "read current data {}".format(data)
                         except:
@@ -520,7 +522,15 @@ def main():
     thread_run = False
     while thread.isAlive():
         time.sleep(1)   
-       
+
+    try:
+        file_input.close()
+    except:
+        pass
+    try:
+        file_output.close() 
+    except:
+        pass   
     print "join done"
 if __name__ == '__main__':
     try:
