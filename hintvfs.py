@@ -207,29 +207,19 @@ def action(tb, vfs_model, payload,NODE_ID):
                     logger.info("{} ({}) [Slot {}: Node {} ] BS recv VFS_PKT.index {}, data: {}".format(
                         str(datetime.fromtimestamp(now_timestamp)), now_timestamp, i, node_id, pktno,
                         vfs_model.get_node_data(payload)))
-                    
-                    #check the data number in payload
-                    dn = vfs_model.get_node_data_num(payload)
-
-                    if vfs_model.check_data_num(node_id,dn):
-                        vfs_model.set_data_num(dn+1 & 0xffff) #keep track in vfs module
-                        try:
-                            file_output.write(vfs_model.get_node_data(payload))
-                        except:
-                            logger.info("write file fail")
-
-                        return True
+                        data_number = vfs_model.get_node_data_num(payload)
+                        return (delta, node_id, pktno, vfs_model.get_node_data(payload), data_number)
                     else:
                         logger.info("incorrect data number,drop data ")
-                        return False
+                        return 
                 else:
                     logger.info("[Node {} pktno{}] Upload timeout".format(node_id, pktno))
-                    return False
+                    return 
                 
         logger.info("{} ({}) [No slot/session] BS recv VFS_PKT {}, data: {}".format(
         str(datetime.fromtimestamp(now_timestamp)), now_timestamp, pktno, vfs_model.get_node_data(payload)))
         
-        return True
+        return 
 
     if pkt_type == PacketType.VFS_BROADCAST.index:
 
@@ -510,7 +500,26 @@ def main():
                 if payload: 
                     #here we need to decode the payload first
                     if IS_BS:
-                        action(tb, vfs_model, payload,NODE_ID)
+                        thingy = action(tb, vfs_model, payload, NODE_ID)
+                        if thingy:
+                            (delta, node_id, pktno, upload_data, data_number) = thingy
+                            #check the data number in payload
+
+                            if vfs_model.check_data_num(node_id,data_number):
+                                vfs_model.set_data_num(data_number+1 & 0xffff) #keep track in vfs module
+                                try:
+                                    file_output.write(upload_data)
+                                except:
+                                    logger.info("write file fail")
+                            else:#nake node, mark vack as fail in next run
+                                 #nake node, mark vack as fail in next run
+                                 #nake node, mark vack as fail in next run
+                                 #nake node, mark vack as fail in next run
+                                 #nake node, mark vack as fail in next run
+                                 #nake node, mark vack as fail in next run
+
+                                
+
                     else:
                         print "... get broadcast ..."
                         thingy = action(tb, vfs_model, payload,NODE_ID)
