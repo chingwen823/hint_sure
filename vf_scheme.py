@@ -275,17 +275,18 @@ class VirtualFrameScheme:
     def get_node_data_num(self, payload):
         #payload = pktno(2)+TIMESTAMP_LEN+vfs_send_pkt_id(2)+data_size(2)+VFS_DATA_LEN(datasize)+datanum(2)
         prefix_len = 2+TIMESTAMP_LEN+2
-        data_len_str = int(payload[prefix_len:prefix_len+2])
-        prefix_len = prefix_len + 2 + int(data_len_str)
-        num_str = payload[prefix_len:prefix_len+2]
+        (data_size,) = struct.unpack('!H', payload[prefix_len:prefix_len+2])
+        prefix_len = prefix_len + 2 + data_size
+        (num_str,) = struct.unpack('!H', payload[prefix_len:prefix_len+2])
         return int(num_str)
 
     def get_node_data(self, payload):
         #payload = pktno(2)+TIMESTAMP_LEN+vfs_send_pkt_id(2)+data_size(2)+VFS_DATA_LEN(datasize)+datanum(2)
         prefix_len = 2+TIMESTAMP_LEN+2
-        data_size_str = int(payload[prefix_len:prefix_len+2])
+        (data_size,) = struct.unpack('!H', payload[prefix_len:prefix_len+2])
+        #data_size_str = payload[prefix_len:prefix_len+2]
         prefix_len = prefix_len + 2 
-        vfs_data = payload[prefix_len:prefix_len+int(data_size_str)]
+        vfs_data = payload[prefix_len:prefix_len+data_size]
         return vfs_data
         #vfs_data = payload[2+TIMESTAMP_LEN+2:2+TIMESTAMP_LEN+2+VFS_DATA_LEN]
         #return vfs_data.lstrip()
