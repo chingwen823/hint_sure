@@ -253,7 +253,9 @@ def action(tb, vfs_model, payload,NODE_ID):
                 else:
                     go_on_flag = False
                     logger.info("Check last transmission: last time fail")
-
+            else:
+                go_on_flag = False
+                logger.info("in rand frame, treat it as missing")
 
         node_amount = vfs_model.get_node_amount(payload)
         seed = vfs_model.get_seed(payload)
