@@ -347,7 +347,12 @@ class VirtualFrameScheme:
         prefix_len += V_FRAME_SIZE_LEN + v_frame_size 
         vack_frame_size = int(payload[prefix_len:prefix_len+VACK_FRAME_SIZE_LEN])
         prefix_len += VACK_FRAME_SIZE_LEN + vack_frame_size
-        return int(payload[prefix_len:prefix_len+2])
+        num_str = payload[prefix_len:prefix_len+2]
+        return int()
+
+        data_num_str = payload[prefix_len:prefix_len+2]
+        
+        return int(data_num_str)
 
     def check_data_num(self,node_id, datanum):
         if self.nodes_data_num[node_id] == datanum:      
