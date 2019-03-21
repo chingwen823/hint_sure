@@ -290,6 +290,8 @@ def action(tb, vfs_model, payload,NODE_ID):
         # TODO: Duo to various delays, adjust a bit to before firing round up second
         next_tx_ts = begin_timestamp + (NODE_SLOT_TIME * alloc_index) - TRANSMIT_DELAY
 
+        data_number = vfs_model.get_data_num(payload)
+
         logger.info("{} Node recv VFS_BROADCAST {}, BS time {}, Total {}, Seed {}, Delay {}, "
             "\nv-frame index: {}, alloc-index: {}, fall to rand-frame: {},"
             "\nv-frame: {}"
