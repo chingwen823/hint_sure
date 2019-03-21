@@ -311,7 +311,7 @@ class VirtualFrameScheme:
 
         self.data_issue_time = now_timestamp
 
-        logger.info("{} VFS: Node {} send data {}".format(str(datetime.fromtimestamp(now_timestamp)), node_id, pktno))
+        logger.info("{} VFS: Node {} send pktno {} data_num {}".format(str(datetime.fromtimestamp(now_timestamp)), node_id, pktno,data_num))
 
     def get_node_amount(self, payload):
         node_amount_str = payload[2+TIMESTAMP_LEN+2:
@@ -357,6 +357,7 @@ class VirtualFrameScheme:
         return list(vack_frame_str)
 
     def check_data_num(self,node_id, datanum):
+        logger.error("Node {} data num, server {}, node{}".format(node_id,self.nodes_data_num[node_id],datanum))
         if self.nodes_data_num[node_id] == datanum:      
             return True
         else:
