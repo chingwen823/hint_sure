@@ -60,7 +60,7 @@ class VirtualFrameScheme:
         self.beacon_id = PacketType.BEACON.index
         self.dummy_id = PacketType.DUMMY.index
 
-    def check_bs_intime(self,last_node_amount):
+    def check_broadcast_intime(self,time, last_node_amount):
 
         if self.data_issue_time+last_node_amount*self.node_slot_time > time: # ok, no timeout
             self.data_number = self.data_number + 1

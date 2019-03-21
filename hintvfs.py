@@ -161,7 +161,7 @@ def decode_common_pkt_header(tb,payload):
 
 def action(tb, vfs_model, payload,NODE_ID):
 
-    global alloc_index, last_node_amount, file_output
+    global alloc_index, last_node_amount, file_output, go_on_flag
 
     thingy = decode_common_pkt_header(tb,payload)
 
@@ -226,29 +226,31 @@ def action(tb, vfs_model, payload,NODE_ID):
 
         #check if vack intime(response in 1 frame time) 
         if last_node_amount == -1 or \
-           vfs_model.check_bs_intime((last_node_amount+1)): # give 1 more slot time 
+           vfs_model.check_broadcast_intime(now_timestamp, (last_node_amount+1)): # give 1 more slot time 
             # advance data number here
             go_on_flag = True
-            logger.info("VACK intime")
+            logger.info("[Node {} pktno{}] VACK intime".format(NODE_ID, pktno))
         else:
             go_on_flag = False
             logger.info("[Node {} pktno{}] VACK timeout".format(NODE_ID, pktno))
             
- 
-        try:
-            vack_frame = vfs_model.get_vack_frame(payload)
-        except:
-            logger.warning("Cannot extract vack-frame. Drop pkt!")
-            return 
-        #print "alloc_index {}".format(alloc_index)
-        if alloc_index != -1 and alloc_index<len(vack_frame):
-            if vack_frame[alloc_index]=='1':
-                #advance data number here
-                go_on_flag = True
-                logger.info("Check last transmission: last time success")
-            else:
+        #if intime, then we can check VACK valid 
+        if go_on_flag: 
+            try:
+                vack_frame = vfs_model.get_vack_frame(payload)
+            except:
+                logger.warning("Cannot extract vack-frame. Drop pkt!")
                 go_on_flag = False
-                logger.info("Check last transmission: last time fail")
+                return 
+            #print "alloc_index {}".format(alloc_index)
+            if alloc_index != -1 and alloc_index<len(vack_frame):
+                if vack_frame[alloc_index]=='1':
+                    #advance data number here
+                    go_on_flag = True
+                    logger.info("Check last transmission: last time success")
+                else:
+                    go_on_flag = False
+                    logger.info("Check last transmission: last time fail")
 
 
         node_amount = vfs_model.get_node_amount(payload)
@@ -423,7 +425,7 @@ def main():
 
 
     def threadjob(stop_event,pktno,IS_BS,NODE_ID):
-        global thread_run, data
+        global thread_run, data, go_on_flag
         print "Please start host now..."
         boot_time = time.time()
         bs_start_time = 0
@@ -457,20 +459,27 @@ def main():
                     
                     #prepare data 
                     if go_on_flag: # get next data
-                        print "get next data {}".format(data)
+             
                         try:  
                             data = file_input.read(2)
-                            print "read next data {}".format(data)
+                            if data == '':
+                                data = False
+                                break
+                            print "read current data {}".format(data)
                         except:
-                            pass # not assign, file_input
+                            #file end 
+                            thread_run = False
+                            break
+                            #pass # not assign, file_input
                     else: # resend last data
-                        pass 
+                        logger.info( "resend{}".format(data)) 
 
                     vfs_model.send_dummy_pkt(tb)# hacking, send dummy pkt to avoid data lost
                     vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, data , pktno)
                     pktno += 1
                     nd_in_response = False
                 else:
+                    #print "nd_in_response{}, time {} > {} ".format(nd_in_response,time.time(), (nd_start_time + time_wait_for_my_slot))
                     pass
                     #vfs_model.send_dummy_pkt(tb)
                     #tb.txpath.send_pkt(eof=True)
