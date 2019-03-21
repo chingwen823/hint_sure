@@ -193,6 +193,7 @@ def action(tb, vfs_model, payload,NODE_ID):
             # logger.debug("stop_rx_ts {}".format(str(datetime.fromtimestamp(stop_rx_ts))))
             return
 
+    # BS receive from node
     if pkt_type == PacketType.VFS_PKT.index:
 
         logger.info("identify node from nowtime {}, delta {}".format(now_timestamp,delta))
@@ -228,8 +229,6 @@ def action(tb, vfs_model, payload,NODE_ID):
         logger.info("{} ({}) [No slot/session] BS recv VFS_PKT {}, data: {}".format(
         str(datetime.fromtimestamp(now_timestamp)), now_timestamp, pktno, vfs_model.get_node_data(payload)))
         
-
-
         return True
 
     if pkt_type == PacketType.VFS_BROADCAST.index:
@@ -290,8 +289,6 @@ def action(tb, vfs_model, payload,NODE_ID):
         # TODO: Duo to various delays, adjust a bit to before firing round up second
         next_tx_ts = begin_timestamp + (NODE_SLOT_TIME * alloc_index) - TRANSMIT_DELAY
 
-        data_number = vfs_model.get_data_num(payload)
-
         logger.info("{} Node recv VFS_BROADCAST {}, BS time {}, Total {}, Seed {}, Delay {}, "
             "\nv-frame index: {}, alloc-index: {}, fall to rand-frame: {},"
             "\nv-frame: {}"
@@ -300,7 +297,7 @@ def action(tb, vfs_model, payload,NODE_ID):
                     node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame))
         last_node_amount = node_amount
        
-        return (node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame, data_number)
+        return (node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame)
 
 
 # /////////////////////////////////////////////////////////////////////////////
