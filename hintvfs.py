@@ -408,6 +408,7 @@ def main():
     if not IS_BS_ROLE and (options.from_file is not None):
         try:
             file_input = open("test.txt", "r")
+            #data = file_input.read(2)
             logger.info( "Input file opened successfully")
         except:
             logger.error( "Error: file not exist")
@@ -459,7 +460,7 @@ def main():
 
             else: #node
                 
-                if (nd_in_response != False) and (time.time() > (nd_start_time + time_wait_for_my_slot)):
+                if (nd_in_response) and (time.time() > (nd_start_time + time_wait_for_my_slot)):
                     
                     #prepare data 
                     if go_on_flag: # get next data
