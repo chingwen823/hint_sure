@@ -214,8 +214,10 @@ def action(tb, vfs_model, payload,NODE_ID):
         logger.info("{} ({}) [No slot/session] BS recv VFS_PKT {}, data: {}".format(
         str(datetime.fromtimestamp(now_timestamp)), now_timestamp, pktno, vfs_model.get_node_data(payload)))
         
-        with file_output:
-            write(vfs_model.get_node_data(payload))
+        try:
+            file_output.write(vfs_model.get_node_data(payload))
+        except:
+            logger.info("write file fail")
 
         return True
 
@@ -455,9 +457,10 @@ def main():
                     
                     #prepare data 
                     if go_on_flag: # get next data
-                        try:
-                            with file_input:
-                                data = read(2)
+                        print "get next data {}".format(data)
+                        try:  
+                            data = file_input.read(2)
+                            print "read next data {}".format(data)
                         except:
                             pass # not assign, file_input
                     else: # resend last data
