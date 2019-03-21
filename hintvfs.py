@@ -412,7 +412,7 @@ def main():
     # bs, open output file if assigned
     if IS_BS_ROLE and (options.to_file is not None):
         try:
-            file_output = open("test_out.txt", "w+")
+            file_output = open(options.to_file, "w+")
             logger.info( "Output file opened successfully")
         except:
             logger.error( "Error: file not exist")
