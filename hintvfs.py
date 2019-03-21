@@ -105,8 +105,8 @@ class my_top_block(gr.top_block):
                                        options.lo_offset, options.tx_gain,
                                        options.spec, options.antenna,
                                        options.clock_source, options.verbose)
-        elif(options.to_file is not None):
-            self.sink = blocks.file_sink(gr.sizeof_gr_complex, options.to_file)
+#        elif(options.to_file is not None):
+#            self.sink = blocks.file_sink(gr.sizeof_gr_complex, options.to_file)
         else:
             self.sink = blocks.null_sink(gr.sizeof_gr_complex)
 
@@ -116,8 +116,8 @@ class my_top_block(gr.top_block):
                                        options.lo_offset, options.rx_gain,
                                        options.spec, options.antenna,
                                        options.clock_source, options.verbose)
-        elif(options.from_file is not None):
-            self.source = blocks.file_source(gr.sizeof_gr_complex, options.from_file)
+#        elif(options.from_file is not None):
+#            self.source = blocks.file_source(gr.sizeof_gr_complex, options.from_file)
         else:
             self.source = blocks.null_source(gr.sizeof_gr_complex)
 
@@ -161,7 +161,7 @@ def decode_common_pkt_header(tb,payload):
 
 def action(tb, vfs_model, payload,NODE_ID):
 
-    global alloc_index
+    global alloc_index, last_node_amount, file_output
 
     thingy = decode_common_pkt_header(tb,payload)
 
@@ -213,23 +213,26 @@ def action(tb, vfs_model, payload,NODE_ID):
                 
         logger.info("{} ({}) [No slot/session] BS recv VFS_PKT {}, data: {}".format(
         str(datetime.fromtimestamp(now_timestamp)), now_timestamp, pktno, vfs_model.get_node_data(payload)))
-        # Last timestamp for VFS_PKT session
-        #next_tx_ts = vfs_model.nodes_expect_time[-1][-1] + 0.2   # add some delay
+        
+        with file_output:
+            write(vfs_model.get_node_data(payload))
 
         return True
 
     if pkt_type == PacketType.VFS_BROADCAST.index:
 
 
-        #i = 0
-        #for c in list(payload)[0:90]:
-        #    i = i + 1
-        #    if i%16 ==0:
-        #        print "{} ".format(c)
-        #    else: 
-        #        print "{} ".format(c),
-
-        # get vack frame            
+        #check if vack intime(response in 1 frame time) 
+        if last_node_amount == -1 or \
+           vfs_model.check_bs_intime((last_node_amount+1)): # give 1 more slot time 
+            # advance data number here
+            go_on_flag = True
+            logger.info("VACK intime")
+        else:
+            go_on_flag = False
+            logger.info("[Node {} pktno{}] VACK timeout".format(NODE_ID, pktno))
+            
+ 
         try:
             vack_frame = vfs_model.get_vack_frame(payload)
         except:
@@ -239,8 +242,10 @@ def action(tb, vfs_model, payload,NODE_ID):
         if alloc_index != -1 and alloc_index<len(vack_frame):
             if vack_frame[alloc_index]=='1':
                 #advance data number here
+                go_on_flag = True
                 logger.info("Check last transmission: last time success")
             else:
+                go_on_flag = False
                 logger.info("Check last transmission: last time fail")
 
 
@@ -271,6 +276,7 @@ def action(tb, vfs_model, payload,NODE_ID):
             .format(str(datetime.fromtimestamp(now_timestamp)), pktno,
                     str(datetime.fromtimestamp(pkt_timestamp)),
                     node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame))
+        last_node_amount = node_amount
        
         return (node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame)
 
@@ -286,12 +292,16 @@ def main():
     vfs_model = VirtualFrameScheme(PacketType, NODE_SLOT_TIME)
     
     #node rx queue/event
-    global node_rx_q, node_rx_sem, thread_run, alloc_index
+    global node_rx_q, node_rx_sem, thread_run, alloc_index, last_node_amount, go_on_flag,file_input, file_output, data
     node_rx_q = Queue.Queue(maxsize = NODE_RX_MAX)
     node_rx_sem = threading.Semaphore(NODE_RX_MAX) #up to the queue size
     thread_run = True 
+    go_on_flag = True
     alloc_index = -1
- 
+    last_node_amount = -1
+    data = "**heLLo**" # default data str
+
+
 
     for i in range(NODE_RX_MAX): # make all semaphore in 0 status
         node_rx_sem.acquire()
@@ -326,12 +336,12 @@ def main():
 
     parser = OptionParser(option_class=eng_option, conflict_handler="resolve")
     expert_grp = parser.add_option_group("Expert")
-    parser.add_option("","--discontinuous", action="store_true", default=False,
-                      help="enable discontinuous")
+#    parser.add_option("","--discontinuous", action="store_true", default=False,
+#                      help="enable discontinuous")
     parser.add_option("","--from-file", default=None,
-                      help="input file of samples to demod")
-    parser.add_option("-M", "--megabytes", type="eng_float", default=1.0,
-                      help="set megabytes to transmit [default=%default]")
+                      help="input file of samples")
+#    parser.add_option("-M", "--megabytes", type="eng_float", default=1.0,
+#                      help="set megabytes to transmit [default=%default]")
     parser.add_option("-s", "--size", type="eng_float", default=400,
                       help="set packet size [default=%default]")
     parser.add_option("-p", "--packno", type="eng_float", default=0,
@@ -386,15 +396,32 @@ def main():
     if r != gr.RT_OK:
         logger.warn( "Warning: failed to enable realtime scheduling")
 
+    # node, open input file if assigned
+    if not IS_BS_ROLE and (options.from_file is not None):
+        try:
+            file_input = open("test.txt", "r")
+            logger.info( "Input file opened successfully")
+        except:
+            logger.error( "Error: file not exist")
+ 
+
+    # bs, open output file if assigned
+    if IS_BS_ROLE and (options.to_file is not None):
+        try:
+            file_output = open("test_out.txt", "w+")
+            logger.info( "Output file opened successfully")
+        except:
+            logger.error( "Error: file not exist")
+
     tb.start()                      # start flow graph
-    # generate and send packets
-    nbytes = int(1e6 * options.megabytes)
+
     n = 0
     pktno = 0
     pkt_size = int(options.size)
 
+
     def threadjob(stop_event,pktno,IS_BS,NODE_ID):
-        global thread_run
+        global thread_run, data
         print "Please start host now..."
         boot_time = time.time()
         bs_start_time = 0
@@ -423,9 +450,21 @@ def main():
                     
 
             else: #node
+                
                 if (nd_in_response != False) and (time.time() > (nd_start_time + time_wait_for_my_slot)):
+                    
+                    #prepare data 
+                    if go_on_flag: # get next data
+                        try:
+                            with file_input:
+                                data = read(2)
+                        except:
+                            pass # not assign, file_input
+                    else: # resend last data
+                        pass 
+
                     vfs_model.send_dummy_pkt(tb)# hacking, send dummy pkt to avoid data lost
-                    vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "**heLLo**{}".format(pktno), pktno)
+                    vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, data , pktno)
                     pktno += 1
                     nd_in_response = False
                 else:

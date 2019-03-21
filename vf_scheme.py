@@ -47,6 +47,10 @@ class VirtualFrameScheme:
     nodes_issue_time = {}
     nodes_data_num = {}
     nodes_data_intime = {}
+    # for node, tracking the data upload time and valid vack
+    data_issue_time = 0
+    data_vack_intime = False
+    data_number = 0
 
 
     def __init__(self, PacketType, node_slot_time):
@@ -55,6 +59,16 @@ class VirtualFrameScheme:
         self.node_slot_time = node_slot_time
         self.beacon_id = PacketType.BEACON.index
         self.dummy_id = PacketType.DUMMY.index
+
+    def check_bs_intime(self,last_node_amount):
+
+        if self.data_issue_time+last_node_amount*self.node_slot_time > time: # ok, no timeout
+            self.data_number = self.data_number + 1
+            self.data_vack_intime = True
+            return True
+        else:
+            self.data_vack_intime = False
+            return False
 
     def check_node_intime(self, node_id, time, node_amount):
         if node_id in self.nodes_issue_time:
@@ -261,6 +275,11 @@ class VirtualFrameScheme:
                     str(datetime.fromtimestamp(begin_timestamp)), self.nodes_expect_time))
 
     def send_vfs_pkt(self, node_id, my_tb, pkt_size, vfs_data, pktno=1):               # Node only
+
+        # check broadcast is intime
+
+
+
         # payload = prefix + now + vfs_pkt + data + dummy
 
         assert len(vfs_data) <= VFS_DATA_LEN, "wrong vfs_data len {}".format(len(vfs_data))
@@ -274,6 +293,9 @@ class VirtualFrameScheme:
         now_timestamp_str = '{:.3f}'.format(now_timestamp)
         payload = payload_prefix + now_timestamp_str + vfs_pkt + vfs_data + dummy
         my_tb.txpath.send_pkt(payload)
+
+        self.data_issue_time = now_timestamp
+
         logger.info("{} VFS: Node {} send data {}".format(str(datetime.fromtimestamp(now_timestamp)), node_id, pktno))
 
     def get_node_amount(self, payload):
