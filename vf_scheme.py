@@ -272,11 +272,24 @@ class VirtualFrameScheme:
                     str(datetime.fromtimestamp(now_timestamp)),now_timestamp, pktno, node_amount, self.seed,
                     str(datetime.fromtimestamp(begin_timestamp)), self.nodes_expect_time))
 
-    def get_data_num(self, payload):
-        prefix_len = payload[2+TIMESTAMP_LEN+2+VFS_DATA_LEN]
+    def get_node_data_num(self, payload):
+        #payload = pktno(2)+TIMESTAMP_LEN+vfs_send_pkt_id(2)+data_size(2)+VFS_DATA_LEN(datasize)+datanum(2)
+        prefix_len = 2+TIMESTAMP_LEN+2
+        data_len = int(payload[prefix_len:prefix_len+2])
+        prefix_len = prefix_len + 2 + data_len
         num_str = payload[prefix_len:prefix_len+2]
         return int(num_str)
 
+    def get_node_data(self, payload):
+        #payload = pktno(2)+TIMESTAMP_LEN+vfs_send_pkt_id(2)+data_size(2)+VFS_DATA_LEN(datasize)+datanum(2)
+        prefix_len = 2+TIMESTAMP_LEN+2
+        data_size = int(payload[prefix_len:prefix_len+2])
+        prefix_len = prefix_len + 2 
+        vfs_data = payload[prefix_len:prefix_len+data_size]
+        return vfs_data
+        #vfs_data = payload[2+TIMESTAMP_LEN+2:2+TIMESTAMP_LEN+2+VFS_DATA_LEN]
+        #return vfs_data.lstrip()
+   
     def send_vfs_pkt(self, node_id, my_tb, pkt_size, vfs_data, data_num, pktno=1):               # Node only
         # payload = prefix + now + vfs_pkt + data + dummy
         assert len(vfs_data) <= VFS_DATA_LEN, "wrong vfs_data len {}".format(len(vfs_data))
@@ -284,14 +297,15 @@ class VirtualFrameScheme:
 
         payload_prefix = struct.pack('!H', pktno & 0xffff)
         vfs_pkt = struct.pack('!H', self.vfs_send_pkt_id & 0xffff)
+        vfs_data_size_str = struct.pack('!H', len(vfs_data) & 0xffff)
         data_num_str = struct.pack('!H', data_num & 0xffff)
         
-        data_size = len(payload_prefix) + TIMESTAMP_LEN + len(vfs_pkt) + VFS_DATA_LEN + len(data_num_str)
+        data_size = len(payload_prefix) + TIMESTAMP_LEN + len(vfs_pkt) +len(vfs_data_size_str) + len(vfs_data) + len(data_num_str)
        
         dummy = (pkt_size - data_size) * chr(pktno & 0xff)
         now_timestamp = my_tb.sink.get_time_now().get_real_secs()
         now_timestamp_str = '{:.3f}'.format(now_timestamp)
-        payload = payload_prefix + now_timestamp_str + vfs_pkt + vfs_data + data_num_str + dummy
+        payload = payload_prefix + now_timestamp_str + vfs_pkt + vfs_data_size_str + vfs_data + data_num_str + dummy
         my_tb.txpath.send_pkt(payload)
 
         self.data_issue_time = now_timestamp
@@ -370,6 +384,3 @@ class VirtualFrameScheme:
             logger.error("Node {} has no index!".format(node_id))
             return -1, False
 
-    def get_node_data(self, payload):
-        vfs_data = payload[2+TIMESTAMP_LEN+2:2+TIMESTAMP_LEN+2+VFS_DATA_LEN]
-        return vfs_data.lstrip()

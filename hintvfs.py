@@ -209,7 +209,7 @@ def action(tb, vfs_model, payload,NODE_ID):
                         vfs_model.get_node_data(payload)))
                     
                     #check the data number in payload
-                    dn = vfs_model.get_data_num(payload)
+                    dn = vfs_model.get_node_data_num(payload)
 
                     if vfs_model.check_data_num(node_id,dn):
                         vfs_model.set_data_num(dn+1 & 0xffff) #keep track in vfs module
