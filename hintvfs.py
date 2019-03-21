@@ -229,7 +229,6 @@ def action(tb, vfs_model, payload,NODE_ID):
         #check if vack intime(response in 1 frame time) 
         if last_node_amount == -1 or \
            vfs_model.check_broadcast_intime(now_timestamp, (last_node_amount+1)): # give 1 more slot time 
-            # advance data number here
             go_on_flag = True
             logger.info("[Node {} pktno{}] VACK intime".format(NODE_ID, pktno))
         else:
@@ -248,6 +247,7 @@ def action(tb, vfs_model, payload,NODE_ID):
             if alloc_index != -1 and alloc_index<len(vack_frame):
                 if vack_frame[alloc_index]=='1':
                     #advance data number here
+                    data_num = data_num + 1
                     go_on_flag = True
                     logger.info("Check last transmission: last time success")
                 else:
@@ -300,7 +300,7 @@ def main():
     vfs_model = VirtualFrameScheme(PacketType, NODE_SLOT_TIME)
     
     #node rx queue/event
-    global node_rx_q, node_rx_sem, thread_run, alloc_index, last_node_amount, go_on_flag,file_input, file_output, data
+    global node_rx_q, node_rx_sem, thread_run, alloc_index, last_node_amount, go_on_flag,file_input, file_output, data, data_num
     node_rx_q = Queue.Queue(maxsize = NODE_RX_MAX)
     node_rx_sem = threading.Semaphore(NODE_RX_MAX) #up to the queue size
     thread_run = True 
@@ -308,6 +308,7 @@ def main():
     alloc_index = -1
     last_node_amount = -1
     data = "**heLLo**" # default data str
+    data_num = 0
 
 
 
@@ -430,7 +431,7 @@ def main():
 
 
     def threadjob(stop_event,pktno,IS_BS,NODE_ID):
-        global thread_run, data, go_on_flag
+        global thread_run, data, go_on_flag, data_num
         print "Please start host now..."
         boot_time = time.time()
         bs_start_time = 0
@@ -463,7 +464,7 @@ def main():
                 if (nd_in_response) and (time.time() > (nd_start_time + time_wait_for_my_slot)):
                     
                     #prepare data 
-                    if go_on_flag: # get next data
+                    if go_on_flag or (data_num == 0): # get next data
                         print "onhand {},going to get next data".format(data)
                         try:  
                             data = file_input.read(2)
