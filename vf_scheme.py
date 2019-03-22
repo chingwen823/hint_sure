@@ -369,6 +369,8 @@ class VirtualFrameScheme:
         if self.nodes_data_num[node_id] == datanum:    
             self.nodes_data_number_ok[node_id] = True  
             return True
+        elif: self.nodes_data_num[node_id] > datanum:  
+            self.nodes_data_number_ok[node_id] = True  
         else:
             logger.error("Node {} data num, server {}, node {}".format(node_id,self.nodes_data_num[node_id],datanum))
             self.nodes_data_number_ok[node_id] = False  
