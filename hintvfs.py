@@ -238,7 +238,6 @@ def action(tb, vfs_model, payload,NODE_ID):
             except:
                 logger.warning("Cannot extract vack-frame. Drop pkt!")
                 go_on_flag = False
-                return 
 
             if alloc_index != -1 and alloc_index<len(vack_frame):# leave rand frame along
                 if vack_frame[alloc_index]=='1':
@@ -256,8 +255,8 @@ def action(tb, vfs_model, payload,NODE_ID):
             go_on_flag = False
             logger.info("resend due to time out")
    
-        if not go_on_flag:
-            return
+        #if not go_on_flag:
+        #    return
 
         node_amount = vfs_model.get_node_amount(payload)
         seed = vfs_model.get_seed(payload)
