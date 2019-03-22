@@ -301,7 +301,8 @@ def main():
     vfs_model = VirtualFrameScheme(PacketType, NODE_SLOT_TIME)
     
     #node rx queue/event
-    global node_rx_q, node_rx_sem, thread_run, alloc_index, last_node_amount, go_on_flag,file_input, file_output, data, data_num
+    global node_rx_q, node_rx_sem, thread_run, alloc_index, last_node_amount, go_on_flag,file_input,\
+           file_output, data, data_num
     node_rx_q = Queue.Queue(maxsize = NODE_RX_MAX)
     node_rx_sem = threading.Semaphore(NODE_RX_MAX) #up to the queue size
     thread_run = True 
@@ -310,6 +311,7 @@ def main():
     last_node_amount = -1
     data = "**heLLo**" # default data str
     data_num = 0
+
 
 
 
@@ -511,13 +513,10 @@ def main():
                                     file_output.write(upload_data)
                                 except:
                                     logger.info("write file fail")
-                            else:#nake node, mark vack as fail in next run
-                                 #nake node, mark vack as fail in next run
-                                 #nake node, mark vack as fail in next run
-                                 #nake node, mark vack as fail in next run
-                                 #nake node, mark vack as fail in next run
-                                 #nake node, mark vack as fail in next run
-
+                            else:
+                                logger.info("incorrect data number")
+                        else:
+                            logger.info("BS decode payload fail")
                                 
 
                     else:

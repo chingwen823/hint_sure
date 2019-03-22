@@ -47,6 +47,7 @@ class VirtualFrameScheme:
     nodes_issue_time = {}
     nodes_data_num = {}
     nodes_data_intime = {}
+    nodes_data_number_ok = {}
     # for node, tracking the data upload time and valid vack
     data_issue_time = 0
     data_vack_intime = False
@@ -197,8 +198,8 @@ class VirtualFrameScheme:
         print "nodes_data_intime {}".format(self.nodes_data_intime)
         self.vack_frame = []
         for i,n_id in enumerate(self.alloc_frame_last):
-            if n_id in self.nodes_data_intime:
-                self.vack_frame.append(str(int(self.nodes_data_intime[n_id])))
+            if n_id in self.nodes_data_intime and n_id in self.nodes_data_number_ok:
+                self.vack_frame.append(str(int(self.nodes_data_intime[n_id] & self.nodes_data_number_ok[n_id] )))
             else:
                 self.vack_frame.append('0')
         print "vack_frame {}".format(self.vack_frame)     
@@ -242,6 +243,9 @@ class VirtualFrameScheme:
         #node expect time and cmd issue time(the use of timeout)
         self.nodes_issue_time = {}
         self.nodes_data_intime = {}
+        #clean up data_number_ok flag
+        self.nodes_data_number_ok = {}
+
         for i in range(node_amount):
             # Each node time slot: self.node_slot_time seconds
             begin_at = now_timestamp + self.node_slot_time * i
@@ -259,6 +263,10 @@ class VirtualFrameScheme:
             #start tracking data number
             if n_id not in self.nodes_data_num: #new node , reset the data number  
                 self.nodes_data_num[n_id] = 0
+
+            #start tracking data number ok flag
+            if n_id not in self.nodes_data_number_ok: #new node , reset the data number  
+                self.nodes_data_number_ok[n_id] = 0
 
             logger.info("pkt {} node {},{}~{}".format(pktno, n_id, begin_at, end_at))
 
@@ -358,9 +366,11 @@ class VirtualFrameScheme:
 
     def check_data_num(self,node_id, datanum):
         logger.error("Node {} data num, server {}, node{}".format(node_id,self.nodes_data_num[node_id],datanum))
-        if self.nodes_data_num[node_id] == datanum:      
+        if self.nodes_data_num[node_id] == datanum:    
+            self.nodes_data_intime[node_id] = True  
             return True
         else:
+            self.nodes_data_intime[node_id] = False  
             return False
 
     def set_data_num(self,node_id, datanum):
