@@ -471,9 +471,8 @@ def main():
                             data = file_input.read(2)
                             if data == '':
                                 thread_run = False
-                                #send_pkt(eof=True)
-                                return
-                                #break
+                                tb.txpath.send_pkt(eof=True)
+                                break
                                                     
                             print "read current data {}".format(data)
 
@@ -544,8 +543,8 @@ def main():
     thread.start()
 
     
-
-    #time.sleep(2)               # allow time for queued packets to be sent
+    #send_pkt(eof=True)
+    time.sleep(2)               # allow time for queued packets to be sent
     tb.wait()                       # wait for it to finish
     thread_run = False
     while thread.isAlive():
