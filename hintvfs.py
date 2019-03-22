@@ -243,6 +243,7 @@ def action(tb, vfs_model, payload,NODE_ID):
             if alloc_index != -1 and alloc_index<len(vack_frame):
                 if vack_frame[alloc_index]=='1':
                     #advance data number here
+                    data_num = data_num + 1 
                     go_on_flag = True
                     logger.info("Check last transmission: last time success")
                 else:
@@ -284,6 +285,7 @@ def action(tb, vfs_model, payload,NODE_ID):
                     str(datetime.fromtimestamp(pkt_timestamp)),
                     node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame))
         last_node_amount = node_amount
+        
        
         return (node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame)
 
@@ -463,7 +465,7 @@ def main():
             else: #node
                 
                 if (nd_in_response) and (time.time() > (nd_start_time + time_wait_for_my_slot)):
-                    data_num_advance = False
+                    
                     #prepare data 
                     if go_on_flag : # get next data
                         print "onhand {},going to get next data".format(data)
@@ -473,8 +475,7 @@ def main():
                                 thread_run = False
                                 tb.txpath.send_pkt(eof=True)
                                 break
-                            data_num_advance = True
-                           
+                                                    
                             print "read current data {}".format(data)
 
                         except:
@@ -489,8 +490,6 @@ def main():
                     vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, data, data_num, pktno)
                     logger.info( "\n===========================\npktno:{}\npkt_size:{}\ndata numer:{}\ndata:{}\n===========================".format(pktno,pkt_size,data_num,data)) 
 
-                    if data_num_advance:
-                        data_num = data_num + 1 
                     pktno += 1
                     nd_in_response = False
                 else:
