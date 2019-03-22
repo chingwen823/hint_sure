@@ -365,12 +365,13 @@ class VirtualFrameScheme:
         return list(vack_frame_str)
 
     def check_data_num(self,node_id, datanum):
-        logger.error("Node {} data num, server {}, node {}".format(node_id,self.nodes_data_num[node_id],datanum))
+        logger.info("Node {} data num, server {}, node {}".format(node_id,self.nodes_data_num[node_id],datanum))
         if self.nodes_data_num[node_id] == datanum:    
-            self.nodes_data_intime[node_id] = True  
+            self.nodes_data_number_ok[node_id] = True  
             return True
         else:
-            self.nodes_data_intime[node_id] = False  
+            logger.error("Node {} data num, server {}, node {}".format(node_id,self.nodes_data_num[node_id],datanum))
+            self.nodes_data_number_ok[node_id] = False  
             return False
 
     def set_data_num(self,node_id, datanum):
