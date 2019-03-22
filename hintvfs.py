@@ -471,8 +471,8 @@ def main():
                             data = file_input.read(2)
                             if data == '':
                                 thread_run = False
-                                tb.txpath.send_pkt(eof=True)
-                                break
+                                return
+                                #break
                                                     
                             print "read current data {}".format(data)
 
@@ -508,6 +508,7 @@ def main():
                             #check the data number in payload
 
                             if vfs_model.check_data_num(node_id,data_number):
+                                logger.info("write file {}".format(upload_data))
                                 vfs_model.set_data_num(node_id,data_number+1 & 0xffff) #keep track in vfs module
                                 try:
                                     file_output.write(upload_data)
@@ -542,7 +543,7 @@ def main():
     thread.start()
 
     
-    #send_pkt(eof=True)
+    send_pkt(eof=True)
     time.sleep(2)               # allow time for queued packets to be sent
     tb.wait()                       # wait for it to finish
     thread_run = False
