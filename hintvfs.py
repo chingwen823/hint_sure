@@ -308,7 +308,7 @@ def main():
     alloc_index = -1
     last_node_amount = -1
     data = "**heLLo**" # default data str
-    data_num = 0
+    data_num = -1
 
 
 
@@ -483,10 +483,11 @@ def main():
                             tb.txpath.send_pkt(eof=True)
                      
                     else: # resend last data
-                        logger.info( "resend{}".format(data)) 
+                        logger.info( "resend data {}".format(data)) 
 
                     vfs_model.send_dummy_pkt(tb)# hacking, send dummy pkt to avoid data lost
                     vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, data, data_num, pktno)
+                    logger.info( "pktno:{}\npkt_size{}:\data numer:{}\ndata:{}".format(pktno,pkt_size,data_num,data)) 
 
                     if data_num_advance:
                         data_num = data_num + 1 
