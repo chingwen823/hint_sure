@@ -225,22 +225,22 @@ def action(tb, vfs_model, payload,NODE_ID):
         #check if vack intime(response in 1 frame time) 
         if last_node_amount == -1 or \
            vfs_model.check_broadcast_intime(now_timestamp, (last_node_amount+1)): # give 1 more slot time 
-            go_on_flag = True
+            intime_flag = True
             logger.info("[Node {} pktno{}] VACK intime".format(NODE_ID, pktno))
         else:
-            go_on_flag = False
+            intime_flag = False
             logger.info("[Node {} pktno{}] VACK timeout".format(NODE_ID, pktno))
             
         #if intime, then we can check VACK valid 
-        if go_on_flag: 
+        if intime_flag: 
             try:
                 vack_frame = vfs_model.get_vack_frame(payload)
             except:
                 logger.warning("Cannot extract vack-frame. Drop pkt!")
                 go_on_flag = False
                 return 
-            #print "alloc_index {}".format(alloc_index)
-            if alloc_index != -1 and alloc_index<len(vack_frame):
+
+            if alloc_index != -1 and alloc_index<len(vack_frame):# leave rand frame along
                 if vack_frame[alloc_index]=='1':
                     #advance data number here
                     data_num = data_num + 1 
@@ -253,8 +253,6 @@ def action(tb, vfs_model, payload,NODE_ID):
                 go_on_flag = False
                 logger.info("in rand frame, treat it as missing")
 
-        if data_num == 0:
-            go_on_flag = True
    
 
         node_amount = vfs_model.get_node_amount(payload)
