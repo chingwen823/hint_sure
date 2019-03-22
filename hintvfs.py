@@ -206,12 +206,10 @@ def action(tb, vfs_model, payload,NODE_ID):
                 if vfs_model.check_node_intime( node_id, now_timestamp, len(TEST_NODE_LIST)):
                     logger.info("{} ({}) [Slot {}: Node {} ] BS recv VFS_PKT.index {}, data: {}".format(
                         str(datetime.fromtimestamp(now_timestamp)), now_timestamp, i, node_id, pktno,
-                        vfs_model.get_node_data(payload)))
-                        data_number = vfs_model.get_node_data_num(payload)
-                        return (delta, node_id, pktno, vfs_model.get_node_data(payload), data_number)
-                    else:
-                        logger.info("incorrect data number,drop data ")
-                        return 
+                    vfs_model.get_node_data(payload)))
+                    data_number = vfs_model.get_node_data_num(payload)
+                    return (delta, node_id, pktno, vfs_model.get_node_data(payload), data_number)
+
                 else:
                     logger.info("[Node {} pktno{}] Upload timeout".format(node_id, pktno))
                     return 
