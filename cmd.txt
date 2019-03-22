@@ -17,3 +17,17 @@ sudo sysctl -w net.core.wmem_max=1048576
 ./hintvfs.py --tx-freq 2.49G --rx-freq 2.39G --bs yes
 #node side
 ./hintvfs.py --tx-freq 2.39G --rx-freq 2.49G
+
+[hintvfs.py file transfer]
+
+before running
+#resize buffer
+sudo sysctl -w net.core.rmem_max=50000000
+sudo sysctl -w net.core.wmem_max=1048576
+
+#bs side 
+./hintvfs.py --tx-freq 2.49G --rx-freq 2.39G --to-file test_out.txt --bs yes
+#node side
+./hintvfs.py --tx-freq 2.39G --rx-freq 2.49G --from-file test.txt
+
+
