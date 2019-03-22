@@ -24,7 +24,7 @@ V_FRAME_SIZE_LEN = 4
 VACK_FRAME_SIZE_LEN = 4
 RAND_FRAME_SIZE_LEN = 4
 SINGLETON_RATE_THRESHOLD = 0.7
-VFS_DATA_LEN = 50
+#VFS_DATA_LEN = 50
 CALC_COUNT_LIMIT = 20
 
 #log_parser = ArgumentParser()
@@ -301,7 +301,7 @@ class VirtualFrameScheme:
    
     def send_vfs_pkt(self, node_id, my_tb, pkt_size, vfs_data, data_num, pktno=1):               # Node only
         # payload = prefix + now + vfs_pkt + data + dummy
-        assert len(vfs_data) <= VFS_DATA_LEN, "wrong vfs_data len {}".format(len(vfs_data))
+        #assert len(vfs_data) <= VFS_DATA_LEN, "wrong vfs_data len {}".format(len(vfs_data))
         #vfs_data = vfs_data.rjust(VFS_DATA_LEN)    # padding with spaces
 
         payload_prefix = struct.pack('!H', pktno & 0xffff)
