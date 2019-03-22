@@ -365,7 +365,7 @@ class VirtualFrameScheme:
         return list(vack_frame_str)
 
     def check_data_num(self,node_id, datanum):
-        logger.error("Node {} data num, server {}, node{}".format(node_id,self.nodes_data_num[node_id],datanum))
+        logger.error("Node {} data num, server {}, node {}".format(node_id,self.nodes_data_num[node_id],datanum))
         if self.nodes_data_num[node_id] == datanum:    
             self.nodes_data_intime[node_id] = True  
             return True

@@ -463,7 +463,7 @@ def main():
             else: #node
                 
                 if (nd_in_response) and (time.time() > (nd_start_time + time_wait_for_my_slot)):
-                    
+                    data_num_advance = False
                     #prepare data 
                     if go_on_flag : # get next data
                         print "onhand {},going to get next data".format(data)
@@ -473,7 +473,8 @@ def main():
                                 thread_run = False
                                 tb.txpath.send_pkt(eof=True)
                                 break
-                            data_num = data_num + 1 
+                            data_num_advance = True
+                           
                             print "read current data {}".format(data)
 
                         except:
@@ -486,6 +487,9 @@ def main():
 
                     vfs_model.send_dummy_pkt(tb)# hacking, send dummy pkt to avoid data lost
                     vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, data, data_num, pktno)
+
+                    if data_num_advance:
+                        data_num = data_num + 1 
                     pktno += 1
                     nd_in_response = False
                 else:
