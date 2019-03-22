@@ -256,6 +256,8 @@ def action(tb, vfs_model, payload,NODE_ID):
             go_on_flag = False
             logger.info("resend due to time out")
    
+        if not go_on_flag:
+            return
 
         node_amount = vfs_model.get_node_amount(payload)
         seed = vfs_model.get_seed(payload)
@@ -429,7 +431,7 @@ def main():
     pkt_size = int(options.size)
 
 
-    def threadjob(stop_event,pktno,IS_BS,NODE_ID):
+    def threadjob(pktno,IS_BS,NODE_ID):
         global thread_run, data, go_on_flag, data_num
         print "Please start host now..."
         boot_time = time.time()
@@ -438,7 +440,7 @@ def main():
         nd_in_response = False
         time_data_collecting = len(TEST_NODE_LIST)*NODE_SLOT_TIME
         time_wait_for_my_slot = 0
-        #while not stop_event.is_set():
+       
         while thread_run:    
             if IS_BS:
                 if time.time() > (bs_start_time + time_data_collecting):
@@ -532,7 +534,7 @@ def main():
                             #vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "**heLLo**{}".pktno, pktno)
                         else:
                             logger.warn( "error during decode VFS_BROADCAST")
-            
+        print "... thread out ..."        
             #node_rx_sem.release 
   
     thread_event = threading.Event()
@@ -542,7 +544,6 @@ def main():
     thread.start()
 
     
-    #send_pkt(eof=True)
     time.sleep(2)               # allow time for queued packets to be sent
     tb.wait()                       # wait for it to finish
     thread_run = False
