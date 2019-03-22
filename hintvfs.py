@@ -55,7 +55,7 @@ from vf_scheme import VirtualFrameScheme
 
 #presum
 NODE_RX_MAX = 10
-NODE_SLOT_TIME = .4     # seconds
+NODE_SLOT_TIME = .2     # seconds
 #TRANSMIT_DELAY = .1     # seconds
 TIMESTAMP_LEN = 14  # 26 # len(now)
 MAX_DELTA_AMT = 10
