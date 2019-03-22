@@ -487,7 +487,7 @@ def main():
 
                     vfs_model.send_dummy_pkt(tb)# hacking, send dummy pkt to avoid data lost
                     vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, data, data_num, pktno)
-                    logger.info( "===========================\npktno:{}\npkt_size:{}\ndata numer:{}\ndata:{}\n===========================".format(pktno,pkt_size,data_num,data)) 
+                    logger.info( "\n===========================\npktno:{}\npkt_size:{}\ndata numer:{}\ndata:{}\n===========================".format(pktno,pkt_size,data_num,data)) 
 
                     if data_num_advance:
                         data_num = data_num + 1 
@@ -511,7 +511,7 @@ def main():
                             #check the data number in payload
 
                             if vfs_model.check_data_num(node_id,data_number):
-                                vfs_model.set_data_num(data_number+1 & 0xffff) #keep track in vfs module
+                                vfs_model.set_data_num(node_id,data_number+1 & 0xffff) #keep track in vfs module
                                 try:
                                     file_output.write(upload_data)
                                 except:
