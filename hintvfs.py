@@ -55,7 +55,7 @@ from vf_scheme import VirtualFrameScheme
 
 #presum
 NODE_RX_MAX = 10
-NODE_SLOT_TIME = .2     # seconds
+NODE_SLOT_TIME = .3     # seconds
 #TRANSMIT_DELAY = .1     # seconds
 TIMESTAMP_LEN = 14  # 26 # len(now)
 MAX_DELTA_AMT = 10
@@ -252,7 +252,9 @@ def action(tb, vfs_model, payload,NODE_ID):
             else:
                 go_on_flag = False
                 logger.info("in rand frame, treat it as missing")
-
+        else:
+            go_on_flag = False
+            logger.info("resend due to time out")
    
 
         node_amount = vfs_model.get_node_amount(payload)
