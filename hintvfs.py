@@ -536,9 +536,8 @@ def main():
                             logger.warn( "error during decode VFS_BROADCAST")
         print "... thread out ..."        
             #node_rx_sem.release 
-  
-    thread_event = threading.Event()
-    thread = threading.Thread(target = threadjob, args = (thread_event,pktno,IS_BS_ROLE,NODE_ID))
+
+    thread = threading.Thread(target = threadjob, args = (pktno,IS_BS_ROLE,NODE_ID))
     thread.daemon = True #make it a daemon thread
     thread_run = True
     thread.start()
