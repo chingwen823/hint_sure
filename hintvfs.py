@@ -161,7 +161,7 @@ def decode_common_pkt_header(tb,payload):
 
 def action(tb, vfs_model, payload,NODE_ID):
 
-    global alloc_index, last_node_amount, file_output, go_on_flag
+    global alloc_index, last_node_amount, file_output, go_on_flag, data_num
 
     thingy = decode_common_pkt_header(tb,payload)
 
