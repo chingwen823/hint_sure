@@ -55,8 +55,8 @@ from vf_scheme import VirtualFrameScheme
 
 #presum
 NODE_RX_MAX = 10
-NODE_SLOT_TIME = .1     # seconds
-TRANSMIT_DELAY = .1     # seconds
+NODE_SLOT_TIME = .4     # seconds
+#TRANSMIT_DELAY = .1     # seconds
 TIMESTAMP_LEN = 14  # 26 # len(now)
 MAX_DELTA_AMT = 10
 delta_list = []
@@ -190,7 +190,7 @@ def action(tb, vfs_model, payload,NODE_ID):
 
             logger.info("{} Node recv BEACON {}. BS time: {}, Avg delay: {}".format(
                 str(datetime.fromtimestamp(now_timestamp)), pktno, str(datetime.fromtimestamp(pkt_timestamp)), mean_delta))
-            # logger.debug("stop_rx_ts {}".format(str(datetime.fromtimestamp(stop_rx_ts))))
+          
             return
 
     # BS receive from node
@@ -271,10 +271,6 @@ def action(tb, vfs_model, payload,NODE_ID):
         vf_index = vfs_model.compute_vf_index(len(v_frame), NODE_ID, seed)
 
         alloc_index, in_rand_frame = vfs_model.compute_alloc_index(vf_index, NODE_ID, v_frame, node_amount)
-
-        stop_rx_ts = now_timestamp + 0.4
-        # TODO: Duo to various delays, adjust a bit to before firing round up second
-        next_tx_ts = begin_timestamp + (NODE_SLOT_TIME * alloc_index) - TRANSMIT_DELAY
 
         logger.info("{} Node recv VFS_BROADCAST {}, BS time {}, Total {}, Seed {}, Delay {}, "
             "\nv-frame index: {}, alloc-index: {}, fall to rand-frame: {},"
@@ -472,6 +468,7 @@ def main():
                             if data == '':
                                 thread_run = False
                                 tb.txpath.send_pkt(eof=True)
+                                tb.stop()
                                 break
                                                     
                             print "read current data {}".format(data)
