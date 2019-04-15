@@ -414,7 +414,7 @@ def main():
     # node, open input file if assigned
     if not IS_BS_ROLE and (options.from_file is not None):
         try:
-            file_input = open("test.txt", "r")
+            file_input = open(options.from_file, "r")
             data = file_input.read(2)
             logger.info( "Input file opened successfully")
         except:
