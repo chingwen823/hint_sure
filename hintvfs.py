@@ -131,6 +131,12 @@ class my_top_block(gr.top_block):
         self.connect(self.source, self.rxpath)
         self.connect(self.txpath, self.sink)
         
+
+def writefile(id,sdata):
+    file_device = open(id, "a",buffering=0) #no buffering, flush rightaway
+    file_device.write(sdata)
+    file_device.close()
+
 def decode_common_pkt_header(tb,payload):
     (pktno,) = struct.unpack('!H', payload[0:2])
 
@@ -511,7 +517,8 @@ def main():
                                 logger.info("write file {}".format(upload_data))
                                 vfs_model.set_data_num(node_id,data_number+1 & 0xffff) #keep track in vfs module
                                 try:
-                                    file_output.write(upload_data)
+                                    #file_output.write(upload_data)
+                                    writefile(node_id,upload_data)
                                 except:
                                     logger.info("write file fail")
                             else:
