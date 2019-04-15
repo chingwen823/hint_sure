@@ -70,7 +70,7 @@ NODE_ID_LEN = 10
 NODE_ID = NODE_ID.zfill(NODE_ID_LEN)
 # BS: presume all known Node IDs
 NODE_ID_A, NODE_ID_B = '00030757AF', '0003075786'   # N210
-NODE_ID_C = '0003094D5C'    # B210
+NODE_ID_C = '000307B24B'    # CBX
 TEST_NODE_LIST = [NODE_ID_A, NODE_ID_B, NODE_ID_C, '0000000004', '0000000005',
                   '0000000006', '0000000007', '0000000008', '0000000009', '0000000010']
 
@@ -418,7 +418,7 @@ def main():
     # bs, open output file if assigned
     if IS_BS_ROLE and (options.to_file is not None):
         try:
-            file_output = open(options.to_file, "w+")
+            file_output = open(options.to_file, "w+",buffering=0) #no buffering, flush rightaway
             logger.info( "Output file opened successfully")
         except:
             logger.error( "Error: file not exist")
