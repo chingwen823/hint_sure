@@ -1,30 +1,26 @@
-[tao's program test_uci]
-#bs side
-./test_uci_rbk.py -v --antenna=TX/RX --bandwidth=1000000 --fft-length=512 --freq=2.49G --tx-amplitude=0.1 --tx-gain=20 --rx-gain=20 --scheme=VFS --logfile=bs_vfs.log 
-#node side
-./test_uci_rbk_n.py -v --antenna=TX/RX --bandwidth=1000000 --fft-length=512 --freq=2.49G --tx-amplitude=0.1 --tx-gain=20 --rx-gain=30 --args='serial=3075786' --scheme=VFS --logfile=3075786_vfs.log
-#uhd node 1 2, not listen self => gain 20->50
-./test_uci_rbk_n.py -v --antenna=TX/RX --bandwidth=1000000 --fft-length=512 --freq=2.49G --tx-amplitude=0.1 --tx-gain=20 --rx-gain=50 --args='serial=30757AF' --scheme=VFS --logfile=3075786_vfs.log
+if wireless adapter drop, check /etc/rc.local or do this cmd in shell:
+#load rtl wifi driver
+modprobe rtl8821ae
 
-[my program hintvfs.py]
-
-before running
+before running, do this after everytime os reboot
 #resize buffer
 sudo sysctl -w net.core.rmem_max=50000000
 sudo sysctl -w net.core.wmem_max=1048576
 
+
+[run benchmarktxrx.py]
+#bs side 
+./benchmarktxrx.py --tx-freq 2.49G --rx-freq 2.39G 
+#node side
+./benchmarktxrx.py --tx-freq 2.39G --rx-freq 2.49G
+
+[run hintvfs.py]
 #bs side 
 ./hintvfs.py --tx-freq 2.49G --rx-freq 2.39G --bs yes
 #node side
 ./hintvfs.py --tx-freq 2.39G --rx-freq 2.49G
 
-[hintvfs.py file transfer]
-
-before running
-#resize buffer
-sudo sysctl -w net.core.rmem_max=50000000
-sudo sysctl -w net.core.wmem_max=1048576
-
+[run hintvfs.py file transfer]
 #bs side 
 ./hintvfs.py --tx-freq 2.49G --rx-freq 2.39G --to-file test_out.txt --bs yes
 #node side
