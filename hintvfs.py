@@ -56,7 +56,7 @@ from vf_scheme import VirtualFrameScheme
 #presum
 NODE_RX_MAX = 10
 NODE_SLOT_TIME = .2     # seconds
-#TRANSMIT_DELAY = .1     # seconds
+TRANSMIT_DELAY = .1     # seconds
 TIMESTAMP_LEN = 14  # 26 # len(now)
 MAX_DELTA_AMT = 10
 delta_list = []
@@ -175,8 +175,8 @@ def action(tb, vfs_model, payload,NODE_ID):
         logger.wran("decode_common_pkt_header return nil")
         return 
     
-    (pktno,pkt_timestamp,pkt_type) = thingy
-    logger.debug("decode_common_pkt_header pktno {}, pkt_ts {}, pkt_type".format(pktno,pkt_timestamp,pkt_type))
+    (_pktno,pkt_timestamp,pkt_type) = thingy
+    logger.debug("decode_common_pkt_header _pktno {}, pkt_ts {}, pkt_type".format(_pktno,pkt_timestamp,pkt_type))
 
     now_timestamp = tb.source.get_time_now().get_real_secs()
     delta = now_timestamp - pkt_timestamp
@@ -203,6 +203,7 @@ def action(tb, vfs_model, payload,NODE_ID):
     if pkt_type == PacketType.VFS_PKT.index:
 
         logger.debug("identify node from nowtime {}, delta {}".format(now_timestamp,delta))
+        node_pktno = _pktno
 
         for i, tpl in enumerate(vfs_model.nodes_expect_time):
             node_id, begin_at, end_at = tpl
@@ -211,17 +212,17 @@ def action(tb, vfs_model, payload,NODE_ID):
                 #check if time out(response in 1 frame time) 
                 if vfs_model.check_node_intime( node_id, now_timestamp, len(TEST_NODE_LIST)):
                     logger.debug("{} ({}) [Slot {}: Node {} ] BS recv VFS_PKT.index {}, data: {}".format(
-                        str(datetime.fromtimestamp(now_timestamp)), now_timestamp, i, node_id, pktno,
+                        str(datetime.fromtimestamp(now_timestamp)), now_timestamp, i, node_id, node_pktno,
                     vfs_model.get_node_data(payload)))
                     data_number = vfs_model.get_node_data_num(payload)
-                    return (delta, node_id, pktno, vfs_model.get_node_data(payload), data_number)
+                    return (delta, node_id, node_pktno, vfs_model.get_node_data(payload), data_number)
 
                 else:
-                    logger.debug("[Node {} pktno{}] Upload timeout".format(node_id, pktno))
+                    logger.debug("[Node {} node_pktno{}] Upload timeout".format(node_id, node_pktno))
                     return 
                 
         logger.info("{} ({}) [No slot/session] BS recv VFS_PKT {}, data: {}".format(
-        str(datetime.fromtimestamp(now_timestamp)), now_timestamp, pktno, vfs_model.get_node_data(payload)))
+        str(datetime.fromtimestamp(now_timestamp)), now_timestamp, node_pktno, vfs_model.get_node_data(payload)))
         
         return 
 
@@ -232,10 +233,10 @@ def action(tb, vfs_model, payload,NODE_ID):
         if last_node_amount == -1 or \
             vfs_model.check_broadcast_intime(now_timestamp, (last_node_amount+1)): # give 1 more slot time 
             intime_flag = True
-            logger.info("[VACK intime] Node {} pktno{} ".format(NODE_ID, pktno))
+            logger.info("VACK intime Node {} pktno{} ".format(NODE_ID, pktno))
         else:
             intime_flag = False
-            logger.info("[VACK timeout] Node {} pktno{}".format(NODE_ID, pktno))
+            logger.info("VACK timeout Node {} pktno{}".format(NODE_ID, pktno))
             
         #if intime, then we can check VACK valid 
         if intime_flag: 
@@ -250,16 +251,16 @@ def action(tb, vfs_model, payload,NODE_ID):
                     #advance data number here
                     data_num = data_num + 1 
                     go_on_flag = True
-                    logger.info("[ACK] last time success")
+                    logger.critical("[ACK] last time success")
                 else:
                     go_on_flag = False
-                    logger.info("[NAK] last time fail")
+                    logger.critical("[NAK] last time fail")
             else:
                 go_on_flag = False
-                logger.info("in rand frame, treat it as missing")
+                logger.critical("[in rand frame] treat it as missing")
         else:
             go_on_flag = False
-            logger.info("[TIMEOUT]resend due to time out")
+            logger.critical("[TIMEOUT] broadcast not in time")
    
         #if not go_on_flag:
         #    return
@@ -448,7 +449,7 @@ def main():
        
         while thread_run:    
             if IS_BS:
-                if time.time() > (bs_start_time + time_data_collecting):
+                if time.time() > (bs_start_time + time_data_collecting+TRANSMIT_DELAY):
                     logger.info( "\n......Frame start......")
                     #elapsed_time = time.time() - start_time            
                     #prepare
@@ -456,7 +457,9 @@ def main():
                     #send boardcast
                     vfs_model.send_dummy_pkt(tb) # hacking, send dummy pkt to avoid data lost
                     vfs_model.broadcast_vfs_pkt(tb, pkt_size, len(TEST_NODE_LIST),pktno+int(packno_delta))
+   
                     pktno += 1
+        
                     bs_start_time = time.time()
                   
                 else:
@@ -510,7 +513,7 @@ def main():
                     if IS_BS:
                         thingy = action(tb, vfs_model, payload, NODE_ID)
                         if thingy:
-                            (delta, node_id, pktno, upload_data, data_number) = thingy
+                            (delta, node_id, node_pktno, upload_data, data_number) = thingy
                             #check the data number in payload
 
                             if vfs_model.check_data_num(node_id,data_number):
@@ -522,7 +525,7 @@ def main():
                                 except:
                                     logger.info("write file fail")
                             else:
-                                logger.info("[Seq Number mismatch]")
+                                logger.critical("[Seq Number mismatch]")
                         else:
                             logger.info("BS decode payload fail")
                                 
