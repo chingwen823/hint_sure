@@ -194,15 +194,15 @@ class VirtualFrameScheme:
         # payload = prefix + now + vfs_broadcast + node_amount + seed + node_begin_time + len(v-frame) + v-frame + dummy
 
         # prepare vack frame
-        print "alloc_frame_last {}".format(self.alloc_frame_last)
-        print "nodes_data_intime {}".format(self.nodes_data_intime)
+        logger.debug( "alloc_frame_last {}".format(self.alloc_frame_last))
+        logger.debug( "nodes_data_intime {}".format(self.nodes_data_intime))
         self.vack_frame = []
         for i,n_id in enumerate(self.alloc_frame_last):
             if n_id in self.nodes_data_intime and n_id in self.nodes_data_number_ok:
                 self.vack_frame.append(str(int(self.nodes_data_intime[n_id] & self.nodes_data_number_ok[n_id] )))
             else:
                 self.vack_frame.append('0')
-        print "vack_frame {}".format(self.vack_frame)     
+        logger.info( "vack_frame {}".format(self.vack_frame))     
         vack_frame_str = ''.join(self.vack_frame) 
         vack_frame_size_str = str(len(vack_frame_str)).zfill(VACK_FRAME_SIZE_LEN)     
 
@@ -276,9 +276,8 @@ class VirtualFrameScheme:
         #logger.info("{} send VFS_BROADCAST {}, Total nodes: {}, Seed: {}, Node begin: {}, \nSession: {}".format(
         #            str(datetime.fromtimestamp(now_timestamp)), pktno, node_amount, self.seed,
         #            str(datetime.fromtimestamp(begin_timestamp)), self.nodes_expect_time))
-        logger.info("{}({}) send VFS_BROADCAST {}, Total nodes: {}, Seed: {},Node begin: {}".format(
-                    str(datetime.fromtimestamp(now_timestamp)),now_timestamp, pktno, node_amount, self.seed,
-                    str(datetime.fromtimestamp(begin_timestamp)), self.nodes_expect_time))
+        logger.info("[send VFS_BROADCAST {}], Total nodes: {}, Seed: {}".format(
+                    pktno, node_amount, self.seed))
 
     def get_node_data_num(self, payload):
         #payload = pktno(2)+TIMESTAMP_LEN+vfs_send_pkt_id(2)+data_size(2)+VFS_DATA_LEN(datasize)+datanum(2)
@@ -365,7 +364,7 @@ class VirtualFrameScheme:
         return list(vack_frame_str)
 
     def check_data_num(self,node_id, datanum):
-        logger.info("Node {} data num, server {}, node {}".format(node_id,self.nodes_data_num[node_id],datanum))
+        logger.info("Receive pkt from {} server seq {}, node seq {}".format(node_id,self.nodes_data_num[node_id],datanum))
         if self.nodes_data_num[node_id] == datanum:    
             self.nodes_data_number_ok[node_id] = True  
             return True

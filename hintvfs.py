@@ -71,7 +71,7 @@ NODE_ID = NODE_ID.zfill(NODE_ID_LEN)
 # BS: presume all known Node IDs
 NODE_ID_A, NODE_ID_B = '00030757AF', '0003075786'   # N210
 NODE_ID_C = '000307B24B'    # CBX
-TEST_NODE_LIST = [NODE_ID_A, NODE_ID_B, NODE_ID_C, '0000000004', '0000000005',
+TEST_NODE_LIST = [NODE_ID_A, '0000000002', NODE_ID_C, '0000000004', '0000000005',
                   '0000000006', '0000000007', '0000000008', '0000000009', '0000000010']
 
 
@@ -176,7 +176,7 @@ def action(tb, vfs_model, payload,NODE_ID):
         return 
     
     (pktno,pkt_timestamp,pkt_type) = thingy
-    logger.info("decode_common_pkt_header pktno {}, pkt_ts {}, pkt_type".format(pktno,pkt_timestamp,pkt_type))
+    logger.debug("decode_common_pkt_header pktno {}, pkt_ts {}, pkt_type".format(pktno,pkt_timestamp,pkt_type))
 
     now_timestamp = tb.source.get_time_now().get_real_secs()
     delta = now_timestamp - pkt_timestamp
@@ -202,7 +202,7 @@ def action(tb, vfs_model, payload,NODE_ID):
     # BS receive from node
     if pkt_type == PacketType.VFS_PKT.index:
 
-        logger.info("identify node from nowtime {}, delta {}".format(now_timestamp,delta))
+        logger.debug("identify node from nowtime {}, delta {}".format(now_timestamp,delta))
 
         for i, tpl in enumerate(vfs_model.nodes_expect_time):
             node_id, begin_at, end_at = tpl
@@ -210,14 +210,14 @@ def action(tb, vfs_model, payload,NODE_ID):
             if begin_at <= now_timestamp <= end_at:
                 #check if time out(response in 1 frame time) 
                 if vfs_model.check_node_intime( node_id, now_timestamp, len(TEST_NODE_LIST)):
-                    logger.info("{} ({}) [Slot {}: Node {} ] BS recv VFS_PKT.index {}, data: {}".format(
+                    logger.debug("{} ({}) [Slot {}: Node {} ] BS recv VFS_PKT.index {}, data: {}".format(
                         str(datetime.fromtimestamp(now_timestamp)), now_timestamp, i, node_id, pktno,
                     vfs_model.get_node_data(payload)))
                     data_number = vfs_model.get_node_data_num(payload)
                     return (delta, node_id, pktno, vfs_model.get_node_data(payload), data_number)
 
                 else:
-                    logger.info("[Node {} pktno{}] Upload timeout".format(node_id, pktno))
+                    logger.debug("[Node {} pktno{}] Upload timeout".format(node_id, pktno))
                     return 
                 
         logger.info("{} ({}) [No slot/session] BS recv VFS_PKT {}, data: {}".format(
@@ -438,7 +438,7 @@ def main():
 
     def threadjob(pktno,IS_BS,NODE_ID):
         global thread_run, data, go_on_flag, data_num
-        print "Please start host now..."
+        logger.info("Please start host now...")
         boot_time = time.time()
         bs_start_time = 0
         nd_start_time = 0
@@ -449,7 +449,7 @@ def main():
         while thread_run:    
             if IS_BS:
                 if time.time() > (bs_start_time + time_data_collecting):
-                    print "...Frame start..."
+                    logger.info( "\n......Frame start......")
                     #elapsed_time = time.time() - start_time            
                     #prepare
                     vfs_model.generate_seed_v_frame_rand_frame(TEST_NODE_LIST)
@@ -471,7 +471,7 @@ def main():
                     
                     #prepare data 
                     if go_on_flag : # get next data
-                        print "onhand {},going to get next data".format(data)
+                        logger.info( "onhand {},going to get next data".format(data))
                         try:  
                             data = file_input.read(2)
                             if data == '':
@@ -480,7 +480,7 @@ def main():
                                 tb.stop()
                                 break
                                                     
-                            print "read current data {}".format(data)
+                            logger.info( "read current data {}".format(data))
 
                         except:
                             #error end 
@@ -514,7 +514,7 @@ def main():
                             #check the data number in payload
 
                             if vfs_model.check_data_num(node_id,data_number):
-                                logger.info("write file {}".format(upload_data))
+                                logger.info("data:{} length:{}".format(upload_data,len(upload_data)))
                                 vfs_model.set_data_num(node_id,data_number+1 & 0xffff) #keep track in vfs module
                                 try:
                                     #file_output.write(upload_data)
@@ -522,13 +522,13 @@ def main():
                                 except:
                                     logger.info("write file fail")
                             else:
-                                logger.info("incorrect data number")
+                                logger.info("ERROR!! incorrect data number")
                         else:
                             logger.info("BS decode payload fail")
                                 
 
                     else:
-                        print "... get broadcast ..."
+                        logger.info( "... get broadcast ...")
                         thingy = action(tb, vfs_model, payload,NODE_ID)
                 
                         if thingy:
