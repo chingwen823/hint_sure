@@ -233,10 +233,10 @@ def action(tb, vfs_model, payload,NODE_ID):
         if last_node_amount == -1 or \
             vfs_model.check_broadcast_intime(now_timestamp, (last_node_amount+1)): # give 1 more slot time 
             intime_flag = True
-            logger.info("VACK intime Node {} pktno{} ".format(NODE_ID, pktno))
+            logger.info("VACK intime Node {} pktno{} ".format(NODE_ID, _pktno))
         else:
             intime_flag = False
-            logger.info("VACK timeout Node {} pktno{}".format(NODE_ID, pktno))
+            logger.info("VACK timeout Node {} pktno{}".format(NODE_ID, _pktno))
             
         #if intime, then we can check VACK valid 
         if intime_flag: 
@@ -285,7 +285,7 @@ def action(tb, vfs_model, payload,NODE_ID):
         logger.info("{} Node recv VFS_BROADCAST {}, BS time {}, Total {}, Seed {}, Delay {}, "
             "\nv-frame index: {}, alloc-index: {}, fall to rand-frame: {},"
             "\nv-frame: {}"
-            .format(str(datetime.fromtimestamp(now_timestamp)), pktno,
+            .format(str(datetime.fromtimestamp(now_timestamp)), _pktno,
                     str(datetime.fromtimestamp(pkt_timestamp)),
                     node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame))
         last_node_amount = node_amount
