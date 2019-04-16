@@ -527,7 +527,7 @@ def main():
                             else:
                                 logger.critical("[Seq Number mismatch]")
                         else:
-                            logger.info("BS decode payload fail")
+                            logger.critical("[Decode Error] payload fail")
                                 
 
                     else:
