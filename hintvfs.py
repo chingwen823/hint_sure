@@ -476,7 +476,7 @@ def main():
                     if go_on_flag : # get next data
                         logger.info( "onhand {},going to get next data".format(data))
                         try:  
-                            data = file_input.read(2)
+                            data = file_input.read(3)
                             if data == '':
                                 thread_run = False
                                 tb.txpath.send_pkt(eof=True)
