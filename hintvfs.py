@@ -232,10 +232,10 @@ def action(tb, vfs_model, payload,NODE_ID):
         if last_node_amount == -1 or \
             vfs_model.check_broadcast_intime(now_timestamp, (last_node_amount+1)): # give 1 more slot time 
             intime_flag = True
-            logger.info("[Node {} pktno{}] VACK intime".format(NODE_ID, pktno))
+            logger.info("[VACK intime] Node {} pktno{} ".format(NODE_ID, pktno))
         else:
             intime_flag = False
-            logger.info("[Node {} pktno{}] VACK timeout".format(NODE_ID, pktno))
+            logger.info("[VACK timeout] Node {} pktno{}".format(NODE_ID, pktno))
             
         #if intime, then we can check VACK valid 
         if intime_flag: 
@@ -522,7 +522,7 @@ def main():
                                 except:
                                     logger.info("write file fail")
                             else:
-                                logger.info("ERROR!! incorrect data number")
+                                logger.info("[Seq Number mismatch]")
                         else:
                             logger.info("BS decode payload fail")
                                 
