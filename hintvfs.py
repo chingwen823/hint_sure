@@ -250,16 +250,16 @@ def action(tb, vfs_model, payload,NODE_ID):
                     #advance data number here
                     data_num = data_num + 1 
                     go_on_flag = True
-                    logger.info("Check last transmission: last time success")
+                    logger.info("[ACK] last time success")
                 else:
                     go_on_flag = False
-                    logger.info("Check last transmission: last time fail")
+                    logger.info("[NAK] last time fail")
             else:
                 go_on_flag = False
                 logger.info("in rand frame, treat it as missing")
         else:
             go_on_flag = False
-            logger.info("resend due to time out")
+            logger.info("[TIMEOUT]resend due to time out")
    
         #if not go_on_flag:
         #    return
