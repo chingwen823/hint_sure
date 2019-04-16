@@ -492,7 +492,7 @@ def main():
 
                     vfs_model.send_dummy_pkt(tb)# hacking, send dummy pkt to avoid data lost
                     vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, data, data_num, pktno)
-                    logger.info( "\n===========================\npktno:{}\npkt_size:{}\ndata numer:{}\ndata:{}\n===========================".format(pktno,pkt_size,data_num,data)) 
+                    logger.info( "\n===========================\npktno:{}\ndata numer:{}\ndata:{}\n===========================".format(pktno,data_num,data)) 
 
                     pktno += 1
                     nd_in_response = False
@@ -528,7 +528,7 @@ def main():
                                 
 
                     else:
-                        logger.info( "... get broadcast ...")
+                        logger.info( "\n... get broadcast ...")
                         thingy = action(tb, vfs_model, payload,NODE_ID)
                 
                         if thingy:
