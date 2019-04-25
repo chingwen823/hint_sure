@@ -610,6 +610,9 @@ def main():
                                 try:
                                     #file_output.write(upload_data)
                                     writefile(node_id,upload_data)
+                                except:
+                                    logger.info("write file fail")
+
                                     if upload_data == '99':
                                         logger.info("=====test end=====") 
                                         thread_run = False
@@ -626,8 +629,7 @@ def main():
 
                                     TEST_NODE_RETRY.remove(node_id)
 
-                                except:
-                                    logger.info("write file fail")
+
                             else:
                                 logger.info("3333333333333333")
                                 logger.info("3 SEQ mismatch 3")
