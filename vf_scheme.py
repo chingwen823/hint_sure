@@ -190,6 +190,14 @@ class VirtualFrameScheme:
         my_tb.txpath.send_pkt(payload)
         logger.info("{} broadcast BEACON - {}".format(str(datetime.fromtimestamp(now_timestamp)), pkt_no))
 
+    def query_vack(self,n_id):
+        try:
+            if self.nodes_data_intime[n_id] & self.nodes_data_number_ok[n_id]:
+                return 1
+            else:
+                return 2
+        except:
+            return 3
     def broadcast_vfs_pkt(self, my_tb, pkt_size, node_amount, pktno=1):     # BS only
         # payload = prefix + now + vfs_broadcast + node_amount + seed + node_begin_time + len(v-frame) + v-frame + dummy
 

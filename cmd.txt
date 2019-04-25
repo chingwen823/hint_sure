@@ -23,7 +23,8 @@ sudo sysctl -w net.core.wmem_max=1048576
 [run hintvfs.py file transfer]
 #bs side 
 ./hintvfs.py --tx-freq 2.49G --rx-freq 2.39G --to-file test_out.txt --bs yes
-#node side
-./hintvfs.py --tx-freq 2.39G --rx-freq 2.49G --from-file test.txt
-
+#node1 side
+./hintvfs.py --tx-freq 2.39G --rx-freq 2.49G --from-file test1.txt
+#node2 side
+./hintvfs.py --tx-freq 2.39G --rx-freq 2.49G --from-file test2.txt
 
