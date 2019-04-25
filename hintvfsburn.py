@@ -540,9 +540,11 @@ def main():
                     
 
             else: #node
-                
-                if(not not_my_business) and (nd_in_response) and (time.time() > (nd_start_time + time_wait_for_my_slot)):
-                    
+                if nd_in_response and time.time() > (nd_start_time + time_wait_for_my_slot):
+                    if not_my_business: #not my run
+                        logger.info( "Not my business")
+                        continue
+                        
                     #prepare data 
                     if go_on_flag : # get next data
                         logger.info( "onhand {},going to get next data".format(data))
@@ -571,11 +573,13 @@ def main():
                     pktno += 1
                     nd_in_response = False
                     not_my_business = False
+                          
                 else:
                     #print "nd_in_response{}, time {} > {} ".format(nd_in_response,time.time(), (nd_start_time + time_wait_for_my_slot))
                     pass
                     #vfs_model.send_dummy_pkt(tb)
                     #tb.txpath.send_pkt(eof=True)
+                
                     
             #while node_rx_sem.acquire(False):   
             if not node_rx_q.empty():
