@@ -549,7 +549,7 @@ def main():
                     if not_my_business: #this run is not my run
                         pass 
                     else:
-                        
+                        logger.info( "going to upload {}".format(data))
                     #prepare data 
                         if upload_file:
                             try:  
