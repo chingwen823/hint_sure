@@ -573,7 +573,8 @@ def main():
                                 thread_run = False
                                 tb.txpath.send_pkt(eof=True)
                                 tb.stop()
-                                break                         
+                                break    
+                            logger.info( "read current data {}".format(data))                     
 
                         vfs_model.send_dummy_pkt(tb)# hacking, send dummy pkt to avoid data lost
                         vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, data, data_num, pktno)
