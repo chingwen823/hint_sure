@@ -80,7 +80,8 @@ TEST_NODE_LIST = list(TEST_NODE_LIST_DEFAULT)
 
 statistics = {'00030757AF':{'Bcast': 0, 'Missing': 0, 'SEQ': 0,'Decode': 0, 'ACK': 0,'NAK': 0 },
               '000307B24B':{'Bcast': 0, 'Missing': 0, 'SEQ': 0,'Decode': 0, 'ACK': 0,'NAK': 0 }}
-
+statistics_dev = {'00030757AF':{'Bcast': 0, 'BcastMissing': 0, 'VACKMissing': 0,'ACK': 0, 'NAK': 0,'RAND': 0 },
+                 {'000307B24B':{'Bcast': 0, 'BcastMissing': 0, 'VACKMissing': 0,'ACK': 0, 'NAK': 0,'RAND': 0 }}
 TEST_NODE_RETRY_DEFAULT = [NODE_ID_A, NODE_ID_C]
 TEST_NODE_RETRY = list(TEST_NODE_RETRY_DEFAULT)
 
@@ -245,6 +246,7 @@ def action(tb, vfs_model, payload,NODE_ID):
             logger.info("1 missing boardcast pkt 1")
             logger.info("1111111111111111111111111")
             i_still_care = False
+            statistics_dev[NODE_ID]['BcastMissing'] += 1  
 
         last_pktno = _pktno #track packet number
 
@@ -256,9 +258,13 @@ def action(tb, vfs_model, payload,NODE_ID):
                 intime_flag = True
                 logger.info("VACK intime Node {} pktno{} ".format(NODE_ID, _pktno))
             else:
+                logger.info("2222222222222222222222222")
+                logger.info("2      VACK missing     2")
+                logger.info("2222222222222222222222222")
                 intime_flag = False
                 logger.info("VACK timeout Node {} pktno{}".format(NODE_ID, _pktno))
-                
+                statistics_dev[NODE_ID]['VACKMissing'] += 1  
+
             #if intime, then we can check VACK valid 
             if intime_flag: 
                 try:
@@ -273,13 +279,23 @@ def action(tb, vfs_model, payload,NODE_ID):
                         data_num = data_num + 1 
                         go_on_flag = True
                         i_still_care = False #not check retransmit anymore
-                        logger.critical("[ACK] last time success")
+                        logger.info("3333333333333333333333333")
+                        logger.info("3           ACK         3")
+                        logger.info("3333333333333333333333333")
+                        statistics_dev[NODE_ID]['ACK'] += 1  
                     else:
                         go_on_flag = False
-                        logger.critical("[NAK] last time fail")
+                        logger.info("4444444444444444444444444")
+                        logger.info("4           NAK         4")
+                        logger.info("4444444444444444444444444")
+                        statistics_dev[NODE_ID]['NAK'] += 1  
                 else:
                     go_on_flag = False
+                    logger.info("555555555555555555555555555")
+                    logger.info("5        Frame Frame      5")
+                    logger.info("555555555555555555555555555")
                     logger.critical("[in rand frame] treat it as missing")
+                    statistics_dev[NODE_ID]['RAND'] += 1  
             else:
                 go_on_flag = False
                 logger.critical("[TIMEOUT] broadcast not in time")
