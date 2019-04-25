@@ -335,7 +335,7 @@ def main():
     data = "**heLLo**" # default data str
     data_num = 0
     upload_file = True
-    i_still_care = False
+
 
 
 
@@ -479,6 +479,7 @@ def main():
         TEST_NODE_RETRY[:] = list(TEST_NODE_RETRY_DEFAULT)
         TEST_NODE_LIST = list(TEST_NODE_LIST_DEFAULT)
         last_data = -1
+        i_still_care = False
 
         print(TEST_NODE_LIST)
         print(TEST_NODE_LIST_DEFAULT)
