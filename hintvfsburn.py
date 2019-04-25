@@ -54,7 +54,7 @@ from argparse import ArgumentParser
 from vf_scheme import VirtualFrameScheme
 
 #presum
-TEST_DATA_MAX = 10
+TEST_DATA_MAX = 1000
 NODE_RX_MAX = 10
 NODE_SLOT_TIME = .2     # seconds
 TRANSMIT_DELAY = .1     # seconds
