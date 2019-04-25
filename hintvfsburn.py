@@ -272,7 +272,7 @@ def action(tb, vfs_model, payload,NODE_ID):
    
         #if not go_on_flag:
         #    return
-        if _pktno % TEST_NODE_SCHEDULE(TEST_NODE_LIST_DEFAULT.index(NODE_ID))==0:
+        if _pktno % TEST_NODE_SCHEDULE[TEST_NODE_LIST_DEFAULT.index(NODE_ID)]==0:
 
             node_amount = vfs_model.get_node_amount(payload)
             seed = vfs_model.get_seed(payload)
