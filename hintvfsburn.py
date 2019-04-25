@@ -270,9 +270,9 @@ def action(tb, vfs_model, payload,NODE_ID):
             go_on_flag = False
             logger.critical("[TIMEOUT] broadcast not in time")
    
-        #if not go_on_flag:
-        #    return
-        if _pktno % TEST_NODE_SCHEDULE[TEST_NODE_LIST_DEFAULT.index(NODE_ID)]==0:
+        #if not go_on_flag means there was an error happened, keep checking broadcast 
+        #   
+        if !go_on_flag or _pktno % TEST_NODE_SCHEDULE[TEST_NODE_LIST_DEFAULT.index(NODE_ID)]==0:
 
             node_amount = vfs_model.get_node_amount(payload)
             seed = vfs_model.get_seed(payload)
