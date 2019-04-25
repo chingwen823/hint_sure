@@ -616,7 +616,7 @@ def main():
                                         tb.txpath.send_pkt(eof=True)
                                         tb.stop()
                                         break  
-                                    if int(upload_data)!=last_data+1
+                                    if int(upload_data)!=(last_data+1):
                                         logger.info("=====Error protocol fail=====") 
                                         thread_run = False
                                         tb.txpath.send_pkt(eof=True)
