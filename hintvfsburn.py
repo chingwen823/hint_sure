@@ -629,6 +629,7 @@ def main():
                                 logger.info( "I will upload at slot {}, wait for {}s".format(alloc_index,time_wait_for_my_slot))
                                 nd_start_time = time.time()
                                 nd_in_response = True
+                                not_my_business = False
                                 #vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "**heLLo**{}".pktno, pktno)
                         else:
                             logger.warn( "error during decode VFS_BROADCAST")
