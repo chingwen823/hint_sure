@@ -319,7 +319,7 @@ def main():
     
     #node rx queue/event
     global node_rx_q, node_rx_sem, thread_run, alloc_index, last_node_amount, go_on_flag,file_input,\
-           file_output, data, data_num
+           file_output, data, data_num, burn_test_data
     node_rx_q = Queue.Queue(maxsize = NODE_RX_MAX)
     node_rx_sem = threading.Semaphore(NODE_RX_MAX) #up to the queue size
     thread_run = True 
@@ -328,6 +328,7 @@ def main():
     last_node_amount = -1
     data = "**heLLo**" # default data str
     data_num = 0
+    burn_test_data = 0
 
 
 
@@ -436,6 +437,7 @@ def main():
             data = file_input.read(3)
             logger.info( "Input file opened successfully")
         except:
+            
             logger.error( "Error: file not exist")
  
 
@@ -546,22 +548,29 @@ def main():
                     else:
                         
                     #prepare data 
-                        try:  
-                            file_input.seek(3*data_num)
-                            data = file_input.read(3)
-                            if data == '':
+                        if file_input:
+                            try:  
+                                file_input.seek(3*data_num)
+                                data = file_input.read(3)
+                                if data == '':
+                                    thread_run = False
+                                    tb.txpath.send_pkt(eof=True)
+                                    tb.stop()
+                                    break
+                                                        
+                                logger.info( "read current data {}".format(data))
+
+                            except:
+                                #error end 
+                                thread_run = False
+                                tb.txpath.send_pkt(eof=True)
+                        else:
+                            data = str(data_num)
+                            if data == '99':
                                 thread_run = False
                                 tb.txpath.send_pkt(eof=True)
                                 tb.stop()
-                                break
-                                                    
-                            logger.info( "read current data {}".format(data))
-
-                        except:
-                            #error end 
-                            thread_run = False
-                            tb.txpath.send_pkt(eof=True)
-                         
+                                break                         
 
                         vfs_model.send_dummy_pkt(tb)# hacking, send dummy pkt to avoid data lost
                         vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, data, data_num, pktno)
@@ -595,6 +604,11 @@ def main():
                                 try:
                                     #file_output.write(upload_data)
                                     writefile(node_id,upload_data)
+                                    if upload_data == '99':
+                                        thread_run = False
+                                        tb.txpath.send_pkt(eof=True)
+                                        tb.stop()
+                                        break  
                                     TEST_NODE_RETRY.remove(node_id)
 
                                 except:
