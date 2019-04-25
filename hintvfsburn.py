@@ -175,7 +175,7 @@ def decode_common_pkt_header(tb,payload):
 
 def action(tb, vfs_model, payload,NODE_ID):
 
-    global alloc_index, last_node_amount, file_output, go_on_flag, data_num
+    global alloc_index, last_node_amount, file_output, go_on_flag, data_num, i_still_care
 
     thingy = decode_common_pkt_header(tb,payload)
 
@@ -467,7 +467,7 @@ def main():
 
 
     def threadjob(pktno,IS_BS,NODE_ID):
-        global thread_run, data, go_on_flag, data_num, TEST_NODE_RETRY, TEST_NODE_LIST
+        global thread_run, data, go_on_flag, data_num, TEST_NODE_RETRY, TEST_NODE_LIST, i_still_care
         logger.info("Please start host now...")
         boot_time = time.time()
         bs_start_time = 0
