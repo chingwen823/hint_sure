@@ -461,6 +461,7 @@ def main():
         bs_start_time = 0
         nd_start_time = 0
         nd_in_response = False
+        not_my_business = False
         time_data_collecting = len(TEST_NODE_LIST)*NODE_SLOT_TIME
         time_wait_for_my_slot = 0
         TEST_NODE_RETRY[:] = list(TEST_NODE_RETRY_DEFAULT)
