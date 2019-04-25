@@ -438,11 +438,12 @@ def main():
             upload_file = True
             logger.info( "Input file opened successfully")
         except:
-            upload_file = False
-            data = "0"
-
             logger.error( "Error: file not exist")
- 
+    elif not IS_BS_ROLE:
+        upload_file = False
+        data = str(data_num)
+    else:
+        pass 
 
     # bs, open output file if assigned
     if IS_BS_ROLE and (options.to_file is not None):
