@@ -439,7 +439,8 @@ def main():
             logger.info( "Input file opened successfully")
         except:
             upload_file = False
-            data = 0
+            data = "0"
+
             logger.error( "Error: file not exist")
  
 
