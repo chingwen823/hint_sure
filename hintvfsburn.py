@@ -543,6 +543,7 @@ def main():
                 if nd_in_response and time.time() > (nd_start_time + time_wait_for_my_slot):
                     if not_my_business: #not my run
                         logger.info( "Not my business")
+                        not_my_business = False
                     else:
                         
                         #prepare data 
