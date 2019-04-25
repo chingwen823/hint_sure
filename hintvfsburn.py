@@ -319,7 +319,7 @@ def main():
     
     #node rx queue/event
     global node_rx_q, node_rx_sem, thread_run, alloc_index, last_node_amount, go_on_flag,file_input,\
-           file_output, data, data_num, burn_test_data
+           file_output, data, data_num, upload_file
     node_rx_q = Queue.Queue(maxsize = NODE_RX_MAX)
     node_rx_sem = threading.Semaphore(NODE_RX_MAX) #up to the queue size
     thread_run = True 
@@ -328,7 +328,7 @@ def main():
     last_node_amount = -1
     data = "**heLLo**" # default data str
     data_num = 0
-    burn_test_data = 0
+    upload_file = True
 
 
 
@@ -435,9 +435,11 @@ def main():
         try:
             file_input = open(options.from_file, "r")
             data = file_input.read(3)
+            upload_file = True
             logger.info( "Input file opened successfully")
         except:
-            
+            upload_file = False
+            data = 0
             logger.error( "Error: file not exist")
  
 
@@ -548,7 +550,7 @@ def main():
                     else:
                         
                     #prepare data 
-                        if file_input:
+                        if upload_file:
                             try:  
                                 file_input.seek(3*data_num)
                                 data = file_input.read(3)
