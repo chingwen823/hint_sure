@@ -460,6 +460,8 @@ def main():
         boot_time = time.time()
         bs_start_time = 0
         nd_start_time = 0
+        vack_start_time = 0
+      
         nd_in_response = False
         not_my_business = False
         time_data_collecting = len(TEST_NODE_LIST)*NODE_SLOT_TIME
@@ -541,36 +543,35 @@ def main():
 
             else: #node
                 if nd_in_response and time.time() > (nd_start_time + time_wait_for_my_slot):
-                    if not_my_business: #not my run
+                    if not_my_business: #this run is not my run
                         pass 
                     else:
                         
-                        #prepare data 
-                        if go_on_flag : # get next data
-                            logger.info( "onhand {},going to get next data".format(data))
-                            try:  
-                                data = file_input.read(3)
-                                if data == '':
-                                    thread_run = False
-                                    tb.txpath.send_pkt(eof=True)
-                                    tb.stop()
-                                    break
-                                                        
-                                logger.info( "read current data {}".format(data))
-
-                            except:
-                                #error end 
+                    #prepare data 
+                        try:  
+                            file_input.seek(3*data_num)
+                            data = file_input.read(3)
+                            if data == '':
                                 thread_run = False
                                 tb.txpath.send_pkt(eof=True)
+                                tb.stop()
+                                break
+                                                    
+                            logger.info( "read current data {}".format(data))
+
+                        except:
+                            #error end 
+                            thread_run = False
+                            tb.txpath.send_pkt(eof=True)
                          
-                        else: # resend last data
-                            logger.info( "resend data {}".format(data)) 
 
                         vfs_model.send_dummy_pkt(tb)# hacking, send dummy pkt to avoid data lost
                         vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, data, data_num, pktno)
                         logger.info( "\n===========================\npktno:{}\ndata numer:{}\ndata:{}\n===========================".format(pktno,data_num,data)) 
 
                         pktno += 1
+                        vack_start_time = time()
+                 
                         nd_in_response = False
                         not_my_business = False
                           
@@ -621,6 +622,7 @@ def main():
                         if thingy:
                             if "not-my-business" == thingy:
                                 #not schedule in this run
+                        
                                 nd_in_response = True
                                 not_my_business = True
                             else:#success and check
