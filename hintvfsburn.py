@@ -301,11 +301,11 @@ def action(tb, vfs_model, payload,NODE_ID):
             
            
             return (node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame)
-        else:
+        else: #not my business frame
             logger.info("{} Node recv VFS_BROADCAST {}, BS time {}"
                 .format(str(datetime.fromtimestamp(now_timestamp)), _pktno,
                         str(datetime.fromtimestamp(pkt_timestamp))))
-            return
+            return "not-my-business"
 
 # /////////////////////////////////////////////////////////////////////////////
 #                                   main
@@ -540,7 +540,7 @@ def main():
 
             else: #node
                 
-                if (nd_in_response) and (time.time() > (nd_start_time + time_wait_for_my_slot)):
+                if(not not_my_business) and (nd_in_response) and (time.time() > (nd_start_time + time_wait_for_my_slot)):
                     
                     #prepare data 
                     if go_on_flag : # get next data
@@ -569,6 +569,7 @@ def main():
 
                     pktno += 1
                     nd_in_response = False
+                    not_my_business = False
                 else:
                     #print "nd_in_response{}, time {} > {} ".format(nd_in_response,time.time(), (nd_start_time + time_wait_for_my_slot))
                     pass
@@ -613,15 +614,21 @@ def main():
                         thingy = action(tb, vfs_model, payload,NODE_ID)
                 
                         if thingy:
-                            (node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame) = thingy
-                            time_wait_for_my_slot = alloc_index * NODE_SLOT_TIME
-                            logger.info( "I will upload at slot {}, wait for {}s".format(alloc_index,time_wait_for_my_slot))
-                            nd_start_time = time.time()
-                            
-                            #vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "**heLLo**{}".pktno, pktno)
+                            if "not-my-business" == thingy:
+                                #not schedule in this run
+                                nd_in_response = True
+                                not_my_business = True
+                            else:#success and check
+                                (node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame) = thingy
+                                time_wait_for_my_slot = alloc_index * NODE_SLOT_TIME
+                                logger.info( "I will upload at slot {}, wait for {}s".format(alloc_index,time_wait_for_my_slot))
+                                nd_start_time = time.time()
+                                nd_in_response = True
+                                #vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "**heLLo**{}".pktno, pktno)
                         else:
                             logger.warn( "error during decode VFS_BROADCAST")
-                        nd_in_response = True
+                            
+                        
         print "... thread out ..."        
             #node_rx_sem.release 
 
