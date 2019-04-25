@@ -546,12 +546,12 @@ def main():
                             if pktno % TEST_NODE_SCHEDULE[i] == 0:
                                 TEST_NODE_LIST.append(iid)  
                                 logger.info("scheduled:{}".format(iid)) 
-                                if iid in statistics
+                                if iid in statistics:
                                     statistics[iid]['Schedule'] += 1  
                             elif iid in TEST_NODE_RETRY:
                                 TEST_NODE_LIST.append(iid) 
                                 logger.info("retry:{}".format(iid)) 
-                                if iid in statistics
+                                if iid in statistics:
                                     statistics[iid]['Retry'] += 1  
                             else:
                                 TEST_NODE_LIST.append("000000000{}".format(i+1))
