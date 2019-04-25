@@ -302,7 +302,7 @@ def action(tb, vfs_model, payload,NODE_ID):
            
             return (node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame)
         else:
-            logger.info("{} Node recv VFS_BROADCAST {}, BS time {}",
+            logger.info("{} Node recv VFS_BROADCAST {}, BS time {}"
                 .format(str(datetime.fromtimestamp(now_timestamp)), _pktno,
                         str(datetime.fromtimestamp(pkt_timestamp))))
             return
