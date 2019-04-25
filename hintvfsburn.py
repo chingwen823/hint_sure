@@ -319,7 +319,7 @@ def main():
     
     #node rx queue/event
     global node_rx_q, node_rx_sem, thread_run, alloc_index, last_node_amount, go_on_flag,file_input,\
-           file_output, data, data_num, upload_file
+           file_output, data, data_num, upload_file, last_data
     node_rx_q = Queue.Queue(maxsize = NODE_RX_MAX)
     node_rx_sem = threading.Semaphore(NODE_RX_MAX) #up to the queue size
     thread_run = True 
@@ -328,6 +328,7 @@ def main():
     last_node_amount = -1
     data = "**heLLo**" # default data str
     data_num = 0
+    last_data = -1
     upload_file = True
 
 
@@ -610,10 +611,19 @@ def main():
                                     #file_output.write(upload_data)
                                     writefile(node_id,upload_data)
                                     if upload_data == '99':
+                                        logger.info("=====test end=====") 
                                         thread_run = False
                                         tb.txpath.send_pkt(eof=True)
                                         tb.stop()
                                         break  
+                                    if int(upload_data)!=last_data+1
+                                        logger.info("=====Error protocol fail=====") 
+                                        thread_run = False
+                                        tb.txpath.send_pkt(eof=True)
+                                        tb.stop()
+                                        break  
+                                    last_data = last_data +1 
+
                                     TEST_NODE_RETRY.remove(node_id)
 
                                 except:
