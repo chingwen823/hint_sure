@@ -176,16 +176,18 @@ def decode_common_pkt_header(tb,payload):
 
 def action(tb, vfs_model, payload,NODE_ID):
 
-    global alloc_index, last_node_amount, file_output, go_on_flag, data_num, i_still_care
+    global alloc_index, last_node_amount, file_output, go_on_flag, data_num, i_still_care, last_pktno
 
     thingy = decode_common_pkt_header(tb,payload)
 
     if not thingy:
         logger.wran("decode_common_pkt_header return nil")
         return 
+
     
     (_pktno,pkt_timestamp,pkt_type) = thingy
     logger.debug("decode_common_pkt_header _pktno {}, pkt_ts {}, pkt_type".format(_pktno,pkt_timestamp,pkt_type))
+    
 
     now_timestamp = tb.source.get_time_now().get_real_secs()
     delta = now_timestamp - pkt_timestamp
@@ -236,7 +238,12 @@ def action(tb, vfs_model, payload,NODE_ID):
         return 
 
     if pkt_type == PacketType.VFS_BROADCAST.index:
-        
+
+        if last_pktno+1 != _pktno:
+            i_still_care = False
+
+        last_pktno = _pktno #track packet number
+
         if i_still_care:
             logger.info("i still care")
             #check if vack intime(response in 1 frame time) 
