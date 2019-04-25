@@ -259,6 +259,7 @@ def action(tb, vfs_model, payload,NODE_ID):
                     #advance data number here
                     data_num = data_num + 1 
                     go_on_flag = True
+                    i_still_care = False #not check retransmit anymore
                     logger.critical("[ACK] last time success")
                 else:
                     go_on_flag = False
@@ -270,11 +271,15 @@ def action(tb, vfs_model, payload,NODE_ID):
             go_on_flag = False
             logger.critical("[TIMEOUT] broadcast not in time")
    
-        #if not go_on_flag means there was an error happened, keep checking broadcast 
+        #i_still_care, since last schedule, we have not get success
         #  
+        
         on_schedule = _pktno % TEST_NODE_SCHEDULE[TEST_NODE_LIST_DEFAULT.index(NODE_ID)]==0
-        if not go_on_flag or on_schedule:
+        if on_schedule:
+            i_still_care = True
 
+        if i_still_care and on_schedule:
+            
             node_amount = vfs_model.get_node_amount(payload)
             seed = vfs_model.get_seed(payload)
             try:
