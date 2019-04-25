@@ -236,41 +236,41 @@ def action(tb, vfs_model, payload,NODE_ID):
 
     if pkt_type == PacketType.VFS_BROADCAST.index:
 
+        if i_still_care:
+            #check if vack intime(response in 1 frame time) 
+            if last_node_amount == -1 or \
+                vfs_model.check_broadcast_intime(now_timestamp, (last_node_amount+1)): # give 1 more slot time 
+                intime_flag = True
+                logger.info("VACK intime Node {} pktno{} ".format(NODE_ID, _pktno))
+            else:
+                intime_flag = False
+                logger.info("VACK timeout Node {} pktno{}".format(NODE_ID, _pktno))
+                
+            #if intime, then we can check VACK valid 
+            if intime_flag: 
+                try:
+                    vack_frame = vfs_model.get_vack_frame(payload)
+                except:
+                    logger.warning("Cannot extract vack-frame. Drop pkt!")
+                    go_on_flag = False
 
-        #check if vack intime(response in 1 frame time) 
-        if last_node_amount == -1 or \
-            vfs_model.check_broadcast_intime(now_timestamp, (last_node_amount+1)): # give 1 more slot time 
-            intime_flag = True
-            logger.info("VACK intime Node {} pktno{} ".format(NODE_ID, _pktno))
-        else:
-            intime_flag = False
-            logger.info("VACK timeout Node {} pktno{}".format(NODE_ID, _pktno))
-            
-        #if intime, then we can check VACK valid 
-        if intime_flag: 
-            try:
-                vack_frame = vfs_model.get_vack_frame(payload)
-            except:
-                logger.warning("Cannot extract vack-frame. Drop pkt!")
-                go_on_flag = False
-
-            if alloc_index != -1 and alloc_index<len(vack_frame):# leave rand frame along
-                if vack_frame[alloc_index]=='1':
-                    #advance data number here
-                    data_num = data_num + 1 
-                    go_on_flag = True
-                    i_still_care = False #not check retransmit anymore
-                    logger.critical("[ACK] last time success")
+                if alloc_index != -1 and alloc_index<len(vack_frame):# leave rand frame along
+                    if vack_frame[alloc_index]=='1':
+                        #advance data number here
+                        data_num = data_num + 1 
+                        go_on_flag = True
+                        i_still_care = False #not check retransmit anymore
+                        logger.critical("[ACK] last time success")
+                    else:
+                        go_on_flag = False
+                        logger.critical("[NAK] last time fail")
                 else:
                     go_on_flag = False
-                    logger.critical("[NAK] last time fail")
+                    logger.critical("[in rand frame] treat it as missing")
             else:
                 go_on_flag = False
-                logger.critical("[in rand frame] treat it as missing")
-        else:
-            go_on_flag = False
-            logger.critical("[TIMEOUT] broadcast not in time")
-   
+                logger.critical("[TIMEOUT] broadcast not in time")
+       
         #i_still_care, since last schedule, we have not get success
         #  
         
