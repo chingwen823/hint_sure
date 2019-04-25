@@ -54,7 +54,7 @@ from argparse import ArgumentParser
 from vf_scheme import VirtualFrameScheme
 
 #presum
-TEST_DATA_MAX = 9
+TEST_DATA_MAX = 10
 NODE_RX_MAX = 10
 NODE_SLOT_TIME = .2     # seconds
 TRANSMIT_DELAY = .1     # seconds
@@ -604,7 +604,7 @@ def main():
                                 tb.txpath.send_pkt(eof=True)
                         else:
                             data = str(data_num)
-                            if data == str(TEST_DATA_MAX):
+                            if data == str(TEST_DATA_MAX+1):
                                 thread_run = False
                                 tb.txpath.send_pkt(eof=True)
                                 tb.stop()
