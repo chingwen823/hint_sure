@@ -617,10 +617,11 @@ def main():
                             time_wait_for_my_slot = alloc_index * NODE_SLOT_TIME
                             logger.info( "I will upload at slot {}, wait for {}s".format(alloc_index,time_wait_for_my_slot))
                             nd_start_time = time.time()
-                            nd_in_response = True
+                            
                             #vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "**heLLo**{}".pktno, pktno)
                         else:
                             logger.warn( "error during decode VFS_BROADCAST")
+                        nd_in_response = True
         print "... thread out ..."        
             #node_rx_sem.release 
 
