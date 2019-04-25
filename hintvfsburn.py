@@ -613,8 +613,8 @@ def main():
 
                         vfs_model.send_dummy_pkt(tb)# hacking, send dummy pkt to avoid data lost
                         vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, data, data_num, pktno)
-                        logger.info( "\n===========================\npktno:{}\ndata numer:{}\ndata:{}\n===========================".format(pktno,data_num,data)) 
-                        print(statistics_dev)
+                        logger.info( "\n===========================\npktno:{}\ndata numer:{}\ndata:{}\nstatistics:{}\n===========================".format(pktno,data_num,data,statistics_dev[NODE_ID])) 
+                        
                         pktno += 1
                         nd_in_response = False
                         not_my_business = False
