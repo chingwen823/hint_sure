@@ -335,7 +335,7 @@ def main():
     data = "**heLLo**" # default data str
     data_num = 0
     upload_file = True
-
+    i_still_care = False
 
 
 
