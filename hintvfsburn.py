@@ -462,7 +462,7 @@ def main():
 
 
     def threadjob(pktno,IS_BS,NODE_ID):
-        global thread_run, data, go_on_flag, data_num, TEST_NODE_RETRY, TEST_NODE_LIST
+        global thread_run, data, go_on_flag, data_num, TEST_NODE_RETRY, TEST_NODE_LIST, last_data
         logger.info("Please start host now...")
         boot_time = time.time()
         bs_start_time = 0
