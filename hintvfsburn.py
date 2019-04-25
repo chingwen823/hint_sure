@@ -54,6 +54,7 @@ from argparse import ArgumentParser
 from vf_scheme import VirtualFrameScheme
 
 #presum
+TEST_DATA_MAX = 999
 NODE_RX_MAX = 10
 NODE_SLOT_TIME = .2     # seconds
 TRANSMIT_DELAY = .1     # seconds
@@ -77,8 +78,8 @@ TEST_NODE_LIST_DEFAULT = [NODE_ID_A, '0000000002', NODE_ID_C, '0000000004', '000
                   '0000000006', '0000000007', '0000000008', '0000000009', '0000000010']
 TEST_NODE_LIST = list(TEST_NODE_LIST_DEFAULT)
 
-statistics = {'00030757AF':{'Bcast': 0, 'Broken': 0, 'Missing': 0, 'SEQ': 0,'Decode': 0, 'ACK': 0,'NAK': 0 },
-              '000307B24B':{'Bcast': 0, 'Broken': 0, 'Missing': 0, 'SEQ': 0,'Decode': 0, 'ACK': 0,'NAK': 0 }}
+statistics = {'00030757AF':{'Bcast': 0, 'Missing': 0, 'SEQ': 0,'Decode': 0, 'ACK': 0,'NAK': 0 },
+              '000307B24B':{'Bcast': 0, 'Missing': 0, 'SEQ': 0,'Decode': 0, 'ACK': 0,'NAK': 0 }}
 
 TEST_NODE_RETRY_DEFAULT = [NODE_ID_A, NODE_ID_C]
 TEST_NODE_RETRY = list(TEST_NODE_RETRY_DEFAULT)
@@ -368,11 +369,7 @@ def main():
             node_rx_q.put(payload)
         else:
             logger.warning("Packet fail. Drop pkt!")
-
-            logger.info("11111111111111111111111")
-            logger.info("1     Data broken     1")
-            logger.info("11111111111111111111111")
-           
+          
         return
 
     parser = OptionParser(option_class=eng_option, conflict_handler="resolve")
@@ -579,7 +576,7 @@ def main():
                                 tb.txpath.send_pkt(eof=True)
                         else:
                             data = str(data_num)
-                            if data == '99':
+                            if data == str(TEST_DATA_MAX):
                                 thread_run = False
                                 tb.txpath.send_pkt(eof=True)
                                 tb.stop()
@@ -621,7 +618,7 @@ def main():
                                 except:
                                     logger.info("write file fail")
 
-                                if upload_data == '99':
+                                if upload_data == str(TEST_DATA_MAX):
                                     logger.info("=====test end=====") 
                                     thread_run = False
                                     tb.txpath.send_pkt(eof=True)
