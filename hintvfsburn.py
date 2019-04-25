@@ -81,7 +81,7 @@ TEST_NODE_LIST = list(TEST_NODE_LIST_DEFAULT)
 statistics = {'00030757AF':{'Bcast': 0, 'Missing': 0, 'SEQ': 0,'Decode': 0, 'ACK': 0,'NAK': 0 },
               '000307B24B':{'Bcast': 0, 'Missing': 0, 'SEQ': 0,'Decode': 0, 'ACK': 0,'NAK': 0 }}
 statistics_dev = {'00030757AF':{'Bcast': 0, 'BcastMissing': 0, 'VACKMissing': 0,'ACK': 0, 'NAK': 0,'RAND': 0 },
-                 {'000307B24B':{'Bcast': 0, 'BcastMissing': 0, 'VACKMissing': 0,'ACK': 0, 'NAK': 0,'RAND': 0 }}
+                  '000307B24B':{'Bcast': 0, 'BcastMissing': 0, 'VACKMissing': 0,'ACK': 0, 'NAK': 0,'RAND': 0 }}
 TEST_NODE_RETRY_DEFAULT = [NODE_ID_A, NODE_ID_C]
 TEST_NODE_RETRY = list(TEST_NODE_RETRY_DEFAULT)
 
