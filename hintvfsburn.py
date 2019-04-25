@@ -239,7 +239,9 @@ def action(tb, vfs_model, payload,NODE_ID):
 
     if pkt_type == PacketType.VFS_BROADCAST.index:
 
-        if last_pktno+1 != _pktno:
+        #broadcast pktno jump, there is at least one missing there
+        if last_pktno+1 != _pktno: 
+            logger.info("missing boardcast pkt")
             i_still_care = False
 
         last_pktno = _pktno #track packet number
