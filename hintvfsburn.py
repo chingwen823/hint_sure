@@ -543,36 +543,36 @@ def main():
                 if nd_in_response and time.time() > (nd_start_time + time_wait_for_my_slot):
                     if not_my_business: #not my run
                         logger.info( "Not my business")
-                        continue
+                    else:
                         
-                    #prepare data 
-                    if go_on_flag : # get next data
-                        logger.info( "onhand {},going to get next data".format(data))
-                        try:  
-                            data = file_input.read(3)
-                            if data == '':
+                        #prepare data 
+                        if go_on_flag : # get next data
+                            logger.info( "onhand {},going to get next data".format(data))
+                            try:  
+                                data = file_input.read(3)
+                                if data == '':
+                                    thread_run = False
+                                    tb.txpath.send_pkt(eof=True)
+                                    tb.stop()
+                                    break
+                                                        
+                                logger.info( "read current data {}".format(data))
+
+                            except:
+                                #error end 
                                 thread_run = False
                                 tb.txpath.send_pkt(eof=True)
-                                tb.stop()
-                                break
-                                                    
-                            logger.info( "read current data {}".format(data))
+                         
+                        else: # resend last data
+                            logger.info( "resend data {}".format(data)) 
 
-                        except:
-                            #error end 
-                            thread_run = False
-                            tb.txpath.send_pkt(eof=True)
-                     
-                    else: # resend last data
-                        logger.info( "resend data {}".format(data)) 
+                        vfs_model.send_dummy_pkt(tb)# hacking, send dummy pkt to avoid data lost
+                        vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, data, data_num, pktno)
+                        logger.info( "\n===========================\npktno:{}\ndata numer:{}\ndata:{}\n===========================".format(pktno,data_num,data)) 
 
-                    vfs_model.send_dummy_pkt(tb)# hacking, send dummy pkt to avoid data lost
-                    vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, data, data_num, pktno)
-                    logger.info( "\n===========================\npktno:{}\ndata numer:{}\ndata:{}\n===========================".format(pktno,data_num,data)) 
-
-                    pktno += 1
-                    nd_in_response = False
-                    not_my_business = False
+                        pktno += 1
+                        nd_in_response = False
+                        not_my_business = False
                           
                 else:
                     #print "nd_in_response{}, time {} > {} ".format(nd_in_response,time.time(), (nd_start_time + time_wait_for_my_slot))
@@ -612,8 +612,8 @@ def main():
                             logger.info("4444444444444444")
                             logger.info("4 Payload Error4")
                             logger.info("4444444444444444")    
-                            statistics[node_id]['Decode'] += 1                              
-
+                            statistics['00030757AF']['Decode'] += 1                              
+                            statistics['000307B24B']['Decode'] += 1  
                     else:
                         logger.info( "\n... get broadcast ...")
                         thingy = action(tb, vfs_model, payload,NODE_ID)
