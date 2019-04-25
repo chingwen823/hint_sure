@@ -320,7 +320,7 @@ def main():
     
     #node rx queue/event
     global node_rx_q, node_rx_sem, thread_run, alloc_index, last_node_amount, go_on_flag,file_input,\
-           file_output, data, data_num, upload_file, last_data
+           file_output, data, data_num, upload_file
     node_rx_q = Queue.Queue(maxsize = NODE_RX_MAX)
     node_rx_sem = threading.Semaphore(NODE_RX_MAX) #up to the queue size
     thread_run = True 
@@ -329,7 +329,6 @@ def main():
     last_node_amount = -1
     data = "**heLLo**" # default data str
     data_num = 0
-    last_data = -1
     upload_file = True
 
 
@@ -463,7 +462,7 @@ def main():
 
 
     def threadjob(pktno,IS_BS,NODE_ID):
-        global thread_run, data, go_on_flag, data_num, TEST_NODE_RETRY, TEST_NODE_LIST, last_data
+        global thread_run, data, go_on_flag, data_num, TEST_NODE_RETRY, TEST_NODE_LIST
         logger.info("Please start host now...")
         boot_time = time.time()
         bs_start_time = 0
@@ -474,6 +473,7 @@ def main():
         time_wait_for_my_slot = 0
         TEST_NODE_RETRY[:] = list(TEST_NODE_RETRY_DEFAULT)
         TEST_NODE_LIST = list(TEST_NODE_LIST_DEFAULT)
+        last_data = -1
 
         print(TEST_NODE_LIST)
         print(TEST_NODE_LIST_DEFAULT)
