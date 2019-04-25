@@ -544,6 +544,7 @@ def main():
                     if not_my_business: #not my run
                         logger.info( "Not my business")
                         not_my_business = False
+                        nd_in_response = False
                     else:
                         
                         #prepare data 
