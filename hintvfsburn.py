@@ -241,7 +241,9 @@ def action(tb, vfs_model, payload,NODE_ID):
 
         #broadcast pktno jump, there is at least one missing there
         if last_pktno+1 != _pktno: 
-            logger.info("missing boardcast pkt")
+            logger.info("1111111111111111111111111")
+            logger.info("1 missing boardcast pkt 1")
+            logger.info("1111111111111111111111111")
             i_still_care = False
 
         last_pktno = _pktno #track packet number
