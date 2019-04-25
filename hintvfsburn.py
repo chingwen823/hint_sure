@@ -235,8 +235,9 @@ def action(tb, vfs_model, payload,NODE_ID):
         return 
 
     if pkt_type == PacketType.VFS_BROADCAST.index:
-
+        
         if i_still_care:
+            logger.info("i still care")
             #check if vack intime(response in 1 frame time) 
             if last_node_amount == -1 or \
                 vfs_model.check_broadcast_intime(now_timestamp, (last_node_amount+1)): # give 1 more slot time 
@@ -278,7 +279,7 @@ def action(tb, vfs_model, payload,NODE_ID):
         if on_schedule:
             i_still_care = True
 
-        if i_still_care and on_schedule:
+        if i_still_care or on_schedule:
             
             node_amount = vfs_model.get_node_amount(payload)
             seed = vfs_model.get_seed(payload)
