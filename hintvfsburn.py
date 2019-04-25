@@ -613,21 +613,21 @@ def main():
                                 except:
                                     logger.info("write file fail")
 
-                                    if upload_data == '99':
-                                        logger.info("=====test end=====") 
-                                        thread_run = False
-                                        tb.txpath.send_pkt(eof=True)
-                                        tb.stop()
-                                        break  
-                                    if int(upload_data)!=(last_data+1):
-                                        logger.info("=====Error protocol fail=====") 
-                                        thread_run = False
-                                        tb.txpath.send_pkt(eof=True)
-                                        tb.stop()
-                                        break  
-                                    last_data = last_data +1 
+                                if upload_data == '99':
+                                    logger.info("=====test end=====") 
+                                    thread_run = False
+                                    tb.txpath.send_pkt(eof=True)
+                                    tb.stop()
+                                    break  
+                                if int(upload_data)!=(last_data+1):
+                                    logger.info("=====Error protocol fail=====") 
+                                    thread_run = False
+                                    tb.txpath.send_pkt(eof=True)
+                                    tb.stop()
+                                    break  
+                                last_data = last_data +1 
 
-                                    TEST_NODE_RETRY.remove(node_id)
+                                TEST_NODE_RETRY.remove(node_id)
 
 
                             else:
