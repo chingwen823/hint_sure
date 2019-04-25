@@ -460,8 +460,6 @@ def main():
         boot_time = time.time()
         bs_start_time = 0
         nd_start_time = 0
-        vack_start_time = 0
-      
         nd_in_response = False
         not_my_business = False
         time_data_collecting = len(TEST_NODE_LIST)*NODE_SLOT_TIME
@@ -570,8 +568,6 @@ def main():
                         logger.info( "\n===========================\npktno:{}\ndata numer:{}\ndata:{}\n===========================".format(pktno,data_num,data)) 
 
                         pktno += 1
-                        vack_start_time = time()
-                 
                         nd_in_response = False
                         not_my_business = False
                           
