@@ -78,8 +78,8 @@ TEST_NODE_LIST_DEFAULT = [NODE_ID_A, '0000000002', NODE_ID_C, '0000000004', '000
                   '0000000006', '0000000007', '0000000008', '0000000009', '0000000010']
 TEST_NODE_LIST = list(TEST_NODE_LIST_DEFAULT)
 
-statistics = {'00030757AF':{'Bcast': 0, 'Missing': 0, 'SEQ': 0,'Decode': 0, 'ACK': 0,'NAK': 0 },
-              '000307B24B':{'Bcast': 0, 'Missing': 0, 'SEQ': 0,'Decode': 0, 'ACK': 0,'NAK': 0 }}
+statistics = {'00030757AF':{'Bcast': 0, 'Schedule':0, 'Retry':0, 'Missing': 0, 'SEQ': 0,'Decode': 0, 'ACK': 0,'NAK': 0 },
+              '000307B24B':{'Bcast': 0, 'Schedule':0, 'Retry':0, 'Missing': 0, 'SEQ': 0,'Decode': 0, 'ACK': 0,'NAK': 0 }}
 statistics_dev = {'00030757AF':{'Bcast': 0, 'BcastMissing': 0, 'VACKMissing': 0,'ACK': 0, 'NAK': 0,'RAND': 0 },
                   '000307B24B':{'Bcast': 0, 'BcastMissing': 0, 'VACKMissing': 0,'ACK': 0, 'NAK': 0,'RAND': 0 }}
 TEST_NODE_RETRY_DEFAULT = [NODE_ID_A, NODE_ID_C]
@@ -292,7 +292,7 @@ def action(tb, vfs_model, payload,NODE_ID):
                 else:
                     go_on_flag = False
                     logger.info("555555555555555555555555555")
-                    logger.info("5        Frame Frame      5")
+                    logger.info("5        Rand Frame      5")
                     logger.info("555555555555555555555555555")
                     logger.critical("[in rand frame] treat it as missing")
                     statistics_dev[NODE_ID]['RAND'] += 1  
@@ -546,9 +546,13 @@ def main():
                             if pktno % TEST_NODE_SCHEDULE[i] == 0:
                                 TEST_NODE_LIST.append(iid)  
                                 logger.info("scheduled:{}".format(iid)) 
+                                if iid in statistics
+                                    statistics[iid]['Schedule'] += 1  
                             elif iid in TEST_NODE_RETRY:
                                 TEST_NODE_LIST.append(iid) 
                                 logger.info("retry:{}".format(iid)) 
+                                if iid in statistics
+                                    statistics[iid]['Retry'] += 1  
                             else:
                                 TEST_NODE_LIST.append("000000000{}".format(i+1))
                           
