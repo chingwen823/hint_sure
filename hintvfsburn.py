@@ -240,9 +240,7 @@ def action(tb, vfs_model, payload,NODE_ID):
         return 
 
     if pkt_type == PacketType.VFS_BROADCAST.index:
-        
-        in_rand_frame = False
-        
+                
         #broadcast pktno jump, there is at least one missing there
         if last_pktno!=-1 and last_pktno+1 != _pktno: 
             logger.info("1111111111111111111111111")
@@ -292,11 +290,11 @@ def action(tb, vfs_model, payload,NODE_ID):
                         statistics_dev[NODE_ID]['NAK'] += 1  
                 else:
                     logger.info("555555555555555555555555555")
-                    logger.info("5        Rand Frame      5")
+                    logger.info("5   last in Rand Frame    5")
                     logger.info("555555555555555555555555555")
                     logger.critical("[in rand frame] treat it as missing")
                     statistics_dev[NODE_ID]['RAND'] += 1  
-                    in_rand_frame = True
+                    
             else:
                 logger.critical("[TIMEOUT] broadcast not in time")
        
@@ -307,7 +305,7 @@ def action(tb, vfs_model, payload,NODE_ID):
         if on_schedule:
             i_still_care = True
 
-        if (i_still_care or on_schedule) and not in_rand_frame:
+        if i_still_care or on_schedule:
             
             node_amount = vfs_model.get_node_amount(payload)
             seed = vfs_model.get_seed(payload)
@@ -701,7 +699,10 @@ def main():
                                 logger.info( "I will upload at slot {}, wait for {}s".format(alloc_index,time_wait_for_my_slot))
                                 nd_start_time = time.time()
                                 nd_in_response = True
-                                not_my_business = False
+                                if in_rand_frame:
+                                    not_my_business = True
+                                else:
+                                    not_my_business = False
                                 #vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "**heLLo**{}".pktno, pktno)
                         else:
                             logger.warn( "error during decode VFS_BROADCAST")
