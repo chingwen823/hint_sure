@@ -246,7 +246,7 @@ def action(tb, vfs_model, payload,NODE_ID):
             logger.info("1111111111111111111111111")
             logger.info("1 missing boardcast pkt 1")
             logger.info("1111111111111111111111111")
-            if i_still_care:
+            if i_still_care and not last_in_rand :
                 logger.info("2222222222222222222222222")
                 logger.info("2      VACK missing     2")
                 logger.info("2222222222222222222222222")
