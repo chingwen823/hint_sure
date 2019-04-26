@@ -80,8 +80,8 @@ TEST_NODE_LIST = list(TEST_NODE_LIST_DEFAULT)
 
 statistics = {'00030757AF':{'Bcast': 0, 'Schedule':0, 'Retry':0,'Rand':0, 'Missing': 0, 'SEQ': 0,'Decode': 0, 'ACK': 0,'NAK': 0 },
               '000307B24B':{'Bcast': 0, 'Schedule':0, 'Retry':0,'Rand':0, 'Missing': 0, 'SEQ': 0,'Decode': 0, 'ACK': 0,'NAK': 0 }}
-statistics_dev = {'00030757AF':{'Bcast': 0, 'BcastMissing': 0, 'VACKMissing': 0,'ACK': 0, 'NAK': 0,'RAND': 0 },
-                  '000307B24B':{'Bcast': 0, 'BcastMissing': 0, 'VACKMissing': 0,'ACK': 0, 'NAK': 0,'RAND': 0 }}
+statistics_dev = {'00030757AF':{'GotBcast': 0, 'BcastMissing': 0, 'VACKMissing': 0,'ACK': 0, 'NAK': 0,'RAND': 0 },
+                  '000307B24B':{'GotBcast': 0, 'BcastMissing': 0, 'VACKMissing': 0,'ACK': 0, 'NAK': 0,'RAND': 0 }}
 TEST_NODE_RETRY_DEFAULT = [NODE_ID_A, NODE_ID_C]
 TEST_NODE_RETRY = list(TEST_NODE_RETRY_DEFAULT)
 
@@ -289,11 +289,9 @@ def action(tb, vfs_model, payload,NODE_ID):
                         logger.info("4444444444444444444444444")
                         statistics_dev[NODE_ID]['NAK'] += 1  
                 else:
-                    logger.info("555555555555555555555555555")
-                    logger.info("5   last in Rand Frame    5")
-                    logger.info("555555555555555555555555555")
-                    logger.critical("[in rand frame] treat it as missing")
-                    statistics_dev[NODE_ID]['RAND'] += 1  
+ 
+                    logger.critical("[in rand frame] last one is in Rand Frame")
+                    
                     
             else:
                 logger.critical("[TIMEOUT] broadcast not in time")
@@ -685,6 +683,8 @@ def main():
                             statistics['000307B24B']['Decode'] += 1  
                     else:
                         logger.info( "\n... get broadcast ...")
+                   
+                        statistics_dev[NODE_ID]['GotBcast'] += 1 
                         thingy = action(tb, vfs_model, payload,NODE_ID)
                 
                         if thingy:
@@ -700,6 +700,10 @@ def main():
                                 nd_start_time = time.time()
                                 nd_in_response = True
                                 if in_rand_frame:
+                                    logger.info("555555555555555555555555555")
+                                    logger.info("5  Rand Frame - SKIP      5")
+                                    logger.info("555555555555555555555555555")
+                                    statistics_dev[NODE_ID]['RAND'] += 1 
                                     not_my_business = True
                                 else:
                                     not_my_business = False
