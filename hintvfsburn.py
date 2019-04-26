@@ -80,8 +80,8 @@ TEST_NODE_LIST = list(TEST_NODE_LIST_DEFAULT)
 
 statistics = {'00030757AF':{'Bcast': 0, 'Schedule':0, 'Retry':0,'Rand':0, 'Missing': 0, 'SEQ': 0,'Decode': 0, 'ACK': 0,'NAK': 0 },
               '000307B24B':{'Bcast': 0, 'Schedule':0, 'Retry':0,'Rand':0, 'Missing': 0, 'SEQ': 0,'Decode': 0, 'ACK': 0,'NAK': 0 }}
-statistics_dev = {'00030757AF':{'GotBcast': 0, 'BcastMissing': 0, 'VACKMissing': 0,'ACK': 0, 'NAK': 0,'RAND': 0 },
-                  '000307B24B':{'GotBcast': 0, 'BcastMissing': 0, 'VACKMissing': 0,'ACK': 0, 'NAK': 0,'RAND': 0 }}
+statistics_dev = {'00030757AF':{'GotBcast': 0, 'BcastMissing': 0, 'VACKMissing': 0,'ACK': 0, 'NAK': 0,'RAND': 0,'askup':0 },
+                  '000307B24B':{'GotBcast': 0, 'BcastMissing': 0, 'VACKMissing': 0,'ACK': 0, 'NAK': 0,'RAND': 0,'askup':0 }}
 TEST_NODE_RETRY_DEFAULT = [NODE_ID_A, NODE_ID_C]
 TEST_NODE_RETRY = list(TEST_NODE_RETRY_DEFAULT)
 
@@ -697,7 +697,6 @@ def main():
                             else:#success and check
                                 (node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame) = thingy
                                 time_wait_for_my_slot = alloc_index * NODE_SLOT_TIME
-                                logger.info( "I will upload at slot {}, wait for {}s".format(alloc_index,time_wait_for_my_slot))
                                 nd_start_time = time.time()
                                 nd_in_response = True
                                 if in_rand_frame:
@@ -707,11 +706,16 @@ def main():
                                     statistics_dev[NODE_ID]['RAND'] += 1 
                                     not_my_business = True
                                 else:
+                                    logger.info( "I will upload at slot {}, wait for {}s".format(alloc_index,time_wait_for_my_slot))
                                     not_my_business = False
+                                    statistics_dev[NODE_ID]['askup'] += 1 
                                 #vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "**heLLo**{}".pktno, pktno)
                         else:
                             logger.warn( "error during decode VFS_BROADCAST")
-                            
+                            logger.info("666666666666666666666666666")
+                            logger.info("6         Decode          6")
+                            logger.info("666666666666666666666666666")
+                            statistics_dev[NODE_ID]['Decode'] += 1                            
                         
         print "... thread out ..."        
             #node_rx_sem.release 
