@@ -177,7 +177,8 @@ def decode_common_pkt_header(tb,payload):
 
 def action(tb, vfs_model, payload,NODE_ID):
 
-    global alloc_index, last_node_amount, file_output, go_on_flag, data_num, i_still_care, last_pktno
+    global alloc_index, last_node_amount, file_output,  data_num, i_still_care, last_pktno
+    
 
     thingy = decode_common_pkt_header(tb,payload)
 
@@ -239,7 +240,9 @@ def action(tb, vfs_model, payload,NODE_ID):
         return 
 
     if pkt_type == PacketType.VFS_BROADCAST.index:
-
+        
+        in_rand_frame = False
+        
         #broadcast pktno jump, there is at least one missing there
         if last_pktno!=-1 and last_pktno+1 != _pktno: 
             logger.info("1111111111111111111111111")
@@ -271,33 +274,30 @@ def action(tb, vfs_model, payload,NODE_ID):
                     vack_frame = vfs_model.get_vack_frame(payload)
                 except:
                     logger.warning("Cannot extract vack-frame. Drop pkt!")
-                    go_on_flag = False
+                   
 
                 if alloc_index != -1 and alloc_index<len(vack_frame):# leave rand frame along
                     if vack_frame[alloc_index]=='1':
                         #advance data number here
                         data_num = data_num + 1 
-                        go_on_flag = True
                         i_still_care = False #not check retransmit anymore
                         logger.info("3333333333333333333333333")
                         logger.info("3           ACK         3")
                         logger.info("3333333333333333333333333")
                         statistics_dev[NODE_ID]['ACK'] += 1  
                     else:
-                        go_on_flag = False
                         logger.info("4444444444444444444444444")
                         logger.info("4           NAK         4")
                         logger.info("4444444444444444444444444")
                         statistics_dev[NODE_ID]['NAK'] += 1  
                 else:
-                    go_on_flag = False
                     logger.info("555555555555555555555555555")
                     logger.info("5        Rand Frame      5")
                     logger.info("555555555555555555555555555")
                     logger.critical("[in rand frame] treat it as missing")
                     statistics_dev[NODE_ID]['RAND'] += 1  
+                    in_rand_frame = True
             else:
-                go_on_flag = False
                 logger.critical("[TIMEOUT] broadcast not in time")
        
         #i_still_care, since last schedule, we have not get success
@@ -307,7 +307,7 @@ def action(tb, vfs_model, payload,NODE_ID):
         if on_schedule:
             i_still_care = True
 
-        if i_still_care or on_schedule:
+        if (i_still_care or on_schedule) and not in_rand_frame:
             
             node_amount = vfs_model.get_node_amount(payload)
             seed = vfs_model.get_seed(payload)
@@ -353,12 +353,11 @@ def main():
     vfs_model = VirtualFrameScheme(PacketType, NODE_SLOT_TIME)
     
     #node rx queue/event
-    global node_rx_q, node_rx_sem, thread_run, alloc_index, last_node_amount, go_on_flag,file_input,\
+    global node_rx_q, node_rx_sem, thread_run, alloc_index, last_node_amount,file_input,\
            file_output, data, data_num, upload_file
     node_rx_q = Queue.Queue(maxsize = NODE_RX_MAX)
     node_rx_sem = threading.Semaphore(NODE_RX_MAX) #up to the queue size
     thread_run = True 
-    go_on_flag = True
     alloc_index = -1
     last_node_amount = -1
     data = "**heLLo**" # default data str
@@ -492,7 +491,7 @@ def main():
 
 
     def threadjob(pktno,IS_BS,NODE_ID):
-        global thread_run, data, go_on_flag, data_num, TEST_NODE_RETRY, TEST_NODE_LIST, i_still_care, last_pktno
+        global thread_run, data, data_num, TEST_NODE_RETRY, TEST_NODE_LIST, i_still_care, last_pktno
         logger.info("Please start host now...")
         boot_time = time.time()
         bs_start_time = 0
