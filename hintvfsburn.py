@@ -78,8 +78,8 @@ TEST_NODE_LIST_DEFAULT = [NODE_ID_A, '0000000002', NODE_ID_C, '0000000004', '000
                   '0000000006', '0000000007', '0000000008', '0000000009', '0000000010']
 TEST_NODE_LIST = list(TEST_NODE_LIST_DEFAULT)
 
-statistics = {'00030757AF':{'Bcast': 0, 'Schedule':0, 'Retry':0, 'Missing': 0, 'SEQ': 0,'Decode': 0, 'ACK': 0,'NAK': 0 },
-              '000307B24B':{'Bcast': 0, 'Schedule':0, 'Retry':0, 'Missing': 0, 'SEQ': 0,'Decode': 0, 'ACK': 0,'NAK': 0 }}
+statistics = {'00030757AF':{'Bcast': 0, 'Schedule':0, 'Retry':0,'Rand':0, 'Missing': 0, 'SEQ': 0,'Decode': 0, 'ACK': 0,'NAK': 0 },
+              '000307B24B':{'Bcast': 0, 'Schedule':0, 'Retry':0,'Rand':0, 'Missing': 0, 'SEQ': 0,'Decode': 0, 'ACK': 0,'NAK': 0 }}
 statistics_dev = {'00030757AF':{'Bcast': 0, 'BcastMissing': 0, 'VACKMissing': 0,'ACK': 0, 'NAK': 0,'RAND': 0 },
                   '000307B24B':{'Bcast': 0, 'BcastMissing': 0, 'VACKMissing': 0,'ACK': 0, 'NAK': 0,'RAND': 0 }}
 TEST_NODE_RETRY_DEFAULT = [NODE_ID_A, NODE_ID_C]
@@ -561,9 +561,16 @@ def main():
                         for iid in TEST_NODE_RETRY_DEFAULT:
                             if iid in TEST_NODE_LIST:
                                 TEST_NODE_RETRY.append(iid)
+                    else:
+                        for iid in statistics:
+                            statistics[iid]['Schedule'] += 1  
    
                     vfs_model.generate_seed_v_frame_rand_frame(TEST_NODE_LIST)
 
+                    if '00030757AF' in vfs_model.rand_frame:
+                        statistics['00030757AF']['Rand'] += 1 
+                    if '000307B24B' in vfs_model.rand_frame:
+                        statistics['000307B24B']['Rand'] += 1 
 
                     #send boardcast
                     vfs_model.send_dummy_pkt(tb) # hacking, send dummy pkt to avoid data lost
