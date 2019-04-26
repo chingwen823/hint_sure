@@ -251,7 +251,8 @@ def action(tb, vfs_model, payload,NODE_ID):
                 logger.info("2      VACK missing     2")
                 logger.info("2222222222222222222222222")
                 statistics_dev[NODE_ID]['VACKMissing'] += 1 
-            i_still_care = False
+            #i_still_care = False
+            i_still_care = True
             statistics_dev[NODE_ID]['BcastMissing'] += _pktno - (last_pktno+1) 
 
         last_pktno = _pktno #track packet number
@@ -281,7 +282,8 @@ def action(tb, vfs_model, payload,NODE_ID):
                     if vack_frame[alloc_index]=='1':
                         #advance data number here
                         data_num = data_num + 1 
-                        i_still_care = False #not check retransmit anymore
+                        #i_still_care = False #not check retransmit anymore
+                        i_still_care = True 
                         logger.info("3333333333333333333333333")
                         logger.info("3           ACK         3")
                         logger.info("3333333333333333333333333")
@@ -503,7 +505,9 @@ def main():
         TEST_NODE_RETRY[:] = list(TEST_NODE_RETRY_DEFAULT)
         TEST_NODE_LIST = list(TEST_NODE_LIST_DEFAULT)
         last_data = -1
-        i_still_care = False
+
+        #i_still_care = False
+        i_still_care = True
         last_pktno = -1
 
         print(TEST_NODE_LIST)
@@ -678,6 +682,7 @@ def main():
                                 logger.info("3 SEQ mismatch 3")
                                 logger.info("3333333333333333")
                                 statistics[node_id]['SEQ'] += 1
+                                TEST_NODE_RETRY.remove(node_id)
                         else:
                             logger.critical("[Decode Error] payload fail")
                             logger.info("4444444444444444")
