@@ -177,7 +177,7 @@ def decode_common_pkt_header(tb,payload):
 
 def action(tb, vfs_model, payload,NODE_ID):
 
-    global alloc_index, last_node_amount, file_output,  data_num, i_still_care, last_pktno
+    global alloc_index, last_node_amount,last_in_rand, file_output,  data_num, i_still_care, last_pktno
     
 
     thingy = decode_common_pkt_header(tb,payload)
@@ -251,7 +251,7 @@ def action(tb, vfs_model, payload,NODE_ID):
 
         last_pktno = _pktno #track packet number
 
-        if i_still_care:
+        if i_still_care and not last_in_rand :
             logger.info("i still care")
             #check if vack intime(response in 1 frame time) 
             if last_node_amount == -1 or \
@@ -329,7 +329,7 @@ def action(tb, vfs_model, payload,NODE_ID):
                         str(datetime.fromtimestamp(pkt_timestamp)),
                         node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame))
             last_node_amount = node_amount
-            
+            last_in_rand = in_rand_frame
            
             return (node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame)
         else: #not my business frame
@@ -349,13 +349,14 @@ def main():
     vfs_model = VirtualFrameScheme(PacketType, NODE_SLOT_TIME)
     
     #node rx queue/event
-    global node_rx_q, node_rx_sem, thread_run, alloc_index, last_node_amount,file_input,\
+    global node_rx_q, node_rx_sem, thread_run, alloc_index, last_node_amount,last_in_rand,file_input,\
            file_output, data, data_num, upload_file
     node_rx_q = Queue.Queue(maxsize = NODE_RX_MAX)
     node_rx_sem = threading.Semaphore(NODE_RX_MAX) #up to the queue size
     thread_run = True 
     alloc_index = -1
     last_node_amount = -1
+    last_in_rand = False
     data = "**heLLo**" # default data str
     data_num = 0
     upload_file = True
