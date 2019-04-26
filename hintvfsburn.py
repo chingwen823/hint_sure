@@ -246,6 +246,11 @@ def action(tb, vfs_model, payload,NODE_ID):
             logger.info("1111111111111111111111111")
             logger.info("1 missing boardcast pkt 1")
             logger.info("1111111111111111111111111")
+            if i_still_care:
+                logger.info("2222222222222222222222222")
+                logger.info("2      VACK missing     2")
+                logger.info("2222222222222222222222222")
+                statistics_dev[NODE_ID]['VACKMissing'] += 1 
             i_still_care = False
             statistics_dev[NODE_ID]['BcastMissing'] += _pktno - (last_pktno+1) 
 
@@ -259,12 +264,10 @@ def action(tb, vfs_model, payload,NODE_ID):
                 intime_flag = True
                 logger.info("VACK intime Node {} pktno{} ".format(NODE_ID, _pktno))
             else:
-                logger.info("2222222222222222222222222")
-                logger.info("2      VACK missing     2")
-                logger.info("2222222222222222222222222")
+
                 intime_flag = False
                 logger.info("VACK timeout Node {} pktno{}".format(NODE_ID, _pktno))
-                statistics_dev[NODE_ID]['VACKMissing'] += 1  
+                 
 
             #if intime, then we can check VACK valid 
             if intime_flag: 
