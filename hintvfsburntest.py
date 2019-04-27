@@ -326,7 +326,7 @@ def action(tb, vfs_model, payload,NODE_ID):
                 return 
             vf_index = vfs_model.compute_vf_index(len(v_frame), NODE_ID, seed)
 
-            alloc_index, in_rand_frame = vfs_model.compute_alloc_index(vf_index, NODE_ID, v_frame, node_amount)
+            alloc_index, in_rand_frame = vfs_model.compute_alloc_index2(vf_index, NODE_ID, v_frame, node_amount)
 
             logger.info("{} Node recv VFS_BROADCAST {}, BS time {}, Total {}, Seed {}, Delay {}, "
                 "\nv-frame index: {}, alloc-index: {}, fall to rand-frame: {},"
