@@ -139,7 +139,8 @@ class VirtualFrameScheme:
                 singleton_nodes_amount, len(node_id_list), is_below_singleton_rate))
 
         raw_v_frame = self.v_frame[:]
-
+        print "raw v fame"
+        print self.v_frame
         self.alloc_frame_last = list(self.alloc_frame)
         self.alloc_frame = []
         self.rand_frame = []
@@ -149,12 +150,14 @@ class VirtualFrameScheme:
                     self.alloc_frame.append(node_l)
                     self.v_frame[i] = ['1']
                 else:
-                    self.alloc_frame.append(node_l)
                     self.v_frame[i] = ['0']
 
             elif len(node_l) > 1:                # collided slot, put into rand-frame
                 self.rand_frame.append(node_l)
                 self.v_frame[i] = ['0']
+
+        print "v fame"
+        print self.v_frame
 
         # self.alloc_frame = filter(lambda l: len(l) == 1 and l != ['0'], self.v_frame)
         # collided_slots = filter(lambda l: len(l) > 1, self.v_frame)
@@ -205,6 +208,8 @@ class VirtualFrameScheme:
                 singleton_nodes_amount, len(node_id_list), is_below_singleton_rate))
 
         raw_v_frame = self.v_frame[:]
+
+   
         self.alloc_frame_last = list(self.alloc_frame)
         self.alloc_frame = []
         self.rand_frame = []
@@ -452,7 +457,24 @@ class VirtualFrameScheme:
     def set_data_num(self,node_id, datanum):
         self.nodes_data_num[node_id]  = datanum  
         return True
-
+    def compute_alloc_index2(self, vf_index, node_id, v_frame, node_amount):
+        if vf_index >= 0 and vf_index<len(v_frame) and v_frame[vf_index] == '1':    # exists in v-frame
+            # alloc-frame = v-frame (reduced '0's)
+            v_frame[vf_index] = node_id         # mark position with Node ID
+            alloc_frame = [x for x in v_frame if x != '0']
+            alloc_index = alloc_frame.index(node_id)
+            logger.debug("alloc-index: {}".format(alloc_index))
+            return alloc_index, False
+        try:                            # fall to rand-frame
+            # alloc-frame = v-frame (reduced '0's)
+            alloc_frame = [x for x in v_frame if x != '0']
+            # randomly choose index after alloc_frame
+            rand_index = random.randint(len(alloc_frame), node_amount - 1)
+            logger.debug("rand-index: {}".format(rand_index))
+            return rand_index, True
+        except ValueError:
+            logger.error("Node {} has no index!".format(node_id))
+            return -1, False
     def compute_alloc_index(self, vf_index, node_id, v_frame, node_amount):
         if v_frame[vf_index] == '1':    # exists in v-frame
             # alloc-frame = v-frame (reduced '0's)

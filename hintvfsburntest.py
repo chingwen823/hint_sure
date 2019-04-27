@@ -279,7 +279,7 @@ def action(tb, vfs_model, payload,NODE_ID):
                     logger.warning("Cannot extract vack-frame. Drop pkt!")
                    
 
-                if alloc_index != -1 and alloc_index<len(vack_frame):# leave rand frame along
+                if alloc_index>=0  and alloc_index<len(vack_frame):# leave rand frame along
                     if vack_frame[alloc_index]=='1':
                         #advance data number here
                         data_num = data_num + 1 
@@ -326,7 +326,7 @@ def action(tb, vfs_model, payload,NODE_ID):
                 return 
             vf_index = vfs_model.compute_vf_index(len(v_frame), NODE_ID, seed)
 
-            alloc_index, in_rand_frame = vfs_model.compute_alloc_index(vf_index, NODE_ID, v_frame, node_amount)
+            alloc_index, in_rand_frame = vfs_model.compute_alloc_index2(vf_index, NODE_ID, v_frame, node_amount)
 
             logger.info("{} Node recv VFS_BROADCAST {}, BS time {}, Total {}, Seed {}, Delay {}, "
                 "\nv-frame index: {}, alloc-index: {}, fall to rand-frame: {},"
@@ -720,7 +720,7 @@ def main():
                                     logger.info("555555555555555555555555555")
                                     statistics_dev[NODE_ID]['RAND'] += 1 
                                     not_my_business = True
-                                elif alloc_index == -1:
+                                elif alloc_index < 0:
                                     not_my_business = True
                                     statistics_dev[NODE_ID]['NoAction'] += 1 
                                 else:
