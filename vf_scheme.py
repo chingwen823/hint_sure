@@ -130,9 +130,6 @@ class VirtualFrameScheme:
                     self.v_frame[vf_index] = [node_id]
                 else:
                     self.v_frame[vf_index].append(node_id)
-    
-            print self.v_frame
-
 
             # Check if collided node indices is above declared singleton rate
             singleton_nodes_amount = sum(len(l) == 1 and l != ['0'] for l in self.v_frame)
