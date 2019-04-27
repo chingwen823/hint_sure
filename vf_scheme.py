@@ -467,7 +467,7 @@ class VirtualFrameScheme:
                 logger.debug("alloc-index: {}".format(alloc_index))
                 return alloc_index, False
             else:
-                logger.debug("No action in this run. alloc-index: {}".format(alloc_index))
+                logger.debug("No action in this run. vf-index: {}".format( vf_index))
         try:                            # fall to rand-frame
             # alloc-frame = v-frame (reduced '0's)
             alloc_frame = [x for x in v_frame if x != '0']
