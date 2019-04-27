@@ -80,8 +80,8 @@ TEST_NODE_LIST = list(TEST_NODE_LIST_DEFAULT)
 
 statistics = {'00030757AF':{'Bcast': 0, 'Schedule':0, 'Retry':0,'Rand':0, 'Missing': 0, 'SEQ': 0,'Decode': 0, 'ACK': 0,'NAK': 0 },
               '000307B24B':{'Bcast': 0, 'Schedule':0, 'Retry':0,'Rand':0, 'Missing': 0, 'SEQ': 0,'Decode': 0, 'ACK': 0,'NAK': 0 }}
-statistics_dev = {'00030757AF':{'GotBcast': 0, 'BcastMissing': 0, 'VACKMissing': 0,'ACK': 0, 'NAK': 0,'RAND': 0,'askup':0 },
-                  '000307B24B':{'GotBcast': 0, 'BcastMissing': 0, 'VACKMissing': 0,'ACK': 0, 'NAK': 0,'RAND': 0,'askup':0 }}
+statistics_dev = {'00030757AF':{'GotBcast':0, 'BcastMissing':0, 'VACKMissing':0,'ACK':0, 'NAK':0,'RAND':0,'askup':0,'NoAction':0 },
+                  '000307B24B':{'GotBcast':0, 'BcastMissing':0, 'VACKMissing':0,'ACK':0, 'NAK':0,'RAND':0,'askup':0,'NoAction':0 }}
 TEST_NODE_RETRY_DEFAULT = [NODE_ID_A, NODE_ID_C]
 TEST_NODE_RETRY = list(TEST_NODE_RETRY_DEFAULT)
 
@@ -720,6 +720,9 @@ def main():
                                     logger.info("555555555555555555555555555")
                                     statistics_dev[NODE_ID]['RAND'] += 1 
                                     not_my_business = True
+                                elif alloc_index == -1:
+                                    not_my_business = True
+                                    statistics_dev[NODE_ID]['NoAction'] += 1 
                                 else:
                                     logger.info( "I will upload at slot {}, wait for {}s".format(alloc_index,time_wait_for_my_slot))
                                     not_my_business = False
