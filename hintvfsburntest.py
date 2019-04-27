@@ -251,7 +251,8 @@ def action(tb, vfs_model, payload,NODE_ID):
                 logger.info("2      VACK missing     2")
                 logger.info("2222222222222222222222222")
                 statistics_dev[NODE_ID]['VACKMissing'] += 1 
-            i_still_care = False
+            
+            #i_still_care = False
           
             statistics_dev[NODE_ID]['BcastMissing'] += _pktno - (last_pktno+1) 
 
@@ -282,7 +283,7 @@ def action(tb, vfs_model, payload,NODE_ID):
                     if vack_frame[alloc_index]=='1':
                         #advance data number here
                         data_num = data_num + 1 
-                        i_still_care = False #not check retransmit anymore
+                        #i_still_care = False #not check retransmit anymore
                      
                         logger.info("3333333333333333333333333")
                         logger.info("3           ACK         3")
@@ -506,7 +507,8 @@ def main():
         TEST_NODE_LIST = list(TEST_NODE_LIST_DEFAULT)
         last_data = -1
 
-        i_still_care = False
+        #i_still_care = False
+        i_still_care = True
      
         last_pktno = -1
 
@@ -549,15 +551,18 @@ def main():
                             if pktno % TEST_NODE_SCHEDULE[i] == 0:
                                 TEST_NODE_LIST.append(iid)  
                                 logger.info("scheduled:{}".format(iid)) 
+                                #statstic
                                 if iid in statistics:
                                     statistics[iid]['Schedule'] += 1  
                             elif iid in TEST_NODE_RETRY:
                                 TEST_NODE_LIST.append(iid) 
                                 logger.info("retry:{}".format(iid)) 
+                                #statstic                                  
                                 if iid in statistics:
                                     statistics[iid]['Retry'] += 1  
                             else:
-                                TEST_NODE_LIST.append("000000000{}".format(i+1))
+                                pass
+                                #TEST_NODE_LIST.append("000000000{}".format(i+1))
                           
                             i = i + 1
                         TEST_NODE_RETRY [:] = []
@@ -565,11 +570,13 @@ def main():
                             if iid in TEST_NODE_LIST:
                                 TEST_NODE_RETRY.append(iid)
                     else:
+                        #statstic
                         for iid in statistics:
                             statistics[iid]['Schedule'] += 1  
    
-                    vfs_model.generate_seed_v_frame_rand_frame(TEST_NODE_LIST)
-
+                    vfs_model.generate_seed_v_frame_rand_frame2(TEST_NODE_LIST_DEFAULT,TEST_NODE_LIST)
+                    
+                    #statstic  
                     if '00030757AF' in vfs_model.rand_frame:
                         statistics['00030757AF']['Rand'] += 1 
                     if '000307B24B' in vfs_model.rand_frame:
@@ -581,7 +588,7 @@ def main():
    
                     pktno += 1
                      
-                    #statistics
+                    #statistic
                     statistics['00030757AF']['Bcast'] = pktno  
                     statistics['000307B24B']['Bcast'] = pktno         
 

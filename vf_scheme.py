@@ -106,6 +106,64 @@ class VirtualFrameScheme:
         # Hex seed will double its size, so half the size first
         return binascii.b2a_hex(os.urandom(NODE_ID_LEN/2))
 
+    def generate_seed_v_frame_rand_frame2(self, node_id_list, current_run_list):          # BS only
+        assert all(len(node_id) == NODE_ID_LEN for node_id in node_id_list),\
+            "All Node ID length must be {}".format(NODE_ID_LEN)
+
+        salt = None
+        is_below_singleton_rate = True
+        calc_count = 0
+        while is_below_singleton_rate:
+            if calc_count >= CALC_COUNT_LIMIT:
+                logger.warning("WARINING: Exceed calculation limit: {}. Stop calculation!".format(calc_count))
+
+            calc_count += 1
+            # v-frame length suggested to be at 2 times number of nodes
+            self.v_frame = [['0'] for i in range(len(node_id_list) * V_FRAME_FACTOR)]    # 2-D list
+
+            salt = self.get_random_seed()
+            for node_id in node_id_list:
+                vf_index = self.compute_vf_index(len(self.v_frame), node_id, salt)
+                # To detect collision cause, put Node ID in v-frame as identifier
+                if self.v_frame[vf_index] == ['0']:
+                    self.v_frame[vf_index] = [node_id]
+                else:
+                    self.v_frame[vf_index].append(node_id)
+
+            # Check if collided node indices is above declared singleton rate
+            singleton_nodes_amount = sum(len(l) == 1 and l != ['0'] for l in self.v_frame)
+            # Note: Accepting floating number by multipling 1.0
+            is_below_singleton_rate = SINGLETON_RATE_THRESHOLD > singleton_nodes_amount / (len(node_id_list) * 1.0)
+            logger.debug("singleton_nodes_amount {}/{}, is_below_singleton_rate? {}".format(
+                singleton_nodes_amount, len(node_id_list), is_below_singleton_rate))
+
+        raw_v_frame = self.v_frame[:]
+        self.alloc_frame_last = list(self.alloc_frame)
+        self.alloc_frame = []
+        self.rand_frame = []
+        for i, node_l in enumerate(self.v_frame):
+            if len(node_l) == 1 and node_l != ['0'] and node_l in current_run_list:    # node in alloc slot
+                self.alloc_frame.append(node_l)
+                self.v_frame[i] = ['1']
+            elif len(node_l) > 1:                # collided slot, put into rand-frame
+                self.rand_frame.append(node_l)
+                self.v_frame[i] = ['0']
+        # self.alloc_frame = filter(lambda l: len(l) == 1 and l != ['0'], self.v_frame)
+        # collided_slots = filter(lambda l: len(l) > 1, self.v_frame)
+        # Convert nested list to 1-D list
+        self.v_frame = list(chain.from_iterable(self.v_frame))
+        self.rand_frame = list(chain.from_iterable(self.rand_frame))
+        self.alloc_frame = list(chain.from_iterable(self.alloc_frame))
+        # # alloc-frame includes nodes from v-frame & rand-frame in order
+        # self.alloc_frame += self.rand_frame
+        self.seed = salt
+
+        logger.debug("Calculated VFS seed: {}, Singleton rate: {}, calculation count: {}, "
+                    "\nraw v-frame {} \nv-frame {} \nrand-frame {} \nalloc-frame {}".format(
+                    salt, SINGLETON_RATE_THRESHOLD, calc_count, raw_v_frame, self.v_frame, self.rand_frame,
+                    self.alloc_frame))
+
+
     # TODO: fix rand-frame, time slot for generate vfs
     def generate_seed_v_frame_rand_frame(self, node_id_list):          # BS only
         assert all(len(node_id) == NODE_ID_LEN for node_id in node_id_list),\
