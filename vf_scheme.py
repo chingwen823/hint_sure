@@ -466,19 +466,14 @@ class VirtualFrameScheme:
                 alloc_index = alloc_frame.index(node_id)
                 logger.debug("alloc-index: {}".format(alloc_index))
                 return alloc_index, False
-            else:
-                logger.debug("No action in this run. vf-index: {}".format( vf_index))
+            else:#v_frame[vf_index] == '0': 
+                logger.info("No action in this run. vf-index: {}".format( vf_index))
                 return -1, False
-        try:                            # fall to rand-frame
-            # alloc-frame = v-frame (reduced '0's)
-            alloc_frame = [x for x in v_frame if x != '0']
-            # randomly choose index after alloc_frame
-            rand_index = random.randint(len(alloc_frame), node_amount - 1)
-            logger.debug("rand-index: {}".format(rand_index))
-            return rand_index, True
-        except ValueError:
-            logger.error("Node {} has no index!".format(node_id))
+        else:
+            logger.info("Invalid vf_index: {}".format( vf_index))
             return -1, False
+                          
+
     def compute_alloc_index(self, vf_index, node_id, v_frame, node_amount):
         if v_frame[vf_index] == '1':    # exists in v-frame
             # alloc-frame = v-frame (reduced '0's)

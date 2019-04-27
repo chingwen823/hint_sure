@@ -56,7 +56,7 @@ from vf_scheme import VirtualFrameScheme
 #presum
 TEST_DATA_MAX = 1000
 NODE_RX_MAX = 10
-NODE_SLOT_TIME = .2     # seconds
+NODE_SLOT_TIME = .3     # seconds
 TRANSMIT_DELAY = .1     # seconds
 TIMESTAMP_LEN = 14  # 26 # len(now)
 MAX_DELTA_AMT = 10
@@ -565,9 +565,9 @@ def main():
                     vfs_model.generate_seed_v_frame_rand_frame2(TEST_NODE_LIST_DEFAULT,TEST_NODE_LIST)
                     
                     #statstic  
-                    if '00030757AF' in vfs_model.rand_frame:
+                    if '00030757AF' in vfs_model.rand_frame and '00030757AF' in TEST_NODE_LIST:
                         statistics['00030757AF']['Rand'] += 1 
-                    if '000307B24B' in vfs_model.rand_frame:
+                    if '000307B24B' in vfs_model.rand_frame and '000307B24B' in TEST_NODE_LIST:
                         statistics['000307B24B']['Rand'] += 1 
 
                     #send boardcast
@@ -665,7 +665,7 @@ def main():
                                     tb.stop()
                                     break  
                                 if int(upload_data)!=(last_data+1):
-                                    logger.info("=====Error protocol fail=====") 
+                                    logger.info("=====Error protocol fail=====upload{},check{}".format(upload_data,last_data+1)) 
                                     thread_run = False
                                     tb.txpath.send_pkt(eof=True)
                                     tb.stop()
@@ -706,16 +706,16 @@ def main():
                                 nd_start_time = time.time()
                                 nd_in_response = True
                                 if in_rand_frame:
-                                    logger.info("555555555555555555555555555")
-                                    logger.info("5  Rand Frame - SKIP      5")
-                                    logger.info("555555555555555555555555555")
+                                    logger.info("666666666666666666666666666")
+                                    logger.info("6  Rand Frame - SKIP      6")
+                                    logger.info("666666666666666666666666666")
                                     statistics_dev[NODE_ID]['RAND'] += 1 
                                     not_my_business = True
                                     
                                 elif alloc_index < 0:
-                                    logger.info("666666666666666666666666666")
-                                    logger.info("6         No Action       6")
-                                    logger.info("666666666666666666666666666")
+                                    logger.info("555555555555555555555555555")
+                                    logger.info("5         No Action       5")
+                                    logger.info("555555555555555555555555555")
                                     not_my_business = True
                                     
                                     statistics_dev[NODE_ID]['NoAction'] += 1 
