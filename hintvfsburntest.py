@@ -177,7 +177,7 @@ def decode_common_pkt_header(tb,payload):
 
 def action(tb, vfs_model, payload,NODE_ID):
 
-    global alloc_index, last_node_amount,last_in_rand, file_output,  data_num, i_still_care, last_pktno
+    global alloc_index, last_node_amount, file_output,  data_num, i_care_ack, last_pktno
     
 
     thingy = decode_common_pkt_header(tb,payload)
@@ -246,19 +246,18 @@ def action(tb, vfs_model, payload,NODE_ID):
             logger.info("1111111111111111111111111")
             logger.info("1 missing boardcast pkt 1")
             logger.info("1111111111111111111111111")
-            if i_still_care and not last_in_rand :
+            if i_care_ack:
                 logger.info("2222222222222222222222222")
                 logger.info("2      VACK missing     2")
                 logger.info("2222222222222222222222222")
                 statistics_dev[NODE_ID]['VACKMissing'] += 1 
             
-            #i_still_care = False
-          
+         
             statistics_dev[NODE_ID]['BcastMissing'] += _pktno - (last_pktno+1) 
 
         last_pktno = _pktno #track packet number
 
-        if i_still_care and not last_in_rand :
+        if i_care_ack:
             logger.info("i still care")
             #check if vack intime(response in 1 frame time) 
             if last_node_amount == -1 or \
@@ -283,8 +282,7 @@ def action(tb, vfs_model, payload,NODE_ID):
                     if vack_frame[alloc_index]=='1':
                         #advance data number here
                         data_num = data_num + 1 
-                        #i_still_care = False #not check retransmit anymore
-                     
+                          
                         logger.info("3333333333333333333333333")
                         logger.info("3           ACK         3")
                         logger.info("3333333333333333333333333")
@@ -302,47 +300,37 @@ def action(tb, vfs_model, payload,NODE_ID):
             else:
                 logger.critical("[TIMEOUT] broadcast not in time")
        
-        #i_still_care, since last schedule, we have not get success
-        #  
+        i_care_ack = False #ack check done
         
-        on_schedule = _pktno % TEST_NODE_SCHEDULE[TEST_NODE_LIST_DEFAULT.index(NODE_ID)]==0
-        if on_schedule:
-            i_still_care = True
+        #check v for this run  
+        node_amount = vfs_model.get_node_amount(payload)
+        seed = vfs_model.get_seed(payload)
+        try:
+            begin_timestamp_str = vfs_model.get_begin_time_str(payload)
+            begin_timestamp = float(begin_timestamp_str)
+        except:
+            logger.warning("begin_timestamp {} is not a float. Drop pkt!".format(begin_timestamp_str))
+            return 
+        try:
+            v_frame = vfs_model.get_v_frame(payload)
+        except:
+            logger.warning("Cannot extract v-frame. Drop pkt!")
+            return 
+        vf_index = vfs_model.compute_vf_index(len(v_frame), NODE_ID, seed)
 
-        if i_still_care or on_schedule:
-            
-            node_amount = vfs_model.get_node_amount(payload)
-            seed = vfs_model.get_seed(payload)
-            try:
-                begin_timestamp_str = vfs_model.get_begin_time_str(payload)
-                begin_timestamp = float(begin_timestamp_str)
-            except:
-                logger.warning("begin_timestamp {} is not a float. Drop pkt!".format(begin_timestamp_str))
-                return 
-            try:
-                v_frame = vfs_model.get_v_frame(payload)
-            except:
-                logger.warning("Cannot extract v-frame. Drop pkt!")
-                return 
-            vf_index = vfs_model.compute_vf_index(len(v_frame), NODE_ID, seed)
+        alloc_index, in_rand_frame = vfs_model.compute_alloc_index2(vf_index, NODE_ID, v_frame, node_amount)
 
-            alloc_index, in_rand_frame = vfs_model.compute_alloc_index2(vf_index, NODE_ID, v_frame, node_amount)
+        logger.info("{} Node recv VFS_BROADCAST {}, BS time {}, Total {}, Seed {}, Delay {}, "
+            "\nv-frame index: {}, alloc-index: {}, fall to rand-frame: {},"
+            "\nv-frame: {}"
+            .format(str(datetime.fromtimestamp(now_timestamp)), _pktno,
+                    str(datetime.fromtimestamp(pkt_timestamp)),
+                    node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame))
+        last_node_amount = node_amount
+        
+       
+        return (node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame)
 
-            logger.info("{} Node recv VFS_BROADCAST {}, BS time {}, Total {}, Seed {}, Delay {}, "
-                "\nv-frame index: {}, alloc-index: {}, fall to rand-frame: {},"
-                "\nv-frame: {}"
-                .format(str(datetime.fromtimestamp(now_timestamp)), _pktno,
-                        str(datetime.fromtimestamp(pkt_timestamp)),
-                        node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame))
-            last_node_amount = node_amount
-            last_in_rand = in_rand_frame
-           
-            return (node_amount, seed, delta, vf_index, alloc_index, in_rand_frame, v_frame)
-        else: #not my business frame
-            logger.info("{} Node recv VFS_BROADCAST {}, BS time {}"
-                .format(str(datetime.fromtimestamp(now_timestamp)), _pktno,
-                        str(datetime.fromtimestamp(pkt_timestamp))))
-            return "not-my-business"
 
 # /////////////////////////////////////////////////////////////////////////////
 #                                   main
@@ -355,14 +343,15 @@ def main():
     vfs_model = VirtualFrameScheme(PacketType, NODE_SLOT_TIME)
     
     #node rx queue/event
-    global node_rx_q, node_rx_sem, thread_run, alloc_index, last_node_amount,last_in_rand,file_input,\
+    global node_rx_q, node_rx_sem, thread_run, alloc_index, last_node_amount,file_input,\
            file_output, data, data_num, upload_file
     node_rx_q = Queue.Queue(maxsize = NODE_RX_MAX)
     node_rx_sem = threading.Semaphore(NODE_RX_MAX) #up to the queue size
     thread_run = True 
     alloc_index = -1
     last_node_amount = -1
-    last_in_rand = False
+
+    last_in_noaction = True
     data = "**heLLo**" # default data str
     data_num = 0
     upload_file = True
@@ -494,7 +483,7 @@ def main():
 
 
     def threadjob(pktno,IS_BS,NODE_ID):
-        global thread_run, data, data_num, TEST_NODE_RETRY, TEST_NODE_LIST, i_still_care, last_pktno
+        global thread_run, data, data_num, TEST_NODE_RETRY, TEST_NODE_LIST, i_care_ack, last_pktno
         logger.info("Please start host now...")
         boot_time = time.time()
         bs_start_time = 0
@@ -507,9 +496,8 @@ def main():
         TEST_NODE_LIST = list(TEST_NODE_LIST_DEFAULT)
         last_data = -1
 
-        #i_still_care = False
-        i_still_care = True
-     
+        i_care_ack = False
+        
         last_pktno = -1
 
         print(TEST_NODE_LIST)
@@ -634,11 +622,14 @@ def main():
 
                         vfs_model.send_dummy_pkt(tb)# hacking, send dummy pkt to avoid data lost
                         vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, data, data_num, pktno)
+                        i_care_ack = True
+
                         logger.info( "\n===========================\npktno:{}\ndata numer:{}\ndata:{}\nstatistics:{}\n===========================".format(pktno,data_num,data,statistics_dev[NODE_ID])) 
                         
                         pktno += 1
                         nd_in_response = False
                         not_my_business = False
+                        
                           
                 else:
                     #print "nd_in_response{}, time {} > {} ".format(nd_in_response,time.time(), (nd_start_time + time_wait_for_my_slot))
@@ -720,19 +711,25 @@ def main():
                                     logger.info("555555555555555555555555555")
                                     statistics_dev[NODE_ID]['RAND'] += 1 
                                     not_my_business = True
+                                    
                                 elif alloc_index < 0:
+                                    logger.info("666666666666666666666666666")
+                                    logger.info("6         No Action       6")
+                                    logger.info("666666666666666666666666666")
                                     not_my_business = True
+                                    
                                     statistics_dev[NODE_ID]['NoAction'] += 1 
                                 else:
                                     logger.info( "I will upload at slot {}, wait for {}s".format(alloc_index,time_wait_for_my_slot))
                                     not_my_business = False
+                                    
                                     statistics_dev[NODE_ID]['askup'] += 1 
                                 #vfs_model.send_vfs_pkt( NODE_ID, tb, pkt_size, "**heLLo**{}".pktno, pktno)
                         else:
                             logger.warn( "error during decode VFS_BROADCAST")
-                            logger.info("666666666666666666666666666")
-                            logger.info("6         Decode          6")
-                            logger.info("666666666666666666666666666")
+                            logger.info("777777777777777777777777777")
+                            logger.info("7         Decode          7")
+                            logger.info("777777777777777777777777777")
                             statistics_dev[NODE_ID]['Decode'] += 1                            
                         
         print "... thread out ..."        
