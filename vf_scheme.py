@@ -458,13 +458,16 @@ class VirtualFrameScheme:
         self.nodes_data_num[node_id]  = datanum  
         return True
     def compute_alloc_index2(self, vf_index, node_id, v_frame, node_amount):
-        if vf_index >= 0 and vf_index<len(v_frame) and v_frame[vf_index] == '1':    # exists in v-frame
-            # alloc-frame = v-frame (reduced '0's)
-            v_frame[vf_index] = node_id         # mark position with Node ID
-            alloc_frame = [x for x in v_frame if x != '0']
-            alloc_index = alloc_frame.index(node_id)
-            logger.debug("alloc-index: {}".format(alloc_index))
-            return alloc_index, False
+        if vf_index >= 0 and vf_index<len(v_frame) :
+            if v_frame[vf_index] == '1':    # exists in v-frame
+                # alloc-frame = v-frame (reduced '0's)
+                v_frame[vf_index] = node_id         # mark position with Node ID
+                alloc_frame = [x for x in v_frame if x != '0']
+                alloc_index = alloc_frame.index(node_id)
+                logger.debug("alloc-index: {}".format(alloc_index))
+                return alloc_index, False
+            else:
+                logger.debug("No action in this run. alloc-index: {}".format(alloc_index))
         try:                            # fall to rand-frame
             # alloc-frame = v-frame (reduced '0's)
             alloc_frame = [x for x in v_frame if x != '0']

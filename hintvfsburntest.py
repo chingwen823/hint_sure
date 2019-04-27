@@ -278,7 +278,7 @@ def action(tb, vfs_model, payload,NODE_ID):
                 except:
                     logger.warning("Cannot extract vack-frame. Drop pkt!")
                    
-
+                #alloc_index for previous transmition
                 if alloc_index>=0  and alloc_index<len(vack_frame):# leave rand frame along
                     if vack_frame[alloc_index]=='1':
                         #advance data number here
