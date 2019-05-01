@@ -509,9 +509,9 @@ def main():
                     #statstic
                     if pktno!= 0:               
                         for iid in TEST_NODE_RETRY:
-                            logger.info("222222222222222222222222222")
-                            logger.info("2 Data Timeout:{} 2".format(iid))
-                            logger.info("222222222222222222222222222")
+                            logger.info("111111111111111111111111111")
+                            logger.info("1 Data Timeout:{} 1".format(iid))
+                            logger.info("111111111111111111111111111")
                             statistics[iid]['Missing'] += 1  
 
                         temp = 0
@@ -676,16 +676,16 @@ def main():
 
 
                             else:
-                                logger.info("3333333333333333")
-                                logger.info("3 SEQ mismatch 3")
-                                logger.info("3333333333333333")
+                                logger.info("2222222222222222")
+                                logger.info("2 SEQ mismatch 2")
+                                logger.info("2222222222222222")
                                 statistics[node_id]['SEQ'] += 1
                                 TEST_NODE_RETRY.remove(node_id)
                         else:
                             logger.critical("[Decode Error] payload fail")
-                            logger.info("4444444444444444")
-                            logger.info("4 Payload Error4")
-                            logger.info("4444444444444444")    
+                            logger.info("3333333333333333")
+                            logger.info("3 Payload Error3")
+                            logger.info("3333333333333333")    
                             statistics['00030757AF']['Decode'] += 1                              
                             statistics['000307B24B']['Decode'] += 1  
                     else:
